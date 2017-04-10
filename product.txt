@@ -1,0 +1,121 @@
+accD	acetyl-CoA carboxylase carboxyltransferase beta subunit
+atpA	ATP synthase CF1 alpha subunit
+atpB	ATP synthase CF1 beta subunit
+atpE	ATP synthase CF1 epsilon subunit
+atpF	ATP synthase CF0 subunit I
+atpH	ATP synthase CF0 subunit III
+atpI	ATP synthase CF0 subunit IV
+ccsA	cytochrome c heme attachment protein
+cemA	envelope membrane protein
+chlB	photochlorophyllide reductase subunit B
+chlL	photochlorophyllide reductase subunit L
+chlN	photochlorophyllide reductase subunit N
+clpP	clp protease proteolytic subunit
+infA	translation initiation factor 1
+matK	maturase K
+ndhA	NADH-plastoquinone oxidoreductase subunit 1
+ndhB	NADH-plastoquinone oxidoreductase subunit 2
+ndhC	NADH-plastoquinone oxidoreductase subunit 3
+ndhD	NADH-plastoquinone oxidoreductase subunit 4
+ndhE	NADH-plastoquinone oxidoreductase subunit 4L
+ndhF	NADH-plastoquinone oxidoreductase subunit 5
+ndhG	NADH-plastoquinone oxidoreductase subunit 6
+ndhH	NADH-plastoquinone oxidoreductase subunit 7
+ndhI	NADH-plastoquinone oxidoreductase subunit I
+ndhJ	NADH-plastoquinone oxidoreductase subunit J
+ndhK	NADH-plastoquinone oxidoreductase subunit K
+petA	cytochrome f
+petB	cytochrome b6
+petD	cytochrome b6/f complex subunit IV
+petG	cytochrome b6/f complex subunit V
+petL	cytochrome b6/f complex subunit VI
+petN	cytochrome b6/f complex subunit VIII
+psaA	photosystem I P700 apoprotein A1
+psaB	photosystem I P700 apoprotein A2
+psaC	photosystem I subunit VII
+psaI	photosystem I subunit VIII
+psaJ	photosystem I subunit IX
+psaM	photosystem I protein M
+psbA	photosystem II protein D1
+psbB	photosystem II CP47 chlorophyll apoprotein
+psbC	photosystem II CP43 chlorophyll apoprotein
+psbD	photosystem II protein D2
+psbE	photosystem II cytochrome b559 alpha subunit
+psbF	photosystem II cytochrome b559 beta subunit
+psbH	photosystem II phosphoprotein
+psbI	photosystem II protein I
+psbJ	photosystem II protein J
+psbK	photosystem II protein K
+psbL	photosystem II protein L
+psbM	photosystem II protein M
+psbN	photosystem II protein N
+psbT	photosystem II protein T
+psbZ	photosystem II protein Z
+rbcL	ribulose bisophosphate carboxylase
+rpl14	ribosomal protein L14
+rpl16	50S ribosomal protein L16
+rpl2	ribosomal protein L2
+rpl20	ribosomal protein L20
+rpl22	ribosomal protein L22
+rpl23	ribosomal protein L23
+rpl32	ribosomal protein L32
+rpl33	ribosomal protein L33
+rpl36	ribosomal protein L36
+rpoA	RNA polymerase alpha subunit
+rpoB	RNA polymerase beta subunit
+rpoC1	RNA polymerase beta subunit
+rpoC2	RNA polymerase beta' subunit
+rps11	ribosomal protein S11
+rps12	ribosomal protein S12
+rps12-1	ribosomal protein S12
+rps12-2	ribosomal protein S12
+rps14	ribosomal protein S14
+rps15	ribosomal protein S15
+rps16	ribosomal protein S16
+rps18	ribosomal protein S18
+rps19	ribosomal protein S19
+rps2	ribosomal protein S2
+rps3	ribosomal protein S3
+rps4	ribosomal protein S4
+rps7	ribosomal protein S7
+rps8	ribosomal protein S8
+rrn16	16S ribosomal RNA
+rrn23	23S ribosomal RNA
+rrn4.5	4.5S ribosomal RNA
+rrn5	5S ribosomal RNA
+ycf1	hypothetical protein RF1
+ycf2	hypothetical protein RF2
+ycf3	photosystem I assembly protein Ycf3
+ycf4	photosystem I assembly protein Ycf4
+trnA-UGC	tRNA-Ala
+trnC-GCA	tRNA-Cys
+trnD-GUC	tRNA-Asp
+trnE-UUC	tRNA-Glu
+trnF-GAA	tRNA-Phe
+trnfM-CAU	tRNA-Met
+trnG-GCC	tRNA-Gly
+trnG-UCC	tRNA-Gly
+trnH-GUG	tRNA-His
+trnI-CAU	tRNA-Ile
+trnI-GAU	tRNA-Ile
+trnK-CUU	tRNA-Asn
+trnK-UUU	tRNA-Lys
+trnL-CAA	tRNA-Leu
+trnL-UAA	tRNA-Leu
+trnL-UAG	tRNA-Leu
+trnM-CAU	tRNA-Met
+trnN-GUU	tRNA-Asn
+trnP-GGG	tRNA-Pro
+trnP-UGG	tRNA-Pro
+trnQ-UUG	tRNA-Gln
+trnR-ACG	tRNA-Arg
+trnR-UCU	tRNA-Arg
+trnS-GCU	tRNA-Ser
+trnS-GGA	tRNA-Ser
+trnS-UGA	tRNA-Ser
+trnT-GGU	tRNA-Thr
+trnT-UGU	tRNA-Thr
+trnV-GAC	tRNA-Val
+trnV-UAC	tRNA-Val
+trnW-CCA	tRNA-Trp
+trnY-GUA	tRNA-Tyr
