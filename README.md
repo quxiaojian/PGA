@@ -6,9 +6,9 @@ quxiaojian@mail.kib.ac.cn<br />
 Notes: This script is beta version, some aspects need to be improved.<br />
 
 ##Prerequisites<br />
-GNU<br />
+Blast
 Perl<br />
-Linux and Windows<br />
+Windows or Linux (You can replace all ".exe" in the script if you want to annotate under Linux.)<br />
 
 ##General Introduction to PGA<br />
 PGA(Plastid Genome Annotation) is capable of annotating multiple plastid genomes using published genebank format files as reference. Three steps will be conducted to annotate plastome: (1) extracting annotation information from gb format references, (2) blasting annotation information to fasta format sequences, (3) generating gb format files for fasta format sequences and giving warning information need to be manually checked.<br />
