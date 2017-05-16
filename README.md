@@ -6,7 +6,7 @@ quxiaojian@mail.kib.ac.cn<br />
 Notes: This script is beta version, some aspects need to be improved.<br />
 
 ##Prerequisites<br />
-Blast
+Blast<br />
 Perl<br />
 Windows or Linux (You can replace all ".exe" in the script if you want to annotate under Linux.)<br />
 
