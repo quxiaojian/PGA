@@ -64,7 +64,7 @@ rpl36	ribosomal protein L36
 rpoA	RNA polymerase alpha subunit
 rpoB	RNA polymerase beta subunit
 rpoC1	RNA polymerase beta subunit
-rpoC2	RNA polymerase beta' subunit
+rpoC2	RNA polymerase beta subunit
 rps11	ribosomal protein S11
 rps12	ribosomal protein S12
 rps12-1	ribosomal protein S12
