@@ -1,38 +1,64 @@
-##Plastid Genome Annotation<br />
+**Plastid Genome Annotation**<br />
 Copyright (C) 2017 Xiao-Jian Qu<br />
 
-##Contact<br />
+**Contact**<br />
 quxiaojian@mail.kib.ac.cn<br />
-Notes: This script is beta version, some aspects need to be improved.<br />
 
-##Prerequisites<br />
+**Prerequisites**<br />
 Blast<br />
 Perl<br />
-Windows or Linux (You can replace all ".exe" in the script if you want to annotate under Linux.)<br />
+Windows, Linux or Mac<br />
 
-##General Introduction to PGA<br />
-PGA(Plastid Genome Annotation) is capable of annotating multiple plastid genomes using published genebank format files as reference. Three steps will be conducted to annotate plastome: (1) extracting annotation information from gb format references, (2) blasting annotation information to fasta format sequences, (3) generating gb format files for fasta format sequences and giving warning information need to be manually checked.<br />
+**General Introduction to PGA**<br />
+PGA(Plastid Genome Annotation) is capable of annotating multiple plastid genomes using genebank format plastomes as reference. Three steps will be conducted to annotate plastomes: (1) extracting annotation features from gb format reference plastomes, (2) blasting annotation features against fasta format plastome sequences, (3) generating gb format files for each fasta format sequence, and giving corresponding warning information need to be manually checked.<br />
 
-##Preparations<br />
+**Preparations**<br />
 
-You can test PGA.pl by type ~/PATH/TO/PGA.pl, which will show the usage information.<br />
+(1) download BLAST+ software [BLAST+](ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/), and put it in PATH.<br />
+```
+vim ~/.bashrc
+export PATH=/home/xxx/blast-2.7.0+/bin:$PATH
+source ~/.bashrc
+```
+(2) download this repository to your local computer, and put it in PATH. Make it read, write and executable.<br />
+```
+git clone https://github.com/quxiaojian/PGA.git
+vim ~/.bashrc
+export PATH=/home/xxx/PGA:$PATH
+source ~/.bashrc
+chmod a+rwx PGA.pl
+```
+
+You can test PGA.pl by type PGA.pl, which will show the usage information.<br />
 ```
 Usage:
-    PGA.pl -r -s [-o -t -l]
-    Copyright (C) 2017 Xiao-Jian Qu
-    Please contact <quxiaojian@mail.kib.ac.cn>, if you have any bugs or questions.
+        PGA.pl -r -s [-v -o -t -l]
+        Copyright (C) 2017 Xiao-Jian Qu
+        Please contact <quxiaojian@mail.kib.ac.cn>, if you have any bugs or questions.
 
-    [-h -help]       help information.
-    [-r -ref]        required: input directory name containing gb reference file(s) that from the same or close family,order etc.(default: reference)
-    [-s -seq]        required: input directory name containing fasta sequence files(s) that you want to annotate.(default: sequence)
-    [-o -out]        optional: output directory name containing annotated genebank(gb) file(s).(default: gb)
-    [-t -type]       optional: circular or linear for fasta sequence files(s).(default: circular)
-    [-l -log]        optional: log file name containing warning information for annotated genebank(gb) file(s).(default: warning)
+        [-h -help]       help information.
+        [-r -ref]        required: input directory name containing GenBank format file(s)
+                         that from the same or close families. (default: reference)
+        [-s -seq]        required: input directory name containing fasta format file(s)
+                         that you want to annotate. (default: sequence)
+        [-v -val]        optional: similarity value for BLAST results of amino acid. (default: 40)
+        [-o -out]        optional: output directory name. (default: gb)
+        [-t -type]       optional: circular or linear for fasta format file(s). (default: circular)
+        [-l -log]        optional: log file name containing warning information
+                         for annotated GenBank format file(s). (default: warning)
 ```
 
-##Tutorial<br />
-**First**, annotating your fasta format plastome sequences.<br />
+**Test**<br />
+(1) annotating your fasta format plastome sequences.<br />
 ```
 PGA.pl -r reference -s sequence
 ```
-**Second**, checking your annotations for each sequence using Geneious.<br />
+(2) checking warning information in log file.<br />
+(3) correcting your annotations according to warning information using Geneious.<br />
+
+**Citation**<br />
+If you use PGA in you scientific research, please cite:<br />
+BLAST+<br />
+Camacho C, et al. 2009. BLAST+: architecture and applications. BMC Bioinformatics 10:421.<br />
+PGA<br />
+https://github.com/quxiaojian/PGA<br />
