@@ -1,4 +1,4 @@
-LOCUS       Nymphaea_mexican      159962 bp    DNA     circular UNA 02-JUN-2015
+LOCUS       ref_Nymphaea_mexicana      159962 bp    DNA     circular UNA 02-JUN-2015
 DEFINITION  Nymphaea mexicana chloroplast, complete genome.
 ACCESSION   NC_024542
 VERSION     NC_024542.1  GI:669100068
@@ -9,6 +9,15 @@ SOURCE      chloroplast Nymphaea mexicana
             Spermatophyta; Magnoliophyta; basal Magnoliophyta; Nymphaeales;
             Nymphaeaceae; Nymphaea.
 FEATURES             Location/Qualifiers
+     source          1..159962
+                     /organism="Nymphaea mexicana"
+                     /organelle="plastid:chloroplast"
+                     /mol_type="genomic DNA"
+                     /specimen_voucher="KUN:Sd0050"
+                     /db_xref="taxon:105594"
+                     /country="China: Kunming Botanical Garden of the Kunming
+                     Institute of Botany"
+                     /note="Geneious name: source Nymphaea mexicana"
      misc_feature    1..90019
                      /note="large single copy region; LSC"
                      /note="Geneious name: large single copy region; LSC"
@@ -25,24 +34,6 @@ FEATURES             Location/Qualifiers
                      /rpt_type="inverted"
                      /note="Geneious name: inverted repeat region B; IRB repeat
                      region"
-     source          <537..159962
-                     /organism="Nymphaea mexicana"
-                     /organelle="plastid:chloroplast"
-                     /mol_type="genomic DNA"
-                     /specimen_voucher="KUN:Sd0050"
-                     /db_xref="taxon:105594"
-                     /country="China: Kunming Botanical Garden of the Kunming
-                     Institute of Botany"
-                     /note="Geneious name: source Nymphaea mexicana"
-     source          1..>536
-                     /organism="Nymphaea mexicana"
-                     /organelle="plastid:chloroplast"
-                     /mol_type="genomic DNA"
-                     /specimen_voucher="KUN:Sd0050"
-                     /db_xref="taxon:105594"
-                     /country="China: Kunming Botanical Garden of the Kunming
-                     Institute of Botany"
-                     /note="Geneious name: source Nymphaea mexicana"
      rRNA            complement(136798..139612)
                      /gene="rrn23"
                      /locus_tag="IZ06_r002"
@@ -111,6 +102,7 @@ FEATURES             Location/Qualifiers
                      /db_xref="GeneID:19910162"
                      /note="Geneious name: trnI-GAU tRNA"
      tRNA            join(10609..10631, 11378..11425)
+                     /gene="trnG-UCC"
                      /locus_tag="IZ06_t005"
                      /product="tRNA-Gly"
                      /db_xref="GeneID:19910175"
@@ -309,7 +301,7 @@ FEATURES             Location/Qualifiers
                      /db_xref="GeneID:19910146"
                      /note="Geneious name: trnC-GCA tRNA"
      tRNA            39925..39995
-                     /gene="trnG-UCC"
+                     /gene="trnG-GCC"
                      /locus_tag="IZ06_t014"
                      /product="tRNA-Gly"
                      /db_xref="GeneID:19910159"
@@ -1656,6 +1648,7 @@ FEATURES             Location/Qualifiers
                      /translation="MKIRASVRKICEKCRLIRRRGRIIVICSNPKHKQRQG"
                      /note="Geneious name: rpl36 CDS"
      CDS             complement(75445..75558)
+                     /gene="rps12"
                      /note="Geneious name: rps12 CDS"
      CDS             64317..64427
                      /gene="psaI"
@@ -1936,6 +1929,7 @@ FEATURES             Location/Qualifiers
                      /db_xref="GeneID:19907947"
                      /note="Geneious name: ccsA gene"
      gene            10609..11425
+                     /gene="trnG-UCC"
                      /locus_tag="IZ06_t005"
                      /db_xref="GeneID:19910175"
                      /note="Geneious name: trnG-UCC gene"
@@ -2214,6 +2208,7 @@ FEATURES             Location/Qualifiers
                      /db_xref="GeneID:19907927"
                      /note="Geneious name: petG gene"
      gene            complement(75445..75558)
+                     /gene="rps12"
                      /note="Geneious name: rps12 gene"
      gene            64317..64427
                      /gene="psaI"
@@ -2396,7 +2391,7 @@ FEATURES             Location/Qualifiers
                      /db_xref="GeneID:19910146"
                      /note="Geneious name: trnC-GCA gene"
      gene            39925..39995
-                     /gene="trnG-UCC"
+                     /gene="trnG-GCC"
                      /locus_tag="IZ06_t014"
                      /db_xref="GeneID:19910159"
                      /note="Geneious name: trnG-GCC gene"
