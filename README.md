@@ -5,7 +5,7 @@ Copyright (C) 2017 Xiao-Jian Qu<br />
 quxiaojian@mail.kib.ac.cn<br />
 
 **Prerequisites**<br />
-Blast<br />
+BLAST+<br />
 Perl<br />
 Windows, Linux or Mac<br />
 
@@ -14,7 +14,7 @@ PGA(Plastid Genome Annotation) is capable of annotating multiple plastid genomes
 
 **Preparations**<br />
 
-(1) download BLAST+ software [BLAST+](ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/), and put it in PATH.<br />
+(1) download BLAST+ software [BLAST+](https://blast.ncbi.nlm.nih.gov/Blast.cgi?CMD=Web&PAGE_TYPE=BlastDocs&DOC_TYPE=Download), and put it in PATH.<br />
 ```
 vim ~/.bashrc
 export PATH=/home/xxx/blast-2.7.0+/bin:$PATH
