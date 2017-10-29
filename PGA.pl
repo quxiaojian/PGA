@@ -4737,7 +4737,7 @@ while (@sequence_filenames) {
 												$gene_number_seq{$name}++;
 											}
 										}
-										if ($ticks == 1) {
+										if (($ticks == 1) and (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/)))) {
 											print $logfile "Warning: $name (positive one-intron PCG) intron-exon boundary need to be checked!\n";
 										}
 									}elsif (abs($end3-$start2) > 6000) {
@@ -5118,7 +5118,7 @@ while (@sequence_filenames) {
 													$gene_number_seq{$name}++;
 												}
 											}
-											if ($ticks == 1) {
+											if (($ticks == 1) and (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/)))) {
 												print $logfile "Warning: $name (positive one-intron PCG) intron-exon boundary need to be checked!\n";
 											}
 										}elsif (abs($end3-$start2) > 6000) {
@@ -5382,7 +5382,7 @@ while (@sequence_filenames) {
 													$gene_number_seq{$name}++;
 												}
 											}
-											if ($ticks == 1) {
+											if (($ticks == 1) and (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/)))) {
 												print $logfile "Warning: $name (positive one-intron PCG) has alternative start codon and intron-exon boundary need to be checked!\n" if ($name ne "rps12+2");
 											}elsif ($ticks == 0) {
 												print $logfile "Warning: $name (positive one-intron PCG) has alternative start codon!\n" if ($name ne "rps12+2");
@@ -5886,7 +5886,7 @@ while (@sequence_filenames) {
 												$gene_number_seq{$name}++;
 											}
 										}
-										if ($ticks == 1) {
+										if (($ticks == 1) and (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/)))) {
 											print $logfile "Warning: $name (negative one-intron PCG) intron-exon boundary need to be checked!\n";
 										}
 									}elsif (abs($start2-$end3) > 6000) {
@@ -6286,7 +6286,7 @@ while (@sequence_filenames) {
 													$gene_number_seq{$name}++;
 												}
 											}
-											if ($ticks == 1) {
+											if (($ticks == 1) and (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/)))) {
 												print $logfile "Warning: $name (negative one-intron PCG) intron-exon boundary need to be checked!\n";
 											}
 										}elsif (abs($start2-$end3) > 6000) {
@@ -6560,7 +6560,7 @@ while (@sequence_filenames) {
 													$gene_number_seq{$name}++;
 												}
 											}
-											if ($ticks == 1) {
+											if (($ticks == 1) and (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/)))) {
 												print $logfile "Warning: $name (negative one-intron PCG) has alternative start codon and intron-exon boundary need to be checked!\n" if ($name ne "rps12+2");
 											}elsif ($ticks == 0) {
 												print $logfile "Warning: $name (negative one-intron PCG) has alternative start codon!\n" if ($name ne "rps12+2");
@@ -7053,7 +7053,7 @@ while (@sequence_filenames) {
 												$gene_number_seq{$name}++;
 											}
 										}
-										if ($ticks == 1) {
+										if (($ticks == 1) and (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/)))) {
 											print $logfile "Warning: $name (positive one-intron PCG) intron-exon boundary need to be checked!\n";
 										}
 									}elsif (abs($end3-$start2) > 6000) {
@@ -7433,7 +7433,7 @@ while (@sequence_filenames) {
 													$gene_number_seq{$name}++;
 												}
 											}
-											if ($ticks == 1) {
+											if (($ticks == 1) and (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/)))) {
 												print $logfile "Warning: $name (positive one-intron PCG) intron-exon boundary need to be checked!\n";
 											}
 										}elsif (abs($end3-$start2) > 6000) {
@@ -7697,7 +7697,7 @@ while (@sequence_filenames) {
 													$gene_number_seq{$name}++;
 												}
 											}
-											if ($ticks == 1) {
+											if (($ticks == 1) and (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/)))) {
 												print $logfile "Warning: $name (positive one-intron PCG) has alternative start codon and intron-exon boundary need to be checked!\n" if ($name ne "rps12+2");
 											}elsif ($ticks == 0) {
 												print $logfile "Warning: $name (positive one-intron PCG) has alternative start codon!\n" if ($name ne "rps12+2");
@@ -8199,7 +8199,7 @@ while (@sequence_filenames) {
 												$gene_number_seq{$name}++;
 											}
 										}
-										if ($ticks == 1) {
+										if (($ticks == 1) and (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/)))) {
 											print $logfile "Warning: $name (negative one-intron PCG) need to be checked!\n";
 										}
 									}elsif (abs($start2-$end3) > 6000) {
@@ -8597,7 +8597,7 @@ while (@sequence_filenames) {
 													$gene_number_seq{$name}++;
 												}
 											}
-											if ($ticks == 1) {
+											if (($ticks == 1) and (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/)))) {
 												print $logfile "Warning: $name (negative one-intron PCG) intron-exon boundary need to be checked!\n";
 											}
 										}elsif (abs($start2-$end3) > 6000) {
@@ -8871,7 +8871,7 @@ while (@sequence_filenames) {
 													$gene_number_seq{$name}++;
 												}
 											}
-											if ($ticks == 1) {
+											if (($ticks == 1) and (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/)))) {
 												print $logfile "Warning: $name (negative one-intron PCG) has alternative start codon and intron-exon boundary need to be checked!\n" if ($name ne "rps12+2");
 											}elsif ($ticks == 0) {
 												print $logfile "Warning: $name (negative one-intron PCG) has alternative start codon!\n" if ($name ne "rps12+2");
