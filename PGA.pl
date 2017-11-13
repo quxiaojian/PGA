@@ -3,6 +3,7 @@ use strict;
 use Getopt::Long;
 use File::Find;
 use Time::HiRes qw(time);
+use FindBin qw($Bin);
 use Data::Dumper;
 no warnings "uninitialized";
 
@@ -1152,7 +1153,7 @@ unlink("all1.fasta");
 my %hash_codon=("---"=>"-","TAA"=>"*","TAG"=>"*","TGA"=>"*","TCA"=>"S","TCC"=>"S","TCG"=>"S","TCT"=>"S","TTC"=>"F","TTT"=>"F","TTA"=>"L","TTG"=>"L","TAC"=>"Y","TAT"=>"Y","TGC"=>"C","TGT"=>"C","TGG"=>"W","CTA"=>"L","CTC"=>"L","CTG"=>"L","CTT"=>"L","CCA"=>"P","CCC"=>"P","CCG"=>"P","CCT"=>"P","CAC"=>"H","CAT"=>"H","CAA"=>"Q","CAG"=>"Q","CGA"=>"R","CGC"=>"R","CGG"=>"R","CGT"=>"R","ATA"=>"I","ATC"=>"I","ATT"=>"I","ATG"=>"M","ACA"=>"T","ACC"=>"T","ACG"=>"T","ACT"=>"T","AAC"=>"N","AAT"=>"N","AAA"=>"K","AAG"=>"K","AGC"=>"S","AGT"=>"S","AGA"=>"R","AGG"=>"R","GTA"=>"V","GTC"=>"V","GTG"=>"V","GTT"=>"V","GCA"=>"A","GCC"=>"A","GCG"=>"A","GCT"=>"A","GAC"=>"D","GAT"=>"D","GAA"=>"E","GAG"=>"E","GGA"=>"G","GGC"=>"G","GGG"=>"G","GGT"=>"G");
 
 #product_of_protein-coding-gene_and_tRNA,e.g., $hash_tRNA{trnQ-UUG}=tRNA-Gln
-open (my $in_product,"<","product.txt");
+open (my $in_product,"<","$Bin/product.txt");
 my %hash_product;
 while (<$in_product>){
 	chomp;
@@ -1856,7 +1857,8 @@ while (@sequence_filenames) {
 	unlink("$header.tab");
 	#print Dumper \%hash;
 
-	open (my $out_annotation,">","$output_directory/$header.gb");
+	my $temp=$header."_temp";
+	open (my $out_annotation,">","$output_directory/$temp.gb");
 	open (my $logfile,">>","$output_directory/$log.log");
 	my $time=&getdate;
 	print $logfile "$header\n";
@@ -2292,7 +2294,7 @@ while (@sequence_filenames) {
 				}else{
 					$aa_ref_pcg.="X";
 					my $j=$i+1;
-					print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+					#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 				}
 			}
 			@aa_ref_pcg=split //,$aa_ref_pcg;
@@ -2317,7 +2319,7 @@ while (@sequence_filenames) {
 							}else{
 								$aa.="X";
 								my $j=$i+1;
-								print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+								#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 							}
 						}
 						my @aa=split //,$aa;
@@ -2407,7 +2409,7 @@ while (@sequence_filenames) {
 								}else{
 									$aa1.="X";
 									my $j=$i+1;
-									print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 								}
 							}
 							my @aa1=split //,$aa1;
@@ -2442,7 +2444,7 @@ while (@sequence_filenames) {
 								}else{
 									$aa2.="X";
 									my $j=$i+1;
-									print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 								}
 							}
 							my @aa2=split //,$aa2;
@@ -2468,7 +2470,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 
@@ -2540,7 +2542,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 
@@ -2601,7 +2603,7 @@ while (@sequence_filenames) {
 							}else{
 								$aa.="X";
 								my $j=$i+1;
-								print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+								#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 							}
 						}
 						my @aa=split //,$aa;
@@ -2697,7 +2699,7 @@ while (@sequence_filenames) {
 								}else{
 									$aa1.="X";
 									my $j=$i+1;
-									print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 								}
 							}
 							my @aa1=split //,$aa1;
@@ -2732,7 +2734,7 @@ while (@sequence_filenames) {
 								}else{
 									$aa2.="X";
 									my $j=$i+1;
-									print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 								}
 							}
 							my @aa2=split //,$aa2;
@@ -2761,7 +2763,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 
@@ -2830,7 +2832,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 
@@ -2894,7 +2896,7 @@ while (@sequence_filenames) {
 							}else{
 								$aa1.="X";
 								my $j=$i+1;
-								print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+								#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 							}
 						}
 						my @aa1=split //,$aa1;
@@ -2908,7 +2910,7 @@ while (@sequence_filenames) {
 							}else{
 								$aa2.="X";
 								my $j=$i+1;
-								print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+								#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 							}
 						}
 						my @aa2=split //,$aa2;
@@ -3047,7 +3049,7 @@ while (@sequence_filenames) {
 								}else{
 									$aa1.="X";
 									my $j=$i+1;
-									print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 								}
 							}
 							my @aa1=split //,$aa1;
@@ -3081,7 +3083,7 @@ while (@sequence_filenames) {
 								}else{
 									$aa2.="X";
 									my $j=$i+1;
-									print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 								}
 							}
 							my @aa2=split //,$aa2;
@@ -3107,7 +3109,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 
@@ -3179,7 +3181,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 
@@ -3246,7 +3248,7 @@ while (@sequence_filenames) {
 							}else{
 								$aa1.="X";
 								my $j=$i+1;
-								print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+								#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 							}
 						}
 						my @aa1=split //,$aa1;
@@ -3259,7 +3261,7 @@ while (@sequence_filenames) {
 							}else{
 								$aa2.="X";
 								my $j=$i+1;
-								print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+								#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 							}
 						}
 						my @aa2=split //,$aa2;
@@ -3402,7 +3404,7 @@ while (@sequence_filenames) {
 								}else{
 									$aa1.="X";
 									my $j=$i+1;
-									print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 								}
 							}
 							my @aa1=split //,$aa1;
@@ -3436,7 +3438,7 @@ while (@sequence_filenames) {
 								}else{
 									$aa2.="X";
 									my $j=$i+1;
-									print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 								}
 							}
 							my @aa2=split //,$aa2;
@@ -3464,7 +3466,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 
@@ -3533,7 +3535,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 
@@ -4188,7 +4190,7 @@ while (@sequence_filenames) {
 							}else{
 								$aa_ref_exon1.="X";
 								my $j=$i+1;
-								print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+								#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 							}
 						}
 						@aa_ref_exon1=split //,$aa_ref_exon1;
@@ -4202,7 +4204,7 @@ while (@sequence_filenames) {
 								}else{
 									$aa_ref_exon2.="X";
 									my $j=$i+1;
-									print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 								}
 							}
 							@aa_ref_exon2=split //,$aa_ref_exon2;
@@ -4215,7 +4217,7 @@ while (@sequence_filenames) {
 								}else{
 									$aa_ref_exon2.="X";
 									my $j=$i+1;
-									print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 								}
 							}
 							@aa_ref_exon2=split //,$aa_ref_exon2;
@@ -4228,7 +4230,7 @@ while (@sequence_filenames) {
 								}else{
 									$aa_ref_exon3.="X";
 									my $j=$i+1;
-									print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 								}
 							}
 							@aa_ref_exon3=split //,$aa_ref_exon3;
@@ -4242,7 +4244,7 @@ while (@sequence_filenames) {
 							}else{
 								$aa_ref_exon1.="X";
 								my $j=$i+1;
-								print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+								#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 							}
 						}
 						@aa_ref_exon1=split //,$aa_ref_exon1;
@@ -4256,7 +4258,7 @@ while (@sequence_filenames) {
 								}else{
 									$aa_ref_exon2.="X";
 									my $j=$i+1;
-									print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 								}
 							}
 							@aa_ref_exon2=split //,$aa_ref_exon2;
@@ -4270,7 +4272,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_ref_exon2.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 								@aa_ref_exon2=split //,$aa_ref_exon2;
@@ -4283,7 +4285,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_ref_exon3.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 								@aa_ref_exon3=split //,$aa_ref_exon3;
@@ -4296,7 +4298,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_ref_exon2.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 								@aa_ref_exon2=split //,$aa_ref_exon2;
@@ -4309,7 +4311,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_ref_exon3.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 								@aa_ref_exon3=split //,$aa_ref_exon3;
@@ -4322,7 +4324,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_ref_exon2.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 								@aa_ref_exon2=split //,$aa_ref_exon2;
@@ -4335,7 +4337,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_ref_exon3.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 								@aa_ref_exon3=split //,$aa_ref_exon3;
@@ -4350,7 +4352,7 @@ while (@sequence_filenames) {
 							}else{
 								$aa_ref_exon1.="X";
 								my $j=$i+1;
-								print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+								#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 							}
 						}
 						@aa_ref_exon1=split //,$aa_ref_exon1;
@@ -4364,7 +4366,7 @@ while (@sequence_filenames) {
 								}else{
 									$aa_ref_exon2.="X";
 									my $j=$i+1;
-									print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 								}
 							}
 							@aa_ref_exon2=split //,$aa_ref_exon2;
@@ -4377,7 +4379,7 @@ while (@sequence_filenames) {
 								}else{
 									$aa_ref_exon3.="X";
 									my $j=$i+1;
-									print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 								}
 							}
 							@aa_ref_exon3=split //,$aa_ref_exon3;
@@ -4390,7 +4392,7 @@ while (@sequence_filenames) {
 								}else{
 									$aa_ref_exon2.="X";
 									my $j=$i+1;
-									print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 								}
 							}
 							@aa_ref_exon2=split //,$aa_ref_exon2;
@@ -4403,7 +4405,7 @@ while (@sequence_filenames) {
 								}else{
 									$aa_ref_exon3.="X";
 									my $j=$i+1;
-									print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 								}
 							}
 							@aa_ref_exon3=split //,$aa_ref_exon3;
@@ -4433,7 +4435,7 @@ while (@sequence_filenames) {
 								}else{
 									$aa_exon.="X";
 									my $j=$i+1;
-									print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 								}
 							}
 							my @aa_exon=split //,$aa_exon;
@@ -4456,7 +4458,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa_seq_string0.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 									for (my $i=0;$i<$length_seq_string1;$i+=3){# delete stop codon
@@ -4467,7 +4469,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa_seq_string1.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 									for (my $i=0;$i<$length_seq_string2;$i+=3){# delete stop codon
@@ -4478,7 +4480,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa_seq_string2.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 
@@ -4652,7 +4654,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 
@@ -4666,7 +4668,7 @@ while (@sequence_filenames) {
 											}else{
 												$intron_aa.="X";
 												my $j=$i+1;
-												print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 											}
 										}
 									}
@@ -4771,7 +4773,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa1.="X";
 											my $m=$i+1;
-											print "Bad codon $codon in position $m of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $m of gene $name in species $contig!\n";
 										}
 									}
 									my @aa1=split //,$aa1;
@@ -4803,7 +4805,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa2.="X";
 											my $n=$k+1;
-											print "Bad codon $codon in position $n of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $n of gene $name in species $contig!\n";
 										}
 									}
 									my @aa2=split //,$aa2;
@@ -4832,7 +4834,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa_seq_string0.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 									for (my $i=0;$i<$length_seq_string1;$i+=3){# delete stop codon
@@ -4843,7 +4845,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa_seq_string1.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 									for (my $i=0;$i<$length_seq_string2;$i+=3){# delete stop codon
@@ -4854,7 +4856,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa_seq_string2.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 
@@ -5033,7 +5035,7 @@ while (@sequence_filenames) {
 											}else{
 												$aa.="X";
 												my $j=$i+1;
-												print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 											}
 										}
 
@@ -5047,7 +5049,7 @@ while (@sequence_filenames) {
 												}else{
 													$intron_aa.="X";
 													my $j=$i+1;
-													print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+													#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 												}
 											}
 										}
@@ -5297,7 +5299,7 @@ while (@sequence_filenames) {
 											}else{
 												$aa.="X";
 												my $j=$i+1;
-												print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 											}
 										}
 
@@ -5311,7 +5313,7 @@ while (@sequence_filenames) {
 												}else{
 													$intron_aa.="X";
 													my $j=$i+1;
-													print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+													#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 												}
 											}
 										}
@@ -5453,7 +5455,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa2.="X";
 											my $n=$k+1;
-											print "Bad codon $codon in position $n of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $n of gene $name in species $contig!\n";
 										}
 									}
 									my @aa2=split //,$aa2;
@@ -5491,7 +5493,7 @@ while (@sequence_filenames) {
 											}else{
 												$aa.="X";
 												my $j=$i+1;
-												print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 											}
 										}
 										print $out_annotation "     "."gene"."            ".$start."..".$end."\n";
@@ -5530,7 +5532,7 @@ while (@sequence_filenames) {
 											}else{
 												$aa.="X";
 												my $j=$i+1;
-												print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 											}
 										}
 										print $out_annotation "     "."gene"."            ".$start1."..".$end."\n";
@@ -5570,7 +5572,7 @@ while (@sequence_filenames) {
 								}else{
 									$aa_exon.="X";
 									my $j=$i+1;
-									print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 								}
 							}
 							my @aa_exon=split //,$aa_exon;
@@ -5599,7 +5601,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa_seq_string0.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 									for (my $i=0;$i<$length_seq_string1;$i+=3){# delete stop codon
@@ -5610,7 +5612,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa_seq_string1.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 									for (my $i=0;$i<$length_seq_string2;$i+=3){# delete stop codon
@@ -5621,7 +5623,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa_seq_string2.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 
@@ -5799,7 +5801,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 
@@ -5813,7 +5815,7 @@ while (@sequence_filenames) {
 											}else{
 												$intron_aa.="X";
 												my $j=$i+1;
-												print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 											}
 										}
 									}
@@ -5924,7 +5926,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa1.="X";
 											my $m=$i+1;
-											print "Bad codon $codon in position $m of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $m of gene $name in species $contig!\n";
 										}
 									}
 									my @aa1=split //,$aa1;
@@ -5956,7 +5958,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa2.="X";
 											my $n=$k+1;
-											print "Bad codon $codon in position $n of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $n of gene $name in species $contig!\n";
 										}
 									}
 									my @aa2=split //,$aa2;
@@ -5991,7 +5993,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa_seq_string0.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 									for (my $i=0;$i<$length_seq_string1;$i+=3){# delete stop codon
@@ -6002,7 +6004,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa_seq_string1.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 									for (my $i=0;$i<$length_seq_string2;$i+=3){# delete stop codon
@@ -6013,7 +6015,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa_seq_string2.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 
@@ -6199,7 +6201,7 @@ while (@sequence_filenames) {
 											}else{
 												$aa.="X";
 												my $j=$i+1;
-												print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 											}
 										}
 
@@ -6213,7 +6215,7 @@ while (@sequence_filenames) {
 												}else{
 													$intron_aa.="X";
 													my $j=$i+1;
-													print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+													#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 												}
 											}
 										}
@@ -6473,7 +6475,7 @@ while (@sequence_filenames) {
 											}else{
 												$aa.="X";
 												my $j=$i+1;
-												print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 											}
 										}
 
@@ -6487,7 +6489,7 @@ while (@sequence_filenames) {
 												}else{
 													$intron_aa.="X";
 													my $j=$i+1;
-													print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+													#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 												}
 											}
 										}
@@ -6635,7 +6637,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa2.="X";
 											my $n=$k+1;
-											print "Bad codon $codon in position $n of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $n of gene $name in species $contig!\n";
 										}
 									}
 									my @aa2=split //,$aa2;
@@ -6675,7 +6677,7 @@ while (@sequence_filenames) {
 											}else{
 												$aa.="X";
 												my $j=$i+1;
-												print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 											}
 										}
 										print $out_annotation "     "."gene"."            "."complement(".$end."..".$start.")\n";
@@ -6715,7 +6717,7 @@ while (@sequence_filenames) {
 											}else{
 												$aa.="X";
 												my $j=$i+1;
-												print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 											}
 										}
 										print $out_annotation "     "."gene"."            "."complement(".$end."..".$start1.")\n";
@@ -6749,7 +6751,7 @@ while (@sequence_filenames) {
 								}else{
 									$aa_exon.="X";
 									my $j=$i+1;
-									print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 								}
 							}
 							my @aa_exon=split //,$aa_exon;
@@ -6772,7 +6774,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa_seq_string0.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 									for (my $i=0;$i<$length_seq_string1;$i+=3){# delete stop codon
@@ -6783,7 +6785,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa_seq_string1.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 									for (my $i=0;$i<$length_seq_string2;$i+=3){# delete stop codon
@@ -6794,7 +6796,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa_seq_string2.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 
@@ -6968,7 +6970,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 
@@ -6982,7 +6984,7 @@ while (@sequence_filenames) {
 											}else{
 												$intron_aa.="X";
 												my $j=$i+1;
-												print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 											}
 										}
 									}
@@ -7087,7 +7089,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa1.="X";
 											my $m=$i+1;
-											print "Bad codon $codon in position $m of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $m of gene $name in species $contig!\n";
 										}
 									}
 									my @aa1=split //,$aa1;
@@ -7119,7 +7121,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa2.="X";
 											my $n=$k+1;
-											print "Bad codon $codon in position $n of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $n of gene $name in species $contig!\n";
 										}
 									}
 									my @aa2=split //,$aa2;
@@ -7148,7 +7150,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa_seq_string0.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 									for (my $i=0;$i<$length_seq_string1;$i+=3){# delete stop codon
@@ -7159,7 +7161,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa_seq_string1.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 									for (my $i=0;$i<$length_seq_string2;$i+=3){# delete stop codon
@@ -7170,7 +7172,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa_seq_string2.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 
@@ -7348,7 +7350,7 @@ while (@sequence_filenames) {
 											}else{
 												$aa.="X";
 												my $j=$i+1;
-												print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 											}
 										}
 
@@ -7362,7 +7364,7 @@ while (@sequence_filenames) {
 												}else{
 													$intron_aa.="X";
 													my $j=$i+1;
-													print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+													#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 												}
 											}
 										}
@@ -7612,7 +7614,7 @@ while (@sequence_filenames) {
 											}else{
 												$aa.="X";
 												my $j=$i+1;
-												print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 											}
 										}
 
@@ -7626,7 +7628,7 @@ while (@sequence_filenames) {
 												}else{
 													$intron_aa.="X";
 													my $j=$i+1;
-													print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+													#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 												}
 											}
 										}
@@ -7768,7 +7770,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa2.="X";
 											my $n=$k+1;
-											print "Bad codon $codon in position $n of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $n of gene $name in species $contig!\n";
 										}
 									}
 									my @aa2=split //,$aa2;
@@ -7807,7 +7809,7 @@ while (@sequence_filenames) {
 											}else{
 												$aa.="X";
 												my $j=$i+1;
-												print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 											}
 										}
 										print $out_annotation "     "."gene"."            ".$start."..".$end."\n";
@@ -7845,7 +7847,7 @@ while (@sequence_filenames) {
 											}else{
 												$aa.="X";
 												my $j=$i+1;
-												print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 											}
 										}
 										print $out_annotation "     "."gene"."            ".$start2."..".$end."\n";
@@ -7881,7 +7883,7 @@ while (@sequence_filenames) {
 								}else{
 									$aa_exon.="X";
 									my $j=$i+1;
-									print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 								}
 							}
 							my @aa_exon=split //,$aa_exon;
@@ -7910,7 +7912,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa_seq_string0.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 									for (my $i=0;$i<$length_seq_string1;$i+=3){# delete stop codon
@@ -7921,7 +7923,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa_seq_string1.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 									for (my $i=0;$i<$length_seq_string2;$i+=3){# delete stop codon
@@ -7932,7 +7934,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa_seq_string2.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 
@@ -8114,7 +8116,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 
@@ -8128,7 +8130,7 @@ while (@sequence_filenames) {
 											}else{
 												$intron_aa.="X";
 												my $j=$i+1;
-												print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 											}
 										}
 									}
@@ -8237,7 +8239,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa1.="X";
 											my $m=$i+1;
-											print "Bad codon $codon in position $m of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $m of gene $name in species $contig!\n";
 										}
 									}
 									my @aa1=split //,$aa1;
@@ -8269,7 +8271,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa2.="X";
 											my $n=$k+1;
-											print "Bad codon $codon in position $n of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $n of gene $name in species $contig!\n";
 										}
 									}
 									my @aa2=split //,$aa2;
@@ -8304,7 +8306,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa_seq_string0.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 									for (my $i=0;$i<$length_seq_string1;$i+=3){# delete stop codon
@@ -8315,7 +8317,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa_seq_string1.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 									for (my $i=0;$i<$length_seq_string2;$i+=3){# delete stop codon
@@ -8326,7 +8328,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa_seq_string2.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 
@@ -8512,7 +8514,7 @@ while (@sequence_filenames) {
 											}else{
 												$aa.="X";
 												my $j=$i+1;
-												print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 											}
 										}
 
@@ -8526,7 +8528,7 @@ while (@sequence_filenames) {
 												}else{
 													$intron_aa.="X";
 													my $j=$i+1;
-													print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+													#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 												}
 											}
 										}
@@ -8784,7 +8786,7 @@ while (@sequence_filenames) {
 											}else{
 												$aa.="X";
 												my $j=$i+1;
-												print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 											}
 										}
 
@@ -8798,7 +8800,7 @@ while (@sequence_filenames) {
 												}else{
 													$intron_aa.="X";
 													my $j=$i+1;
-													print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+													#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 												}
 											}
 										}
@@ -8946,7 +8948,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa2.="X";
 											my $n=$k+1;
-											print "Bad codon $codon in position $n of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $n of gene $name in species $contig!\n";
 										}
 									}
 									my @aa2=split //,$aa2;
@@ -8986,7 +8988,7 @@ while (@sequence_filenames) {
 											}else{
 												$aa.="X";
 												my $j=$i+1;
-												print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 											}
 										}
 										print $out_annotation "     "."gene"."            "."complement(".$end."..".$start.")\n";
@@ -9026,7 +9028,7 @@ while (@sequence_filenames) {
 											}else{
 												$aa.="X";
 												my $j=$i+1;
-												print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 											}
 										}
 										print $out_annotation "     "."gene"."            "."complement(".$end."..".$start2.")\n";
@@ -9068,7 +9070,7 @@ while (@sequence_filenames) {
 								}else{
 									$aa_exon.="X";
 									my $j=$i+1;
-									print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 								}
 							}
 							my @aa_exon=split //,$aa_exon;
@@ -9089,7 +9091,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string1.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 								for (my $i=0;$i<120;$i+=3){# delete stop codon
@@ -9100,7 +9102,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string2.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 								for (my $i=0;$i<120;$i+=3){# delete stop codon
@@ -9111,7 +9113,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string3.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 								for (my $i=0;$i<120;$i+=3){# delete stop codon
@@ -9122,7 +9124,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string4.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 
@@ -9680,7 +9682,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 
@@ -9694,7 +9696,7 @@ while (@sequence_filenames) {
 										}else{
 											$intron1_aa.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 								}
@@ -9708,7 +9710,7 @@ while (@sequence_filenames) {
 										}else{
 											$intron2_aa.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 								}
@@ -9815,7 +9817,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa1.="X";
 										my $m=$i+1;
-										print "Bad codon $codon in position $m of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $m of gene $name in species $contig!\n";
 									}
 								}
 								my @aa1=split //,$aa1;
@@ -9857,7 +9859,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa2.="X";
 										my $n=$k+1;
-										print "Bad codon $codon in position $n of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $n of gene $name in species $contig!\n";
 									}
 								}
 								my @aa2=split //,$aa2;
@@ -9885,7 +9887,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string1.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 								for (my $i=0;$i<120;$i+=3){# delete stop codon
@@ -9896,7 +9898,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string2.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 								for (my $i=0;$i<120;$i+=3){# delete stop codon
@@ -9907,7 +9909,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string3.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 								for (my $i=0;$i<120;$i+=3){# delete stop codon
@@ -9918,7 +9920,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string4.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 
@@ -10489,7 +10491,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 	
@@ -10503,7 +10505,7 @@ while (@sequence_filenames) {
 											}else{
 												$intron1_aa.="X";
 												my $j=$i+1;
-												print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 											}
 										}
 									}
@@ -10517,7 +10519,7 @@ while (@sequence_filenames) {
 											}else{
 												$intron2_aa.="X";
 												my $j=$i+1;
-												print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 											}
 										}
 									}
@@ -10643,7 +10645,7 @@ while (@sequence_filenames) {
 								}else{
 									$aa_exon.="X";
 									my $j=$i+1;
-									print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 								}
 							}
 							my @aa_exon=split //,$aa_exon;
@@ -10672,7 +10674,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string1.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 								for (my $i=0;$i<120;$i+=3){# delete stop codon
@@ -10683,7 +10685,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string2.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 								for (my $i=0;$i<120;$i+=3){# delete stop codon
@@ -10694,7 +10696,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string3.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 								for (my $i=0;$i<120;$i+=3){# delete stop codon
@@ -10705,7 +10707,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string4.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 
@@ -11289,7 +11291,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 
@@ -11303,7 +11305,7 @@ while (@sequence_filenames) {
 										}else{
 											$intron1_aa.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 								}
@@ -11317,7 +11319,7 @@ while (@sequence_filenames) {
 										}else{
 											$intron2_aa.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 								}
@@ -11428,7 +11430,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa1.="X";
 										my $m=$i+1;
-										print "Bad codon $codon in position $m of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $m of gene $name in species $contig!\n";
 									}
 								}
 								my @aa1=split //,$aa1;
@@ -11470,7 +11472,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa2.="X";
 										my $n=$k+1;
-										print "Bad codon $codon in position $n of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $n of gene $name in species $contig!\n";
 									}
 								}
 								my @aa2=split //,$aa2;
@@ -11506,7 +11508,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string1.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 								for (my $i=0;$i<120;$i+=3){# delete stop codon
@@ -11517,7 +11519,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string2.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 								for (my $i=0;$i<120;$i+=3){# delete stop codon
@@ -11528,7 +11530,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string3.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 								for (my $i=0;$i<120;$i+=3){# delete stop codon
@@ -11539,7 +11541,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string4.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 
@@ -12136,7 +12138,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 
@@ -12150,7 +12152,7 @@ while (@sequence_filenames) {
 											}else{
 												$intron1_aa.="X";
 												my $j=$i+1;
-												print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 											}
 										}
 									}
@@ -12164,7 +12166,7 @@ while (@sequence_filenames) {
 											}else{
 												$intron2_aa.="X";
 												my $j=$i+1;
-												print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 											}
 										}
 									}
@@ -12282,7 +12284,7 @@ while (@sequence_filenames) {
 								}else{
 									$aa_exon.="X";
 									my $j=$i+1;
-									print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 								}
 							}
 							my @aa_exon=split //,$aa_exon;
@@ -12303,7 +12305,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string1.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 								for (my $i=0;$i<120;$i+=3){# delete stop codon
@@ -12314,7 +12316,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string2.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 								for (my $i=0;$i<120;$i+=3){# delete stop codon
@@ -12325,7 +12327,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string3.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 								for (my $i=0;$i<120;$i+=3){# delete stop codon
@@ -12336,7 +12338,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string4.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 
@@ -12894,7 +12896,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 
@@ -12908,7 +12910,7 @@ while (@sequence_filenames) {
 										}else{
 											$intron1_aa.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 								}
@@ -12922,7 +12924,7 @@ while (@sequence_filenames) {
 										}else{
 											$intron2_aa.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 								}
@@ -13029,7 +13031,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa1.="X";
 										my $m=$i+1;
-										print "Bad codon $codon in position $m of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $m of gene $name in species $contig!\n";
 									}
 								}
 								my @aa1=split //,$aa1;
@@ -13071,7 +13073,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa2.="X";
 										my $n=$k+1;
-										print "Bad codon $codon in position $n of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $n of gene $name in species $contig!\n";
 									}
 								}
 								my @aa2=split //,$aa2;
@@ -13099,7 +13101,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string1.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 								for (my $i=0;$i<120;$i+=3){# delete stop codon
@@ -13110,7 +13112,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string2.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 								for (my $i=0;$i<120;$i+=3){# delete stop codon
@@ -13121,7 +13123,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string3.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 								for (my $i=0;$i<120;$i+=3){# delete stop codon
@@ -13132,7 +13134,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string4.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 
@@ -13703,7 +13705,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 	
@@ -13717,7 +13719,7 @@ while (@sequence_filenames) {
 											}else{
 												$intron1_aa.="X";
 												my $j=$i+1;
-												print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 											}
 										}
 									}
@@ -13731,7 +13733,7 @@ while (@sequence_filenames) {
 											}else{
 												$intron2_aa.="X";
 												my $j=$i+1;
-												print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 											}
 										}
 									}
@@ -13857,7 +13859,7 @@ while (@sequence_filenames) {
 								}else{
 									$aa_exon.="X";
 									my $j=$i+1;
-									print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 								}
 							}
 							my @aa_exon=split //,$aa_exon;
@@ -13886,7 +13888,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string1.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 								for (my $i=0;$i<120;$i+=3){# delete stop codon
@@ -13897,7 +13899,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string2.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 								for (my $i=0;$i<120;$i+=3){# delete stop codon
@@ -13908,7 +13910,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string3.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 								for (my $i=0;$i<120;$i+=3){# delete stop codon
@@ -13919,7 +13921,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string4.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 
@@ -14503,7 +14505,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 
@@ -14517,7 +14519,7 @@ while (@sequence_filenames) {
 										}else{
 											$intron1_aa.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 								}
@@ -14531,7 +14533,7 @@ while (@sequence_filenames) {
 										}else{
 											$intron2_aa.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 								}
@@ -14642,7 +14644,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa1.="X";
 										my $m=$i+1;
-										print "Bad codon $codon in position $m of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $m of gene $name in species $contig!\n";
 									}
 								}
 								my @aa1=split //,$aa1;
@@ -14683,7 +14685,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa2.="X";
 										my $n=$k+1;
-										print "Bad codon $codon in position $n of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $n of gene $name in species $contig!\n";
 									}
 								}
 								my @aa2=split //,$aa2;
@@ -14719,7 +14721,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string1.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 								for (my $i=0;$i<120;$i+=3){# delete stop codon
@@ -14730,7 +14732,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string2.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 								for (my $i=0;$i<120;$i+=3){# delete stop codon
@@ -14741,7 +14743,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string3.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 								for (my $i=0;$i<120;$i+=3){# delete stop codon
@@ -14752,7 +14754,7 @@ while (@sequence_filenames) {
 									}else{
 										$aa_seq_string4.="X";
 										my $j=$i+1;
-										print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 									}
 								}
 
@@ -15349,7 +15351,7 @@ while (@sequence_filenames) {
 										}else{
 											$aa.="X";
 											my $j=$i+1;
-											print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 										}
 									}
 
@@ -15363,7 +15365,7 @@ while (@sequence_filenames) {
 											}else{
 												$intron1_aa.="X";
 												my $j=$i+1;
-												print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 											}
 										}
 									}
@@ -15377,7 +15379,7 @@ while (@sequence_filenames) {
 											}else{
 												$intron2_aa.="X";
 												my $j=$i+1;
-												print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
 											}
 										}
 									}
@@ -15511,6 +15513,17 @@ while (@sequence_filenames) {
 	}
 	print $out_annotation "//\n";
 	close $out_annotation;
+	open (my $input_temp,"<","$output_directory/$temp.gb");
+	open (my $output_temp,">","$output_directory/$header.gb");
+	while (<$input_temp>) {
+		chomp;
+		$_=~ s/rps12\+1/rps12/g;
+		$_=~ s/rps12\+2/rps12/g;
+		print $output_temp "$_\n";
+	}
+	close $input_temp;
+	close $output_temp;
+	unlink("$output_directory/$temp.gb");
 	%hash=();
 	%hash_exon=();
 	%hash_exon_length=();
