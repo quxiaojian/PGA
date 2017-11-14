@@ -67,8 +67,8 @@ rpoC1	RNA polymerase beta subunit
 rpoC2	RNA polymerase beta subunit
 rps11	ribosomal protein S11
 rps12	ribosomal protein S12
-rps12-1	ribosomal protein S12
-rps12-2	ribosomal protein S12
+rps12+1	ribosomal protein S12
+rps12+2	ribosomal protein S12
 rps14	ribosomal protein S14
 rps15	ribosomal protein S15
 rps16	ribosomal protein S16
