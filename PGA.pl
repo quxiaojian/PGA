@@ -1374,7 +1374,15 @@ while (@sequence_filenames) {
 		$header=$1 if ($head=~ /^>(.+)$/);
 		$sequence=shift @fasta;
 		$sequence= uc $sequence;
-		$length_cp=length $sequence;
+		if ($osname eq "MSWin32") {
+			$length_cp=length $sequence;
+		}elsif ($osname eq "cygwin") {
+			$length_cp=(length $sequence)-1;
+		}elsif ($osname eq "linux") {
+			$length_cp=(length $sequence)-1;
+		}elsif ($osname eq "darwin") {
+			$length_cp=(length $sequence)-1;
+		}
 	}
 	my $rev_coms=reverse $sequence;
 	$rev_coms=~ tr/ACGTacgt/TGCAtgca/;
