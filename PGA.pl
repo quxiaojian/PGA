@@ -1013,7 +1013,9 @@ while (@filenames) {
 				$join2=$hash_join{$key};
 			}
 		}
-		print $out_coding ">".$header_join."\n".$join1.$join2."\n";
+		if (defined $header_join) {
+			print $out_coding ">".$header_join."\n".$join1.$join2."\n";
+		}
 		close $out_coding;
 		@output5=();
 
