@@ -2536,9 +2536,11 @@ while (@sequence_filenames) {
 							}elsif ((!defined $left_start_position) and (defined $right_star_position)){
 								my $end=$end_left+($right_star_position * 3+3);
 
+								my $left_star=$start_left+$left_star_position * 3;
 								my $seq_string;
 								if ($start2 >= 61) {
-									$seq_string=substr($sequence,($start2-61),120);
+									#$seq_string=substr($sequence,($start2-61),120);
+									$seq_string=substr($sequence,($left_star),(length($start2-$left_star)+60));
 								}elsif ($start2 < 61) {
 									$seq_string=substr($sequence,0,120);
 								}
@@ -2829,7 +2831,9 @@ while (@sequence_filenames) {
 							}elsif ((!defined $right_start_position) and (defined $left_star_position)){
 								my $end=$end_right-($left_star_position * 3+3);
 
-								my $seq_string=substr($sequence,($start2-60),120);
+								my $right_star=$start_right-$right_star_position * 3;
+								#my $seq_string=substr($sequence,($start2-60),120);
+								my $seq_string=substr($sequence,($start2-60),(60+length($right_star-$start2)));
 								my $length_seq_string=length $seq_string;
 								my $rev_seq_string=reverse $seq_string;
 								$rev_seq_string=~ tr/ACGTacgt/TGCAtgca/;
@@ -3175,9 +3179,11 @@ while (@sequence_filenames) {
 							}elsif ((!defined $left_start_position) and (defined $right_star_position)){
 								my $end=$end_left+($right_star_position * 3+3);
 
+								my $left_star=$start_left+$left_star_position * 3;
 								my $seq_string;
 								if ($start2 >= 61) {
-									$seq_string=substr($sequence,($start2-61),120);
+									#$seq_string=substr($sequence,($start2-61),120);
+									$seq_string=substr($sequence,($left_star),(length($start2-$left_star)+60));
 								}elsif ($start2 < 61) {
 									$seq_string=substr($sequence,0,120);
 								}
@@ -3532,7 +3538,9 @@ while (@sequence_filenames) {
 							}elsif ((!defined $right_start_position) and (defined $left_star_position)){
 								my $end=$end_right-($left_star_position * 3+3);
 
-								my $seq_string=substr($sequence,($start2-60),120);
+								my $right_star=$start_right-$right_star_position * 3;
+								#my $seq_string=substr($sequence,($start2-60),120);
+								my $seq_string=substr($sequence,($start2-60),(60+length($right_star-$start2)));
 								my $length_seq_string=length $seq_string;
 								my $rev_seq_string=reverse $seq_string;
 								$rev_seq_string=~ tr/ACGTacgt/TGCAtgca/;
