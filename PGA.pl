@@ -3760,48 +3760,52 @@ while (@sequence_filenames) {
 							}
 
 							if ((defined $start1_new) and (defined $end2_new) and (defined $start3_new) and (defined $end1_new)) {
-								print $out_annotation "     "."gene"."            ".$start1_new."..".$end1_new."\n";
-								print $out_annotation "                     "."/gene=\"$name\""."\n";
-								print $out_annotation "     "."tRNA"."            "."join(".$start1_new."..".$end2_new.",".$start3_new."..".$end1_new.")"."\n";
-								print $out_annotation "                     "."/gene=\"$name\""."\n";
-								print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-								$gene_number_seq{$name}++;
-								my ($S1,$E1,$E2,$S3);
-								my $string=substr($sequence,($start1_new-1),($end1_new-$start1_new+1));
-								my $lengths=length $string;
-								my $L1=$end2_new-$start1_new+1;
-								my $L2=$end1_new-$start3_new+1;
-								my $rev_coms=reverse $sequence;
-								$rev_coms=~ tr/ACGTacgt/TGCAtgca/;
-								for (my $i=0;$i<($length_cp-$lengths);$i+=1){
-									my $repeat=substr ($sequence,$i,$lengths);
-									if (($repeat eq $string) and (($i+1) ne $start1_new)) {
-										$S1=$i+1;
-										$E2=$i+$L1-1+1;
-										$S3=$i+$lengths-$L2+1;
-										$E1=$i+$lengths-1+1;
-										print $out_annotation "     "."gene"."            ".$S1."..".$E1."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."tRNA"."            "."join(".$S1."..".$E2.",".$S3."..".$E1.")"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										$gene_number_seq{$name}++;
+								if (abs($end1_new-$start1_new) < 3000) {
+									print $out_annotation "     "."gene"."            ".$start1_new."..".$end1_new."\n";
+									print $out_annotation "                     "."/gene=\"$name\""."\n";
+									print $out_annotation "     "."tRNA"."            "."join(".$start1_new."..".$end2_new.",".$start3_new."..".$end1_new.")"."\n";
+									print $out_annotation "                     "."/gene=\"$name\""."\n";
+									print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+									$gene_number_seq{$name}++;
+									my ($S1,$E1,$E2,$S3);
+									my $string=substr($sequence,($start1_new-1),($end1_new-$start1_new+1));
+									my $lengths=length $string;
+									my $L1=$end2_new-$start1_new+1;
+									my $L2=$end1_new-$start3_new+1;
+									my $rev_coms=reverse $sequence;
+									$rev_coms=~ tr/ACGTacgt/TGCAtgca/;
+									for (my $i=0;$i<($length_cp-$lengths);$i+=1){
+										my $repeat=substr ($sequence,$i,$lengths);
+										if (($repeat eq $string) and (($i+1) ne $start1_new)) {
+											$S1=$i+1;
+											$E2=$i+$L1-1+1;
+											$S3=$i+$lengths-$L2+1;
+											$E1=$i+$lengths-1+1;
+											print $out_annotation "     "."gene"."            ".$S1."..".$E1."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "     "."tRNA"."            "."join(".$S1."..".$E2.",".$S3."..".$E1.")"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											$gene_number_seq{$name}++;
+										}
 									}
-								}
-								for (my $i=0;$i<($length_cp-$lengths);$i+=1){
-									my $repeat=substr ($rev_coms,$i,$lengths);
-									if ($repeat eq $string) {
-										$S1=$length_cp-$i-1+1;
-										$E2=$length_cp-$i-$L1+1;
-										$S3=$length_cp-$i-$lengths-1+$L2+1;
-										$E1=$length_cp-$i-$lengths+1;
-										print $out_annotation "     "."gene"."            "."complement(".$E1."..".$S1.")"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."tRNA"."            "."complement(join(".$E1."..".$S3.",".$E2."..".$S1."))"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										$gene_number_seq{$name}++;
+									for (my $i=0;$i<($length_cp-$lengths);$i+=1){
+										my $repeat=substr ($rev_coms,$i,$lengths);
+										if ($repeat eq $string) {
+											$S1=$length_cp-$i-1+1;
+											$E2=$length_cp-$i-$L1+1;
+											$S3=$length_cp-$i-$lengths-1+$L2+1;
+											$E1=$length_cp-$i-$lengths+1;
+											print $out_annotation "     "."gene"."            "."complement(".$E1."..".$S1.")"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "     "."tRNA"."            "."complement(join(".$E1."..".$S3.",".$E2."..".$S1."))"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											$gene_number_seq{$name}++;
+										}
 									}
+								}elsif (abs($end1_new-$start1_new) >= 3000) {
+									print $logfile "Warning: $name (positive one-intron tRNA) has not been annotated due to two far exons!\n";
 								}
 							}elsif ((!defined $start1_new) or (!defined $end2_new) or (!defined $start3_new) or (!defined $end1_new)) {
 								print $out_annotation "     "."gene"."            ".$start1."..".$end1."\n";
@@ -3877,48 +3881,52 @@ while (@sequence_filenames) {
 							}
 
 							if ((defined $start1_new) and (defined $end2_new) and (defined $start3_new) and (defined $end1_new)) {
-								print $out_annotation "     "."gene"."            "."complement(".$end1_new."..".$start1_new.")"."\n";
-								print $out_annotation "                     "."/gene=\"$name\""."\n";
-								print $out_annotation "     "."tRNA"."            "."complement(join(".$end1_new."..".$start3_new.",".$end2_new."..".$start1_new."))"."\n";
-								print $out_annotation "                     "."/gene=\"$name\""."\n";
-								print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-								$gene_number_seq{$name}++;
-								my ($S1,$E1,$E2,$S3);
-								my $string=substr($sequence,($end1_new-1),($start1_new-$end1_new+1));
-								my $lengths=length $string;
-								my $L1=$start1_new-$end2_new+1;
-								my $L2=$start3_new-$end1_new+1;
-								my $rev_coms=reverse $sequence;
-								$rev_coms=~ tr/ACGTacgt/TGCAtgca/;
-								for (my $i=0;$i<($length_cp-$lengths);$i+=1){
-									my $repeat=substr ($sequence,$i,$lengths);
-									if (($repeat eq $string) and (($i+1) ne $end1_new)) {
-										$E1=$i+1;
-										$S3=$i+$L2-1+1;
-										$E2=$i+$lengths-$L1+1;
-										$S1=$i+$lengths-1+1;
-										print $out_annotation "     "."gene"."            "."complement(".$E1."..".$S1.")"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."tRNA"."            "."complement(join(".$E1."..".$S3.",".$E2."..".$S1."))"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										$gene_number_seq{$name}++;
+								if (abs($start1_new-$end1_new) < 3000) {
+									print $out_annotation "     "."gene"."            "."complement(".$end1_new."..".$start1_new.")"."\n";
+									print $out_annotation "                     "."/gene=\"$name\""."\n";
+									print $out_annotation "     "."tRNA"."            "."complement(join(".$end1_new."..".$start3_new.",".$end2_new."..".$start1_new."))"."\n";
+									print $out_annotation "                     "."/gene=\"$name\""."\n";
+									print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+									$gene_number_seq{$name}++;
+									my ($S1,$E1,$E2,$S3);
+									my $string=substr($sequence,($end1_new-1),($start1_new-$end1_new+1));
+									my $lengths=length $string;
+									my $L1=$start1_new-$end2_new+1;
+									my $L2=$start3_new-$end1_new+1;
+									my $rev_coms=reverse $sequence;
+									$rev_coms=~ tr/ACGTacgt/TGCAtgca/;
+									for (my $i=0;$i<($length_cp-$lengths);$i+=1){
+										my $repeat=substr ($sequence,$i,$lengths);
+										if (($repeat eq $string) and (($i+1) ne $end1_new)) {
+											$E1=$i+1;
+											$S3=$i+$L2-1+1;
+											$E2=$i+$lengths-$L1+1;
+											$S1=$i+$lengths-1+1;
+											print $out_annotation "     "."gene"."            "."complement(".$E1."..".$S1.")"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "     "."tRNA"."            "."complement(join(".$E1."..".$S3.",".$E2."..".$S1."))"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											$gene_number_seq{$name}++;
+										}
 									}
-								}
-								for (my $i=0;$i<($length_cp-$lengths);$i+=1){
-									my $repeat=substr ($rev_coms,$i,$lengths);
-									if ($repeat eq $string) {
-										$E1=$length_cp-$i-1+1;
-										$S3=$length_cp-$i-$L2+1;
-										$E2=$length_cp-$i-$lengths-1+$L1+1;
-										$S1=$length_cp-$i-$lengths+1;
-										print $out_annotation "     "."gene"."            ".$S1."..".$E1."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."tRNA"."            "."join(".$S1."..".$E2.",".$S3."..".$E1.")"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										$gene_number_seq{$name}++;
+									for (my $i=0;$i<($length_cp-$lengths);$i+=1){
+										my $repeat=substr ($rev_coms,$i,$lengths);
+										if ($repeat eq $string) {
+											$E1=$length_cp-$i-1+1;
+											$S3=$length_cp-$i-$L2+1;
+											$E2=$length_cp-$i-$lengths-1+$L1+1;
+											$S1=$length_cp-$i-$lengths+1;
+											print $out_annotation "     "."gene"."            ".$S1."..".$E1."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "     "."tRNA"."            "."join(".$S1."..".$E2.",".$S3."..".$E1.")"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											$gene_number_seq{$name}++;
+										}
 									}
+								}elsif (abs($start1_new-$end1_new) >= 3000) {
+									print $logfile "Warning: $name (negative one-intron tRNA) has not been annotated due to two far exons!\n";
 								}
 							}elsif ((!defined $start1_new) or (!defined $end2_new) or (!defined $start3_new) or (!defined $end1_new)) {
 								print $out_annotation "     "."gene"."            "."complement(".$end1."..".$start1.")"."\n";
@@ -3996,48 +4004,52 @@ while (@sequence_filenames) {
 							}
 
 							if ((defined $start2_new) and (defined $end2_new) and (defined $start3_new) and (defined $end3_new)) {
-								print $out_annotation "     "."gene"."            ".$start2_new."..".$end3_new."\n";
-								print $out_annotation "                     "."/gene=\"$name\""."\n";
-								print $out_annotation "     "."tRNA"."            "."join(".$start2_new."..".$end2_new.",".$start3_new."..".$end3_new.")"."\n";
-								print $out_annotation "                     "."/gene=\"$name\""."\n";
-								print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-								$gene_number_seq{$name}++;
-								my ($S1,$E1,$E2,$S3);
-								my $string=substr($sequence,($start2_new-1),($end3_new-$start2_new+1));
-								my $lengths=length $string;
-								my $L1=$end2_new-$start2_new+1;
-								my $L2=$end3_new-$start3_new+1;
-								my $rev_coms=reverse $sequence;
-								$rev_coms=~ tr/ACGTacgt/TGCAtgca/;
-								for (my $i=0;$i<($length_cp-$lengths);$i+=1){
-									my $repeat=substr ($sequence,$i,$lengths);
-									if (($repeat eq $string) and (($i+1) ne $start2_new)) {
-										$S1=$i+1;
-										$E2=$i+$L1-1+1;
-										$S3=$i+$lengths-$L2+1;
-										$E1=$i+$lengths-1+1;
-										print $out_annotation "     "."gene"."            ".$S1."..".$E1."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."tRNA"."            "."join(".$S1."..".$E2.",".$S3."..".$E1.")"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										$gene_number_seq{$name}++;
+								if (abs($end3_new-$start2_new) < 3000) {
+									print $out_annotation "     "."gene"."            ".$start2_new."..".$end3_new."\n";
+									print $out_annotation "                     "."/gene=\"$name\""."\n";
+									print $out_annotation "     "."tRNA"."            "."join(".$start2_new."..".$end2_new.",".$start3_new."..".$end3_new.")"."\n";
+									print $out_annotation "                     "."/gene=\"$name\""."\n";
+									print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+									$gene_number_seq{$name}++;
+									my ($S1,$E1,$E2,$S3);
+									my $string=substr($sequence,($start2_new-1),($end3_new-$start2_new+1));
+									my $lengths=length $string;
+									my $L1=$end2_new-$start2_new+1;
+									my $L2=$end3_new-$start3_new+1;
+									my $rev_coms=reverse $sequence;
+									$rev_coms=~ tr/ACGTacgt/TGCAtgca/;
+									for (my $i=0;$i<($length_cp-$lengths);$i+=1){
+										my $repeat=substr ($sequence,$i,$lengths);
+										if (($repeat eq $string) and (($i+1) ne $start2_new)) {
+											$S1=$i+1;
+											$E2=$i+$L1-1+1;
+											$S3=$i+$lengths-$L2+1;
+											$E1=$i+$lengths-1+1;
+											print $out_annotation "     "."gene"."            ".$S1."..".$E1."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "     "."tRNA"."            "."join(".$S1."..".$E2.",".$S3."..".$E1.")"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											$gene_number_seq{$name}++;
+										}
 									}
-								}
-								for (my $i=0;$i<($length_cp-$lengths);$i+=1){
-									my $repeat=substr ($rev_coms,$i,$lengths);
-									if ($repeat eq $string) {
-										$S1=$length_cp-$i-1+1;
-										$E2=$length_cp-$i-$L1+1;
-										$S3=$length_cp-$i-$lengths-1+$L2+1;
-										$E1=$length_cp-$i-$lengths+1;
-										print $out_annotation "     "."gene"."            "."complement(".$E1."..".$S1.")"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."tRNA"."            "."complement(join(".$E1."..".$S3.",".$E2."..".$S1."))"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										$gene_number_seq{$name}++;
+									for (my $i=0;$i<($length_cp-$lengths);$i+=1){
+										my $repeat=substr ($rev_coms,$i,$lengths);
+										if ($repeat eq $string) {
+											$S1=$length_cp-$i-1+1;
+											$E2=$length_cp-$i-$L1+1;
+											$S3=$length_cp-$i-$lengths-1+$L2+1;
+											$E1=$length_cp-$i-$lengths+1;
+											print $out_annotation "     "."gene"."            "."complement(".$E1."..".$S1.")"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "     "."tRNA"."            "."complement(join(".$E1."..".$S3.",".$E2."..".$S1."))"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											$gene_number_seq{$name}++;
+										}
 									}
+								}elsif (abs($end3_new-$start2_new) >= 3000) {
+									print $logfile "Warning: $name (positive one-intron tRNA) has not been annotated due to two far exons!\n";
 								}
 							}elsif ((!defined $start2_new) or (!defined $end2_new) or (!defined $start3_new) or (!defined $end3_new)) {
 								print $logfile "Warning: $name (positive one-intron tRNA) need to be checked due to non-identical boundary with reference!\n";
@@ -4115,48 +4127,52 @@ while (@sequence_filenames) {
 							}
 
 							if ((defined $start2_new) and (defined $end2_new) and (defined $start3_new) and (defined $end3_new)) {
-								print $out_annotation "     "."gene"."            "."complement(".$end3_new."..".$start2_new.")"."\n";
-								print $out_annotation "                     "."/gene=\"$name\""."\n";
-								print $out_annotation "     "."tRNA"."            "."complement(join(".$end3_new."..".$start3_new.",".$end2_new."..".$start2_new."))"."\n";
-								print $out_annotation "                     "."/gene=\"$name\""."\n";
-								print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-								$gene_number_seq{$name}++;
-								my ($S1,$E1,$E2,$S3);
-								my $string=substr($sequence,($end3_new-1),($start2_new-$end3_new+1));
-								my $lengths=length $string;
-								my $L1=$start2_new-$end2_new+1;
-								my $L2=$start3_new-$end3_new+1;
-								my $rev_coms=reverse $sequence;
-								$rev_coms=~ tr/ACGTacgt/TGCAtgca/;
-								for (my $i=0;$i<($length_cp-$lengths);$i+=1){
-									my $repeat=substr ($sequence,$i,$lengths);
-									if (($repeat eq $string) and (($i+1) ne $end3_new)) {
-										$E1=$i+1;
-										$S3=$i+$L2-1+1;
-										$E2=$i+$lengths-$L1+1;
-										$S1=$i+$lengths-1+1;
-										print $out_annotation "     "."gene"."            "."complement(".$E1."..".$S1.")"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."tRNA"."            "."complement(join(".$E1."..".$S3.",".$E2."..".$S1."))"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										$gene_number_seq{$name}++;
+								if (abs($start2_new-$end3_new) < 3000) {
+									print $out_annotation "     "."gene"."            "."complement(".$end3_new."..".$start2_new.")"."\n";
+									print $out_annotation "                     "."/gene=\"$name\""."\n";
+									print $out_annotation "     "."tRNA"."            "."complement(join(".$end3_new."..".$start3_new.",".$end2_new."..".$start2_new."))"."\n";
+									print $out_annotation "                     "."/gene=\"$name\""."\n";
+									print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+									$gene_number_seq{$name}++;
+									my ($S1,$E1,$E2,$S3);
+									my $string=substr($sequence,($end3_new-1),($start2_new-$end3_new+1));
+									my $lengths=length $string;
+									my $L1=$start2_new-$end2_new+1;
+									my $L2=$start3_new-$end3_new+1;
+									my $rev_coms=reverse $sequence;
+									$rev_coms=~ tr/ACGTacgt/TGCAtgca/;
+									for (my $i=0;$i<($length_cp-$lengths);$i+=1){
+										my $repeat=substr ($sequence,$i,$lengths);
+										if (($repeat eq $string) and (($i+1) ne $end3_new)) {
+											$E1=$i+1;
+											$S3=$i+$L2-1+1;
+											$E2=$i+$lengths-$L1+1;
+											$S1=$i+$lengths-1+1;
+											print $out_annotation "     "."gene"."            "."complement(".$E1."..".$S1.")"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "     "."tRNA"."            "."complement(join(".$E1."..".$S3.",".$E2."..".$S1."))"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											$gene_number_seq{$name}++;
+										}
 									}
-								}
-								for (my $i=0;$i<($length_cp-$lengths);$i+=1){
-									my $repeat=substr ($rev_coms,$i,$lengths);
-									if ($repeat eq $string) {
-										$E1=$length_cp-$i-1+1;
-										$S3=$length_cp-$i-$L2+1;
-										$E2=$length_cp-$i-$lengths-1+$L1+1;
-										$S1=$length_cp-$i-$lengths+1;
-										print $out_annotation "     "."gene"."            ".$S1."..".$E1."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."tRNA"."            "."join(".$S1."..".$E2.",".$S3."..".$E1.")"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										$gene_number_seq{$name}++;
+									for (my $i=0;$i<($length_cp-$lengths);$i+=1){
+										my $repeat=substr ($rev_coms,$i,$lengths);
+										if ($repeat eq $string) {
+											$E1=$length_cp-$i-1+1;
+											$S3=$length_cp-$i-$L2+1;
+											$E2=$length_cp-$i-$lengths-1+$L1+1;
+											$S1=$length_cp-$i-$lengths+1;
+											print $out_annotation "     "."gene"."            ".$S1."..".$E1."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "     "."tRNA"."            "."join(".$S1."..".$E2.",".$S3."..".$E1.")"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											$gene_number_seq{$name}++;
+										}
 									}
+								}elsif (abs($start2_new-$end3_new) >= 3000) {
+									print $logfile "Warning: $name (negative one-intron tRNA) has not been annotated due to two far exons!\n";
 								}
 							}elsif ((!defined $start2_new) or (!defined $end2_new) or (!defined $start3_new) or (!defined $end3_new)) {
 								print $logfile "Warning: $name (negative one-intron tRNA) need to be checked due to non-identical boundary with reference!\n";
@@ -4691,7 +4707,7 @@ while (@sequence_filenames) {
 										}
 									}
 
-									if (abs($end3-$start2) < 6000) {
+									if (abs($end3-$start2) < 4000) {
 										if (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/))) {# spliced exon,not 3x or have stop codon
 											print $out_annotation "     "."gene"."            ".$start1_new."..".$end1."\n";
 											print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -4760,7 +4776,7 @@ while (@sequence_filenames) {
 										if (($ticks == 1) and (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/)))) {
 											print $logfile "Warning: $name (positive one-intron PCG) intron-exon boundary need to be checked!\n";
 										}
-									}elsif (abs($end3-$start2) > 6000) {
+									}elsif (abs($end3-$start2) >= 4000) {
 										print $logfile "Warning: $name (positive one-intron PCG) has not been annotated due to two far exons!\n";
 									}
 								}elsif((grep {$_=~ /\*/} @aa_exon) or (($forward_start_codon ne "ATG") and ($forward_start_codon ne "GTG")) or (($forward_stop_codon ne "TAA") and ($forward_stop_codon ne "TAG") and ($forward_stop_codon ne "TGA"))){# non-standard start or stop codon for _gene
@@ -5072,7 +5088,7 @@ while (@sequence_filenames) {
 											}
 										}
 
-										if (abs($end3-$start2) < 6000) {
+										if (abs($end3-$start2) < 4000) {
 											if (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/))) {# spliced exon,not 3x or have stop codon
 												print $out_annotation "     "."gene"."            ".$start_new."..".$end."\n";
 												print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -5141,7 +5157,7 @@ while (@sequence_filenames) {
 											if (($ticks == 1) and (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/)))) {
 												print $logfile "Warning: $name (positive one-intron PCG) intron-exon boundary need to be checked!\n";
 											}
-										}elsif (abs($end3-$start2) > 6000) {
+										}elsif (abs($end3-$start2) >= 4000) {
 											print $logfile "Warning: $name (positive one-intron PCG) has not been annotated due to two far exons!\n";
 										}
 									}elsif ((!defined $left_start_position) and (defined $right_star_position)){
@@ -5336,7 +5352,7 @@ while (@sequence_filenames) {
 											}
 										}
 
-										if (abs($end3-$start2) < 6000) {
+										if (abs($end3-$start2) < 4000) {
 											if (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/))) {# spliced exon,not 3x or have stop codon
 												print $out_annotation "     "."gene"."            ".$start1_new."..".$end."\n";
 												print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -5407,7 +5423,7 @@ while (@sequence_filenames) {
 											}elsif ($ticks == 0) {
 												print $logfile "Warning: $name (positive one-intron PCG) has alternative start codon!\n" if ($name ne "rps12+2");
 											}
-										}elsif (abs($end3-$start2) > 6000) {
+										}elsif (abs($end3-$start2) >= 4000) {
 											print $logfile "Warning: $name (positive one-intron PCG) has not been annotated due to two far exons!\n";
 										}
 									}else{
@@ -5838,7 +5854,7 @@ while (@sequence_filenames) {
 										}
 									}
 
-									if (abs($start2-$end3) < 6000) {
+									if (abs($start2-$end3) < 4000) {
 										if (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/))) {# spliced exon,not 3x or have stop codon
 											print $out_annotation "     "."gene"."            "."complement(".$end1."..".$start1_new.")"."\n";
 											print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -5909,7 +5925,7 @@ while (@sequence_filenames) {
 										if (($ticks == 1) and (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/)))) {
 											print $logfile "Warning: $name (negative one-intron PCG) intron-exon boundary need to be checked!\n";
 										}
-									}elsif (abs($start2-$end3) > 6000) {
+									}elsif (abs($start2-$end3) >= 4000) {
 										print $logfile "Warning: $name (negative one-intron PCG) has not been annotated due to two far exons!\n";
 									}
 								}elsif((grep {$_=~ /\*/} @aa_exon) or (($reverse_start_codon ne "ATG") and ($reverse_start_codon ne "GTG")) or (($reverse_stop_codon ne "TAA") and ($reverse_stop_codon ne "TAG") and ($reverse_stop_codon ne "TGA"))){# non-standard start or stop codon for _gene
@@ -6238,7 +6254,7 @@ while (@sequence_filenames) {
 											}
 										}
 
-										if (abs($start2-$end3) < 6000) {
+										if (abs($start2-$end3) < 4000) {
 											if (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/))) {# spliced exon,not 3x or have stop codon
 												print $out_annotation "     "."gene"."            "."complement(".$end."..".$start_new.")\n";
 												print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -6309,7 +6325,7 @@ while (@sequence_filenames) {
 											if (($ticks == 1) and (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/)))) {
 												print $logfile "Warning: $name (negative one-intron PCG) intron-exon boundary need to be checked!\n";
 											}
-										}elsif (abs($start2-$end3) > 6000) {
+										}elsif (abs($start2-$end3) >= 4000) {
 											print $logfile "Warning: $name (negative one-intron PCG) has not been annotated due to two far exons!\n";
 										}
 									}elsif ((!defined $right_start_position) and (defined $left_star_position)){
@@ -6512,7 +6528,7 @@ while (@sequence_filenames) {
 											}
 										}
 
-										if (abs($start2-$end3) < 6000) {
+										if (abs($start2-$end3) < 4000) {
 											if (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/))) {# spliced exon,not 3x or have stop codon
 												print $out_annotation "     "."gene"."            "."complement(".$end."..".$start1_new.")\n";
 												print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -6585,7 +6601,7 @@ while (@sequence_filenames) {
 											}elsif ($ticks == 0) {
 												print $logfile "Warning: $name (negative one-intron PCG) has alternative start codon!\n" if ($name ne "rps12+2");
 											}
-										}elsif (abs($start2-$end3) > 6000) {
+										}elsif (abs($start2-$end3) >= 4000) {
 											print $logfile "Warning: $name (negative one-intron PCG) has not been annotated due to two far exons!\n";
 										}
 									}else{
@@ -7007,7 +7023,7 @@ while (@sequence_filenames) {
 										}
 									}
 
-									if (abs($end3-$start2) < 6000) {
+									if (abs($end3-$start2) < 4000) {
 										if (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/))) {# spliced exon,not 3x or have stop codon
 											print $out_annotation "     "."gene"."            ".$start2_new."..".$end3."\n";
 											print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -7076,7 +7092,7 @@ while (@sequence_filenames) {
 										if (($ticks == 1) and (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/)))) {
 											print $logfile "Warning: $name (positive one-intron PCG) intron-exon boundary need to be checked!\n";
 										}
-									}elsif (abs($end3-$start2) > 6000) {
+									}elsif (abs($end3-$start2) >= 4000) {
 										print $logfile "Warning: $name (positive one-intron PCG) has not been annotated due to two far exons!\n";
 									}
 								}elsif((grep {$_=~ /\*/} @aa_exon) or (($forward_start_codon ne "ATG") and ($forward_start_codon ne "GTG")) or (($forward_stop_codon ne "TAA") and ($forward_stop_codon ne "TAG") and ($forward_stop_codon ne "TGA"))){# non-standard start or stop codon for _gene
@@ -7387,7 +7403,7 @@ while (@sequence_filenames) {
 											}
 										}
 
-										if (abs($end3-$start2) < 6000) {
+										if (abs($end3-$start2) < 4000) {
 											if (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/))) {# spliced exon,not 3x or have stop codon
 												print $out_annotation "     "."gene"."            ".$start_new."..".$end."\n";
 												print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -7456,7 +7472,7 @@ while (@sequence_filenames) {
 											if (($ticks == 1) and (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/)))) {
 												print $logfile "Warning: $name (positive one-intron PCG) intron-exon boundary need to be checked!\n";
 											}
-										}elsif (abs($end3-$start2) > 6000) {
+										}elsif (abs($end3-$start2) >= 4000) {
 											print $logfile "Warning: $name (positive one-intron PCG) has not been annotated due to two far exons!\n";
 										}
 									}elsif ((!defined $left_start_position) and (defined $right_star_position)){
@@ -7651,7 +7667,7 @@ while (@sequence_filenames) {
 											}
 										}
 
-										if (abs($end3-$start2) < 6000) {
+										if (abs($end3-$start2) < 4000) {
 											if (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/))) {# spliced exon,not 3x or have stop codon
 												print $out_annotation "     "."gene"."            ".$start2_new."..".$end."\n";
 												print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -7722,7 +7738,7 @@ while (@sequence_filenames) {
 											}elsif ($ticks == 0) {
 												print $logfile "Warning: $name (positive one-intron PCG) has alternative start codon!\n" if ($name ne "rps12+2");
 											}
-										}elsif (abs($end3-$start2) > 6000) {
+										}elsif (abs($end3-$start2) >= 4000) {
 											print $logfile "Warning: $name (positive one-intron PCG) has not been annotated due to two far exons!\n";
 										}
 									}else{
@@ -8153,7 +8169,7 @@ while (@sequence_filenames) {
 										}
 									}
 
-									if (abs($start2-$end3) < 6000) {
+									if (abs($start2-$end3) < 4000) {
 										if (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/))) {# spliced exon,not 3x or have stop codon
 											print $out_annotation "     "."gene"."            "."complement(".$end3."..".$start2_new.")"."\n";
 											print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -8222,7 +8238,7 @@ while (@sequence_filenames) {
 										if (($ticks == 1) and (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/)))) {
 											print $logfile "Warning: $name (negative one-intron PCG) need to be checked!\n";
 										}
-									}elsif (abs($start2-$end3) > 6000) {
+									}elsif (abs($start2-$end3) >= 4000) {
 										print $logfile "Warning: $name (negative one-intron PCG) has not been annotated due to two far exons!\n";
 									}
 								}elsif((grep {$_=~ /\*/} @aa_exon) or (($reverse_start_codon ne "ATG") and ($reverse_start_codon ne "GTG")) or (($reverse_stop_codon ne "TAA") and ($reverse_stop_codon ne "TAG") and ($reverse_stop_codon ne "TGA"))){# non-standard start or stop codon for _gene
@@ -8551,7 +8567,7 @@ while (@sequence_filenames) {
 											}
 										}
 
-										if (abs($start2-$end3) < 6000) {
+										if (abs($start2-$end3) < 4000) {
 											if (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/))) {# spliced exon,not 3x or have stop codon
 												print $out_annotation "     "."gene"."            "."complement(".$end."..".$start_new.")\n";
 												print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -8620,7 +8636,7 @@ while (@sequence_filenames) {
 											if (($ticks == 1) and (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/)))) {
 												print $logfile "Warning: $name (negative one-intron PCG) intron-exon boundary need to be checked!\n";
 											}
-										}elsif (abs($start2-$end3) > 6000) {
+										}elsif (abs($start2-$end3) >= 4000) {
 											print $logfile "Warning: $name (negative one-intron PCG) has not been annotated due to two far exons!\n";
 										}
 									}elsif ((!defined $right_start_position) and (defined $left_star_position)){
@@ -8823,7 +8839,7 @@ while (@sequence_filenames) {
 											}
 										}
 
-										if (abs($start2-$end3) < 6000) {
+										if (abs($start2-$end3) < 4000) {
 											if (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/))) {# spliced exon,not 3x or have stop codon
 												print $out_annotation "     "."gene"."            "."complement(".$end."..".$start2_new.")\n";
 												print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -8896,7 +8912,7 @@ while (@sequence_filenames) {
 											}elsif ($ticks == 0) {
 												print $logfile "Warning: $name (negative one-intron PCG) has alternative start codon!\n" if ($name ne "rps12+2");
 											}
-										}elsif (abs($start2-$end3) > 6000) {
+										}elsif (abs($start2-$end3) >= 4000) {
 											print $logfile "Warning: $name (negative one-intron PCG) has not been annotated due to two far exons!\n";
 										}
 									}else{
