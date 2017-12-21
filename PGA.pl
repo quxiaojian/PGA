@@ -4728,6 +4728,7 @@ while (@sequence_filenames) {
 											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (positive one-intron PCG) lost intron!\n";
 										}
 
 										my ($S1,$E1,$E2,$S3);
@@ -5109,6 +5110,7 @@ while (@sequence_filenames) {
 												print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 												#print $out_annotation "                     "."/translation=\"$aa\""."\n";
 												$gene_number_seq{$name}++;
+												print $logfile "Warning: $name (positive one-intron PCG) lost intron!\n";
 											}
 
 											my ($S1,$E1,$E2,$S3);
@@ -5373,6 +5375,7 @@ while (@sequence_filenames) {
 												print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 												#print $out_annotation "                     "."/translation=\"$aa\""."\n";
 												$gene_number_seq{$name}++;
+												print $logfile "Warning: $name (positive one-intron PCG) lost intron!\n";
 											}
 
 											my ($S1,$E1,$E2,$S3);
@@ -5875,6 +5878,7 @@ while (@sequence_filenames) {
 											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (negative one-intron PCG) lost intron!\n";
 										}
 
 										my ($S1,$E1,$E2,$S3);
@@ -6275,6 +6279,7 @@ while (@sequence_filenames) {
 												print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 												#print $out_annotation "                     "."/translation=\"$aa\""."\n";
 												$gene_number_seq{$name}++;
+												print $logfile "Warning: $name (negative one-intron PCG) lost intron!\n";
 											}
 
 											my ($S1,$E1,$E2,$S3);
@@ -6549,6 +6554,7 @@ while (@sequence_filenames) {
 												print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 												#print $out_annotation "                     "."/translation=\"$aa\""."\n";
 												$gene_number_seq{$name}++;
+												print $logfile "Warning: $name (negative one-intron PCG) lost intron!\n";
 											}
 
 											my ($S1,$E1,$E2,$S3);
@@ -7044,6 +7050,7 @@ while (@sequence_filenames) {
 											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (positive one-intron PCG) lost intron!\n";
 										}
 
 										my ($S1,$E1,$E2,$S3);
@@ -7424,6 +7431,7 @@ while (@sequence_filenames) {
 												print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 												#print $out_annotation "                     "."/translation=\"$aa\""."\n";
 												$gene_number_seq{$name}++;
+												print $logfile "Warning: $name (positive one-intron PCG) lost intron!\n";
 											}
 
 											my ($S1,$E1,$E2,$S3);
@@ -7688,6 +7696,7 @@ while (@sequence_filenames) {
 												print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 												#print $out_annotation "                     "."/translation=\"$aa\""."\n";
 												$gene_number_seq{$name}++;
+												print $logfile "Warning: $name (positive one-intron PCG) lost intron!\n";
 											}
 
 											my ($S1,$E1,$E2,$S3);
@@ -8190,6 +8199,7 @@ while (@sequence_filenames) {
 											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (negative one-intron PCG) lost intron!\n";
 										}
 
 										my ($S1,$E1,$E2,$S3);
@@ -8588,6 +8598,7 @@ while (@sequence_filenames) {
 												print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 												#print $out_annotation "                     "."/translation=\"$aa\""."\n";
 												$gene_number_seq{$name}++;
+												print $logfile "Warning: $name (negative one-intron PCG) lost intron!\n";
 											}
 
 											my ($S1,$E1,$E2,$S3);
@@ -8860,6 +8871,7 @@ while (@sequence_filenames) {
 												print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 												#print $out_annotation "                     "."/translation=\"$aa\""."\n";
 												$gene_number_seq{$name}++;
+												print $logfile "Warning: $name (negative one-intron PCG) lost intron!\n";
 											}
 
 											my ($S1,$E1,$E2,$S3);
@@ -9771,6 +9783,7 @@ while (@sequence_filenames) {
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 										$gene_number_seq{$name}++;
+										print $logfile "Warning: $name (positive two-intron PCG) lost two introns!\n";
 									}elsif ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length > 30) and ($intron2_length < 30))) {# (loss intron2)
 										print $out_annotation "     "."gene"."            ".$start1."..".$end1."\n";
 										print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -9781,6 +9794,7 @@ while (@sequence_filenames) {
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 										$gene_number_seq{$name}++;
+										print $logfile "Warning: $name (positive two-intron PCG) lost intron 2!\n";
 									}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length < 30) and ($intron2_length > 30))) {# (loss intron1)
 										print $out_annotation "     "."gene"."            ".$start1."..".$end1."\n";
 										print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -9791,6 +9805,7 @@ while (@sequence_filenames) {
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 										$gene_number_seq{$name}++;
+										print $logfile "Warning: $name (positive two-intron PCG) lost intron 1!\n";
 									}
 								#}elsif ((!defined $end2_new) or (!defined $start3_new) or (!defined $end3_new) or (!defined $start4_new)) {
 								}elsif (abs($end4-$start2) > 3000) {
@@ -10580,6 +10595,7 @@ while (@sequence_filenames) {
 											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (positive two-intron PCG) lost two introns!\n";
 										}elsif ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length > 30) and ($intron2_length < 30))) {# (loss intron2)
 											print $out_annotation "     "."gene"."            ".$start."..".$end."\n";
 											print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -10590,6 +10606,7 @@ while (@sequence_filenames) {
 											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (positive two-intron PCG) lost intron 2!\n";
 										}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length < 30) and ($intron2_length > 30))) {# (loss intron1)
 											print $out_annotation "     "."gene"."            ".$start."..".$end."\n";
 											print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -10600,6 +10617,7 @@ while (@sequence_filenames) {
 											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (positive two-intron PCG) lost intron 1!\n";
 										}
 									#}elsif ((!defined $end2_new) or (!defined $start3_new) or (!defined $end3_new) or (!defined $start4_new)) {
 									}elsif (abs($end4-$start2) > 3000) {
@@ -11380,6 +11398,7 @@ while (@sequence_filenames) {
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 										$gene_number_seq{$name}++;
+										print $logfile "Warning: $name (negative two-intron PCG) lost two introns!\n";
 									}elsif ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length > 30) and ($intron2_length < 30))) {# (loss intron2)
 										print $out_annotation "     "."gene"."            "."complement(".$end1."..".$start1.")\n";
 										print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -11390,6 +11409,7 @@ while (@sequence_filenames) {
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 										$gene_number_seq{$name}++;
+										print $logfile "Warning: $name (negative two-intron PCG) lost intron 2!\n";
 									}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length < 30) and ($intron2_length > 30))) {# (loss intron1)
 										print $out_annotation "     "."gene"."            "."complement(".$end1."..".$start1.")\n";
 										print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -11400,6 +11420,7 @@ while (@sequence_filenames) {
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 										$gene_number_seq{$name}++;
+										print $logfile "Warning: $name (negative two-intron PCG) lost intron 1!\n";
 									}
 								#}elsif ((!defined $end2_new) or (!defined $start3_new) or (!defined $end3_new) or (!defined $start4_new)) {
 								}elsif (abs($start2-$end4) > 3000) {
@@ -12227,6 +12248,7 @@ while (@sequence_filenames) {
 											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (negative two-intron PCG) lost two introns!\n";
 										}elsif ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length > 30) and ($intron2_length < 30))) {# (loss intron2)
 											print $out_annotation "     "."gene"."            "."complement(".$end."..".$start.")\n";
 											print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -12237,6 +12259,7 @@ while (@sequence_filenames) {
 											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (negative two-intron PCG) lost intron 2!\n";
 										}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length < 30) and ($intron2_length > 30))) {# (loss intron1)
 											print $out_annotation "     "."gene"."            "."complement(".$end."..".$start.")\n";
 											print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -12247,6 +12270,7 @@ while (@sequence_filenames) {
 											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (negative two-intron PCG) lost intron 1!\n";
 										}
 									#}elsif ((!defined $end2_new) or (!defined $start3_new) or (!defined $end3_new) or (!defined $start4_new)) {
 									}elsif (abs($start2-$end4) > 3000) {
@@ -12985,6 +13009,7 @@ while (@sequence_filenames) {
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 										$gene_number_seq{$name}++;
+										print $logfile "Warning: $name (positive two-intron PCG) lost two introns!\n";
 									}elsif ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length > 30) and ($intron2_length < 30))) {# (loss intron2)
 										print $out_annotation "     "."gene"."            ".$start2."..".$end4."\n";
 										print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -12995,6 +13020,7 @@ while (@sequence_filenames) {
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 										$gene_number_seq{$name}++;
+										print $logfile "Warning: $name (positive two-intron PCG) lost intron 2!\n";
 									}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length < 30) and ($intron2_length > 30))) {# (loss intron1)
 										print $out_annotation "     "."gene"."            ".$start2."..".$end4."\n";
 										print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -13005,6 +13031,7 @@ while (@sequence_filenames) {
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 										$gene_number_seq{$name}++;
+										print $logfile "Warning: $name (positive two-intron PCG) lost intron 1!\n";
 									}
 								#}elsif ((!defined $end2_new) or (!defined $start3_new) or (!defined $end3_new) or (!defined $start4_new)) {
 								}elsif (abs($end4-$start2) > 3000) {
@@ -13794,6 +13821,7 @@ while (@sequence_filenames) {
 											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (positive two-intron PCG) lost two introns!\n";
 										}elsif ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length > 30) and ($intron2_length < 30))) {# (loss intron2)
 											print $out_annotation "     "."gene"."            ".$start."..".$end."\n";
 											print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -13804,6 +13832,7 @@ while (@sequence_filenames) {
 											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (positive two-intron PCG) lost intron 2!\n";
 										}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length < 30) and ($intron2_length > 30))) {# (loss intron1)
 											print $out_annotation "     "."gene"."            ".$start."..".$end."\n";
 											print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -13814,6 +13843,7 @@ while (@sequence_filenames) {
 											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (positive two-intron PCG) lost intron 1!\n";
 										}
 									#}elsif ((!defined $end2_new) or (!defined $start3_new) or (!defined $end3_new) or (!defined $start4_new)) {
 									}elsif (abs($end4-$start2) > 3000) {
@@ -14594,6 +14624,7 @@ while (@sequence_filenames) {
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 										$gene_number_seq{$name}++;
+										print $logfile "Warning: $name (negative two-intron PCG) lost two introns!\n";
 									}elsif ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length > 30) and ($intron2_length < 30))) {# (loss intron2)
 										print $out_annotation "     "."gene"."            "."complement(".$end4."..".$start2.")\n";
 										print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -14604,6 +14635,7 @@ while (@sequence_filenames) {
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 										$gene_number_seq{$name}++;
+										print $logfile "Warning: $name (negative two-intron PCG) lost intron 2!\n";
 									}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length < 30) and ($intron2_length > 30))) {# (loss intron1)
 										print $out_annotation "     "."gene"."            "."complement(".$end4."..".$start2.")\n";
 										print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -14614,6 +14646,7 @@ while (@sequence_filenames) {
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 										$gene_number_seq{$name}++;
+										print $logfile "Warning: $name (negative two-intron PCG) lost intron 1!\n";
 									}
 								#}elsif ((!defined $end2_new) or (!defined $start3_new) or (!defined $end3_new) or (!defined $start4_new)) {
 								}elsif (abs($start2-$end4) > 3000) {
@@ -15440,6 +15473,7 @@ while (@sequence_filenames) {
 											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (negative two-intron PCG) lost two introns!\n";
 										}elsif ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length > 30) and ($intron2_length < 30))) {# (loss intron2)
 											print $out_annotation "     "."gene"."            "."complement(".$end."..".$start.")\n";
 											print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -15450,6 +15484,7 @@ while (@sequence_filenames) {
 											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (negative two-intron PCG) lost intron 2!\n";
 										}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length < 30) and ($intron2_length > 30))) {# (loss intron1)
 											print $out_annotation "     "."gene"."            "."complement(".$end."..".$start.")\n";
 											print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -15460,6 +15495,7 @@ while (@sequence_filenames) {
 											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (negative two-intron PCG) lost intron 1!\n";
 										}
 									#}elsif ((!defined $end2_new) or (!defined $start3_new) or (!defined $end3_new) or (!defined $start4_new)) {
 									}elsif (abs($start2-$end4) > 3000) {
