@@ -15611,9 +15611,9 @@ while (@sequence_filenames) {
 		}
 	}
 	$length_seq=keys %gene_number_seqs;
-	print $logfile "Gene numbers in reference: $length_ref\n";
-	print $logfile "Gene numbers in sequence: $length_seq\n";
-	print $logfile "Genes in reference but not in sequence are as follows:\n";
+	print $logfile "Total number of genes in the reference plastome(s): $length_ref.\n";
+	print $logfile "Total number of genes annotated in the target plastome: $length_seq.\n";
+	print $logfile "All gene names from the reference plastome(s) that were not annotated in the target plastome:\n";
 	foreach my $key2 (keys %gene_number_ref) {
 		if (!exists $gene_number_seqs{$key2}) {
 			print $logfile "$key2\t";
