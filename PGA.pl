@@ -8,11 +8,12 @@ use Data::Dumper;
 no warnings "uninitialized";
 
 my $global_options=&argument();
-my $reference_directory=&default("reference","ref");
-my $sequence_directory=&default("sequence","seq");
-my $similarity_value=&default("40","val");
+my $reference_directory=&default("reference","reference");
+my $sequence_directory=&default("target","target");
+my $similarity_value=&default("40","percent");
+my $inverted_repeat=&default("1000","ir");
 my $output_directory=&default("gb","out");
-my $type=&default("circular","type");
+my $type=&default("circular","form");
 my $log=&default("warning","log");
 
 print "\nPGA.pl Plastid Genome Annotation
@@ -1405,6 +1406,8 @@ while (@sequence_filenames) {
 
 	if ($osname eq "MSWin32") {
 		system ("makeblastdb.exe -in $output_fasta -hash_index -dbtype nucl");
+		#IRb and IRa
+		system ("blastn.exe -task blastn -query $output_fasta -db $output_fasta -outfmt 6 -perc_identity 99 -out IR_temp");
 		#-max_hsps 1(nucleotide,RNA,including _gene RNA and -1/-2_coding tRNA)
 		system ("blastn.exe -task blastn -query reference1.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference1");# -evalue 0.001 or 0.01
 		#-max_hsps 1(nucleotide,PCG,including _gene PCG)
@@ -1416,6 +1419,8 @@ while (@sequence_filenames) {
 		system ("tblastn.exe -task tblastn -query reference4.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference4");# -evalue 0.001 or 0.01 -qcov_hsp_perc 20?
 	}elsif ($osname eq "cygwin") {
 		system ("makeblastdb -in $output_fasta -hash_index -dbtype nucl");
+		#IRb and IRa
+		system ("blastn -task blastn -query $output_fasta -db $output_fasta -outfmt 6 -perc_identity 99 -out IR_temp");
 		#-max_hsps 1(nucleotide,RNA,including _gene RNA and -1/-2_coding tRNA)
 		system ("blastn -task blastn -query reference1.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference1");# -evalue 0.001 or 0.01
 		#-max_hsps 1(nucleotide,PCG,including _gene PCG)
@@ -1427,6 +1432,8 @@ while (@sequence_filenames) {
 		system ("tblastn -task tblastn -query reference4.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference4");# -evalue 0.001 or 0.01 -qcov_hsp_perc 20?
 	}elsif ($osname eq "linux") {
 		system ("makeblastdb -in $output_fasta -hash_index -dbtype nucl");
+		#IRb and IRa
+		system ("blastn -task blastn -query $output_fasta -db $output_fasta -outfmt 6 -perc_identity 99 -out IR_temp");
 		#-max_hsps 1(nucleotide,RNA,including _gene RNA and -1/-2_coding tRNA)
 		system ("blastn -task blastn -query reference1.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference1");# -evalue 0.001 or 0.01
 		#-max_hsps 1(nucleotide,PCG,including _gene PCG)
@@ -1438,6 +1445,8 @@ while (@sequence_filenames) {
 		system ("tblastn -task tblastn -query reference4.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference4");# -evalue 0.001 or 0.01 -qcov_hsp_perc 20?
 	}elsif ($osname eq "darwin") {
 		system ("makeblastdb -in $output_fasta -hash_index -dbtype nucl");
+		#IRb and IRa
+		system ("blastn -task blastn -query $output_fasta -db $output_fasta -outfmt 6 -perc_identity 99 -out IR_temp");
 		#-max_hsps 1(nucleotide,RNA,including _gene RNA and -1/-2_coding tRNA)
 		system ("blastn -task blastn -query reference1.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference1");# -evalue 0.001 or 0.01
 		#-max_hsps 1(nucleotide,PCG,including _gene PCG)
@@ -1456,6 +1465,37 @@ while (@sequence_filenames) {
 	print "$now5 || Finish blasting reference to sequence!";
 	print "\n";
 
+
+	#select IR region
+	open (my $input_IR,"<","IR_temp");
+	my %IR;
+	while (<$input_IR>) {
+		chomp;
+		my ($c1,$c2,$c3,$ir_length,$c5,$c6,$qs,$qe,$ss,$se,$c11,$c12)=split /\t/,$_;
+		if (($ir_length != $length_cp) and ($ir_length >= $inverted_repeat)) {
+			$IR{$ir_length}=$qs."\t".$qe."\t".$ss."\t".$se;
+		}
+	}
+	close $input_IR;
+	unlink ("IR_temp");
+	my (@IR_length,@boundary);
+	foreach my $key (sort {$b <=> $a} keys %IR) {
+		push @IR_length,$key;
+		push @boundary,$IR{$key};
+	}
+	my ($AA,$BB,$CC,$DD)=split /\t/,$boundary[0];
+	my ($JLB,$JSB,$JLA,$JSA);
+	if ($AA < $CC) {
+		$JLB=$AA;
+		$JSB=$BB;
+		$JLA=$CC;
+		$JSA=$DD;
+	}elsif ($AA > $CC) {
+		$JLB=$DD;
+		$JSB=$CC;
+		$JLA=$BB;
+		$JSA=$AA;
+	}
 
 	#set threshold of similarity value
 	open (my $in_bt_ref1,"<","blast_reference1");
@@ -1879,7 +1919,18 @@ while (@sequence_filenames) {
 	print $out_annotation "FEATURES             Location/Qualifiers"."\n";
 	print $out_annotation "     source          "."1..$length_cp"."\n";
 	print $out_annotation "                     /organism=\"$header\""."\n";
+	print $out_annotation "                     /organelle=\"plastid:chloroplast\""."\n";
 	print $out_annotation "                     /mol_type=\"genomic DNA\""."\n";
+
+	if (defined $JLB) {
+		print $out_annotation "     repeat_region   "."$JLB..$JSB"."\n";
+		print $out_annotation "                     /note=\"inverted repeat B\""."\n";
+		print $out_annotation "                     /rpt_type=\"inverted\""."\n";
+		print $out_annotation "     repeat_region   "."complement($JSA..$JLA)"."\n";
+		print $out_annotation "                     /note=\"inverted repeat A\""."\n";
+		print $out_annotation "                     /rpt_type=\"inverted\""."\n";
+	}
+
 
 	my %gene_number_seq;
 	foreach my $name (sort keys %hash){
@@ -15666,15 +15717,15 @@ sub gettime {
 }
 
 sub argument{
-	my @options=("help|h","ref|r:s","seq|s:s","val|v:i","out|o:s","type|t:s","log|l:s");
+	my @options=("help|h","reference|r:s","target|t:s","percent|p:i","ir|i:i","out|o:s","form|f:s","log|l:s");
 	my %options;
 	GetOptions(\%options,@options);
 	exec ("pod2usage $0") if ((keys %options)==0 or $options{'h'} or $options{'help'});
-	if(!exists $options{'ref'}){
+	if(!exists $options{'reference'}){
 		print "***ERROR: No reference directory is assigned!!!\n";
 		exec ("pod2usage $0");
-	}elsif(!exists $options{'seq'}){
-		print "***ERROR: No sequence directory is assigned!!!\n";
+	}elsif(!exists $options{'target'}){
+		print "***ERROR: No target directory is assigned!!!\n";
 		exec ("pod2usage $0");
 	}
 	return \%options;
@@ -15718,20 +15769,17 @@ __DATA__
 
 =head1 SYNOPSIS
 
-    PGA.pl -r -s [-v -o -t -l]
+    PGA.pl -r -t [-p -i -o -f -l]
     Copyright (C) 2017 Xiao-Jian Qu
     Please contact <quxiaojian@mail.kib.ac.cn>, if you have any bugs or questions.
 
-    [-h -help]       help information.
-    [-r -ref]        required: input directory name containing GenBank format file(s)
-                     that from the same or close families. (default: reference)
-    [-s -seq]        required: input directory name containing fasta format file(s)
-                     that you want to annotate. (default: sequence)
-    [-v -val]        optional: similarity value for BLAST results of amino acid. (default: 40)
-    [-o -out]        optional: output directory name. (default: gb)
-    [-t -type]       optional: circular or linear for fasta format file(s). (default: circular)
-    [-l -log]        optional: log file name containing warning information
-                     for annotated GenBank format file(s). (default: warning)
+    [-h -help]         help information.
+    [-r -reference]    required: input directory name containing GenBank-format file(s) that from the same or close families. (default: reference)
+    [-t -target]       required: input directory name containing FASTA-format file(s) that you want to annotate. (default: target)
+    [-p -percent]      optional: TBLASTN percent identity lower than this value will not be annotated. (default: 40)
+    [-i -ir]           optional: allowed minimum value for inverted-repeat (IR) length. (default: 1000)
+    [-o -out]          optional: output directory name. (default: gb)
+    [-f -form]         optional: circular or linear for FASTA-format file. (default: circular)
+    [-l -log]          optional: log file name containing warning information for annotated GenBank-format file(s). (default: warning)
 
 =cut
-
