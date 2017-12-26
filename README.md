@@ -10,7 +10,7 @@ Perl<br />
 Windows, Linux or Mac<br />
 
 **General Introduction to PGA**<br />
-PGA(Plastid Genome Annotation) is capable of annotating multiple plastid genomes using genebank format plastomes as reference. Three steps will be conducted to annotate plastomes: (1) extracting annotation features from gb format reference plastomes, (2) blasting annotation features against fasta format plastome sequences, (3) generating gb format files for each fasta format sequence, and giving corresponding warning information need to be manually checked.<br />
+PGA(Plastid Genome Annotation) is capable of annotating multiple plastid genomes using GenBank-format plastomes as reference. Three steps will be conducted to annotate plastomes: (1) extracting annotation features from GenBank-format reference plastomes, (2) blasting of annotation features against FASTA-format target plastomes, (3) generating GenBank-format files for each FASTA-format plastome sequence, and giving corresponding warning information for further manual check.<br />
 
 **Preparations**<br />
 
@@ -32,26 +32,24 @@ chmod a+rwx PGA.pl
 You can test PGA.pl by type PGA.pl, which will show the usage information.<br />
 ```
 Usage:
-        PGA.pl -r -s [-v -o -t -l]
+        PGA.pl -r -t [-p -i -o -f -l]
         Copyright (C) 2017 Xiao-Jian Qu
         Please contact <quxiaojian@mail.kib.ac.cn>, if you have any bugs or questions.
 
-        [-h -help]       help information.
-        [-r -ref]        required: input directory name containing GenBank format file(s)
-                         that from the same or close families. (default: reference)
-        [-s -seq]        required: input directory name containing fasta format file(s)
-                         that you want to annotate. (default: sequence)
-        [-v -val]        optional: similarity value for BLAST results of amino acid. (default: 40)
-        [-o -out]        optional: output directory name. (default: gb)
-        [-t -type]       optional: circular or linear for fasta format file(s). (default: circular)
-        [-l -log]        optional: log file name containing warning information
-                         for annotated GenBank format file(s). (default: warning)
+        [-h -help]         help information.
+        [-r -reference]    required: input directory name containing GenBank-format file(s) that from the same or close families. (default: reference)
+        [-t -target]       required: input directory name containing FASTA-format file(s) that you want to annotate. (default: target)
+        [-p -percent]      optional: TBLASTN percent identity lower than this value will not be annotated. (default: 40)
+        [-i -ir]           optional: allowed minimum value for inverted-repeat (IR) length. (default: 1000)
+        [-o -out]          optional: output directory name. (default: gb)
+        [-f -form]         optional: circular or linear for FASTA-format file. (default: circular)
+        [-l -log]          optional: log file name containing warning information for annotated GenBank-format file(s). (default: warning)
 ```
 
 **Test**<br />
-(1) annotating your fasta format plastome sequences.<br />
+(1) annotating your FASTA-format target plastomes.<br />
 ```
-PGA.pl -r reference -s sequence
+PGA.pl -r reference -t target
 ```
 (2) checking warning information in log file.<br />
 (3) correcting your annotations according to warning information using Geneious.<br />
