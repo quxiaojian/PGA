@@ -1478,7 +1478,7 @@ while (@sequence_filenames) {
 		}
 	}
 	close $input_IR;
-	#unlink ("IR_temp");
+	unlink ("IR_temp");
 	my (@IR_length,@boundary);
 	foreach my $key (sort {$b <=> $a} keys %IR) {
 		push @IR_length,$key;
