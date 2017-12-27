@@ -10,9 +10,9 @@ no warnings "uninitialized";
 my $global_options=&argument();
 my $reference_directory=&default("reference","reference");
 my $sequence_directory=&default("target","target");
-my $similarity_value=&default("40","percent");
 my $inverted_repeat=&default("1000","ir");
 my $cnt=&default("1","degree");
+my $similarity_value=&default("40","percent");
 my $output_directory=&default("gb","out");
 my $type=&default("circular","form");
 my $log=&default("warning","log");
@@ -1412,7 +1412,7 @@ while (@sequence_filenames) {
 		#-max_hsps 1(nucleotide,RNA,including _gene RNA and -1/-2_coding tRNA)
 		system ("blastn.exe -task blastn -query reference1.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference1");# -evalue 0.001 or 0.01
 		#-max_hsps 1(nucleotide,PCG,including _gene PCG)
-		system ("blastn.exe -task blastn -query reference2.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -qcov_hsp_perc 0 -out blast_reference2");# -evalue 0.001 or 0.01 -perc_identity 50?
+		system ("blastn.exe -task blastn -query reference2.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference2");# -evalue 0.001 or 0.01 -perc_identity 50?
 		#system ("tblastx.exe -query reference2.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -qcov_hsp_perc 50 -out blast_reference2");# -evalue 0.001 or 0.01
 		#-max_hsps 1(amino acid,no intron PCG,including _CDS_aa PCG)
 		system ("tblastn.exe -task tblastn -query reference3.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference3");# -evalue 0.001 or 0.01 -max_intron_length 1000?
@@ -1425,7 +1425,7 @@ while (@sequence_filenames) {
 		#-max_hsps 1(nucleotide,RNA,including _gene RNA and -1/-2_coding tRNA)
 		system ("blastn -task blastn -query reference1.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference1");# -evalue 0.001 or 0.01
 		#-max_hsps 1(nucleotide,PCG,including _gene PCG)
-		system ("blastn -task blastn -query reference2.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -qcov_hsp_perc 0 -out blast_reference2");# -evalue 0.001 or 0.01 -perc_identity 50?
+		system ("blastn -task blastn -query reference2.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference2");# -evalue 0.001 or 0.01 -perc_identity 50?
 		#system ("tblastx -query reference2.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -qcov_hsp_perc 50 -out blast_reference2");# -evalue 0.001 or 0.01
 		#-max_hsps 1(amino acid,no intron PCG,including _CDS_aa PCG)
 		system ("tblastn -task tblastn -query reference3.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference3");# -evalue 0.001 or 0.01 -max_intron_length 1000?
@@ -1438,7 +1438,7 @@ while (@sequence_filenames) {
 		#-max_hsps 1(nucleotide,RNA,including _gene RNA and -1/-2_coding tRNA)
 		system ("blastn -task blastn -query reference1.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference1");# -evalue 0.001 or 0.01
 		#-max_hsps 1(nucleotide,PCG,including _gene PCG)
-		system ("blastn -task blastn -query reference2.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -qcov_hsp_perc 0 -out blast_reference2");# -evalue 0.001 or 0.01 -perc_identity 50?
+		system ("blastn -task blastn -query reference2.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference2");# -evalue 0.001 or 0.01 -perc_identity 50?
 		#system ("tblastx -query reference2.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -qcov_hsp_perc 50 -out blast_reference2");# -evalue 0.001 or 0.01
 		#-max_hsps 1(amino acid,no intron PCG,including _CDS_aa PCG)
 		system ("tblastn -task tblastn -query reference3.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference3");# -evalue 0.001 or 0.01 -max_intron_length 1000?
@@ -1451,7 +1451,7 @@ while (@sequence_filenames) {
 		#-max_hsps 1(nucleotide,RNA,including _gene RNA and -1/-2_coding tRNA)
 		system ("blastn -task blastn -query reference1.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference1");# -evalue 0.001 or 0.01
 		#-max_hsps 1(nucleotide,PCG,including _gene PCG)
-		system ("blastn -task blastn -query reference2.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -qcov_hsp_perc 0 -out blast_reference2");# -evalue 0.001 or 0.01 -perc_identity 50?
+		system ("blastn -task blastn -query reference2.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference2");# -evalue 0.001 or 0.01 -perc_identity 50?
 		#system ("tblastx -query reference2.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -qcov_hsp_perc 50 -out blast_reference2");# -evalue 0.001 or 0.01
 		#-max_hsps 1(amino acid,no intron PCG,including _CDS_aa PCG)
 		system ("tblastn -task tblastn -query reference3.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference3");# -evalue 0.001 or 0.01 -max_intron_length 1000?
@@ -1478,7 +1478,7 @@ while (@sequence_filenames) {
 		}
 	}
 	close $input_IR;
-	unlink ("IR_temp");
+	#unlink ("IR_temp");
 	my (@IR_length,@boundary);
 	foreach my $key (sort {$b <=> $a} keys %IR) {
 		push @IR_length,$key;
@@ -4759,7 +4759,7 @@ while (@sequence_filenames) {
 										}
 									}
 
-									if (abs($end3-$start2) < 4000) {
+									if ((abs($end3-$start2) < 4000) and ($start2 < $end2) and ($start3 < $end3) and ($start2 < $end3)) {
 										if (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/))) {# spliced exon,not 3x or have stop codon
 											print $out_annotation "     "."gene"."            ".$start1_new."..".$end1."\n";
 											print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -4829,6 +4829,8 @@ while (@sequence_filenames) {
 										if (($ticks == 1) and (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/)))) {
 											print $logfile "Warning: $name (positive one-intron PCG) intron-exon boundary need to be checked!\n";
 										}
+									}elsif ((abs($end3-$start2) < 4000) and (($start2 > $end2) or ($start3 > $end3) or ($start2 > $end3))) {
+										print $logfile "Warning: $name (positive one-intron PCG) has not been annotated due to two different direction exons!\n";
 									}elsif (abs($end3-$start2) >= 4000) {
 										print $logfile "Warning: $name (positive one-intron PCG) has not been annotated due to two far exons!\n";
 									}
@@ -5141,7 +5143,7 @@ while (@sequence_filenames) {
 											}
 										}
 
-										if (abs($end3-$start2) < 4000) {
+										if ((abs($end3-$start2) < 4000) and ($start2 < $end2) and ($start3 < $end3) and ($start2 < $end3)) {
 											if (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/))) {# spliced exon,not 3x or have stop codon
 												print $out_annotation "     "."gene"."            ".$start_new."..".$end."\n";
 												print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -5211,6 +5213,8 @@ while (@sequence_filenames) {
 											if (($ticks == 1) and (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/)))) {
 												print $logfile "Warning: $name (positive one-intron PCG) intron-exon boundary need to be checked!\n";
 											}
+										}elsif ((abs($end3-$start2) < 4000) and (($start2 > $end2) or ($start3 > $end3) or ($start2 > $end3))) {
+											print $logfile "Warning: $name (positive one-intron PCG) has not been annotated due to two different direction exons!\n";
 										}elsif (abs($end3-$start2) >= 4000) {
 											print $logfile "Warning: $name (positive one-intron PCG) has not been annotated due to two far exons!\n";
 										}
@@ -5406,7 +5410,7 @@ while (@sequence_filenames) {
 											}
 										}
 
-										if (abs($end3-$start2) < 4000) {
+										if ((abs($end3-$start2) < 4000) and ($start2 < $end2) and ($start3 < $end3) and ($start2 < $end3)) {
 											if (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/))) {# spliced exon,not 3x or have stop codon
 												print $out_annotation "     "."gene"."            ".$start1_new."..".$end."\n";
 												print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -5478,20 +5482,23 @@ while (@sequence_filenames) {
 											}elsif ($ticks == 0) {
 												print $logfile "Warning: $name (positive one-intron PCG) has alternative start codon!\n" if ($name ne "rps12+2");
 											}
+										}elsif ((abs($end3-$start2) < 4000) and (($start2 > $end2) or ($start3 > $end3) or ($start2 > $end3))) {
+											print $logfile "Warning: $name (positive one-intron PCG) has not been annotated due to two different direction exons!\n";
 										}elsif (abs($end3-$start2) >= 4000) {
 											print $logfile "Warning: $name (positive one-intron PCG) has not been annotated due to two far exons!\n";
 										}
 									}else{
-										print $out_annotation "     "."gene"."            ".$start1."..".$end1."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."CDS"."             "."join(".$start1."..".$end2.",".$start3."..".$end1.")"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/codon_start=1"."\n";
-										print $out_annotation "                     "."/transl_table=11"."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										#print $out_annotation "                     "."/translation=\"$aa\""."\n";
-										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (positive one-intron PCG) maybe pseudogene!\n";
+										#print $out_annotation "     "."gene"."            ".$start1."..".$end1."\n";
+										#print $out_annotation "                     "."/gene=\"$name\""."\n";
+										#print $out_annotation "     "."CDS"."             "."join(".$start1."..".$end2.",".$start3."..".$end1.")"."\n";
+										#print $out_annotation "                     "."/gene=\"$name\""."\n";
+										#print $out_annotation "                     "."/codon_start=1"."\n";
+										#print $out_annotation "                     "."/transl_table=11"."\n";
+										#print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+										##print $out_annotation "                     "."/translation=\"$aa\""."\n";
+										#$gene_number_seq{$name}++;
+										#print $logfile "Warning: $name (positive one-intron PCG) maybe pseudogene!\n";
+										print $logfile "Warning: $name (positive one-intron PCG) has not been annotated due to one of short exon!\n";
 									}
 								}
 							}elsif (($name eq "rpl16") or ($name eq "petB") or ($name eq "petD")) {
@@ -5909,7 +5916,7 @@ while (@sequence_filenames) {
 										}
 									}
 
-									if (abs($start2-$end3) < 4000) {
+									if ((abs($start2-$end3) < 4000) and ($start2 > $end2) and ($start3 > $end3) and ($start2 > $end3)) {
 										if (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/))) {# spliced exon,not 3x or have stop codon
 											print $out_annotation "     "."gene"."            "."complement(".$end1."..".$start1_new.")"."\n";
 											print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -5981,6 +5988,8 @@ while (@sequence_filenames) {
 										if (($ticks == 1) and (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/)))) {
 											print $logfile "Warning: $name (negative one-intron PCG) intron-exon boundary need to be checked!\n";
 										}
+									}elsif ((abs($start2-$end3) < 4000) and (($start2 < $end2) or ($start3 < $end3) or ($start2 < $end3))) {
+										print $logfile "Warning: $name (negative one-intron PCG) has not been annotated due to two different direction exons!\n";
 									}elsif (abs($start2-$end3) >= 4000) {
 										print $logfile "Warning: $name (negative one-intron PCG) has not been annotated due to two far exons!\n";
 									}
@@ -6310,7 +6319,7 @@ while (@sequence_filenames) {
 											}
 										}
 
-										if (abs($start2-$end3) < 4000) {
+										if ((abs($start2-$end3) < 4000) and ($start2 > $end2) and ($start3 > $end3) and ($start2 > $end3)) {
 											if (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/))) {# spliced exon,not 3x or have stop codon
 												print $out_annotation "     "."gene"."            "."complement(".$end."..".$start_new.")\n";
 												print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -6382,6 +6391,8 @@ while (@sequence_filenames) {
 											if (($ticks == 1) and (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/)))) {
 												print $logfile "Warning: $name (negative one-intron PCG) intron-exon boundary need to be checked!\n";
 											}
+										}elsif ((abs($start2-$end3) < 4000) and (($start2 < $end2) or ($start3 < $end3) or ($start2 < $end3))) {
+											print $logfile "Warning: $name (negative one-intron PCG) has not been annotated due to two different direction exons!\n";
 										}elsif (abs($start2-$end3) >= 4000) {
 											print $logfile "Warning: $name (negative one-intron PCG) has not been annotated due to two far exons!\n";
 										}
@@ -6585,7 +6596,7 @@ while (@sequence_filenames) {
 											}
 										}
 
-										if (abs($start2-$end3) < 4000) {
+										if ((abs($start2-$end3) < 4000) and ($start2 > $end2) and ($start3 > $end3) and ($start2 > $end3)) {
 											if (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/))) {# spliced exon,not 3x or have stop codon
 												print $out_annotation "     "."gene"."            "."complement(".$end."..".$start1_new.")\n";
 												print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -6659,20 +6670,23 @@ while (@sequence_filenames) {
 											}elsif ($ticks == 0) {
 												print $logfile "Warning: $name (negative one-intron PCG) has alternative start codon!\n" if ($name ne "rps12+2");
 											}
+										}elsif ((abs($start2-$end3) < 4000) and (($start2 < $end2) or ($start3 < $end3) or ($start2 < $end3))) {
+											print $logfile "Warning: $name (negative one-intron PCG) has not been annotated due to two different direction exons!\n";
 										}elsif (abs($start2-$end3) >= 4000) {
 											print $logfile "Warning: $name (negative one-intron PCG) has not been annotated due to two far exons!\n";
 										}
 									}else{
-										print $out_annotation "     "."gene"."            "."complement(".$end1."..".$start1.")\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."CDS"."             "."complement(join(".$end1."..".$start3.",".$end2."..".$start1."))"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/codon_start=1"."\n";
-										print $out_annotation "                     "."/transl_table=11"."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										#print $out_annotation "                     "."/translation=\"$aa\""."\n";
-										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (negative one-intron PCG) maybe pseudogene!\n";
+										#print $out_annotation "     "."gene"."            "."complement(".$end1."..".$start1.")\n";
+										#print $out_annotation "                     "."/gene=\"$name\""."\n";
+										#print $out_annotation "     "."CDS"."             "."complement(join(".$end1."..".$start3.",".$end2."..".$start1."))"."\n";
+										#print $out_annotation "                     "."/gene=\"$name\""."\n";
+										#print $out_annotation "                     "."/codon_start=1"."\n";
+										#print $out_annotation "                     "."/transl_table=11"."\n";
+										#print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+										##print $out_annotation "                     "."/translation=\"$aa\""."\n";
+										#$gene_number_seq{$name}++;
+										#print $logfile "Warning: $name (negative one-intron PCG) maybe pseudogene!\n";
+										print $logfile "Warning: $name (negative one-intron PCG) has not been annotated due to one of short exon!\n";
 									}
 								}
 							}elsif (($name eq "rpl16") or ($name eq "petB") or ($name eq "petD")) {
@@ -7081,7 +7095,7 @@ while (@sequence_filenames) {
 										}
 									}
 
-									if (abs($end3-$start2) < 4000) {
+									if ((abs($end3-$start2) < 4000) and ($start2 < $end2) and ($start3 < $end3) and ($start2 < $end3)) {
 										if (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/))) {# spliced exon,not 3x or have stop codon
 											print $out_annotation "     "."gene"."            ".$start2_new."..".$end3."\n";
 											print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -7151,6 +7165,8 @@ while (@sequence_filenames) {
 										if (($ticks == 1) and (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/)))) {
 											print $logfile "Warning: $name (positive one-intron PCG) intron-exon boundary need to be checked!\n";
 										}
+									}elsif ((abs($end3-$start2) < 4000) and (($start2 > $end2) or ($start3 > $end3) or ($start2 > $end3))) {
+										print $logfile "Warning: $name (positive one-intron PCG) has not been annotated due to two different direction exons!\n";
 									}elsif (abs($end3-$start2) >= 4000) {
 										print $logfile "Warning: $name (positive one-intron PCG) has not been annotated due to two far exons!\n";
 									}
@@ -7462,7 +7478,7 @@ while (@sequence_filenames) {
 											}
 										}
 
-										if (abs($end3-$start2) < 4000) {
+										if ((abs($end3-$start2) < 4000) and ($start2 < $end2) and ($start3 < $end3) and ($start2 < $end3)) {
 											if (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/))) {# spliced exon,not 3x or have stop codon
 												print $out_annotation "     "."gene"."            ".$start_new."..".$end."\n";
 												print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -7532,6 +7548,8 @@ while (@sequence_filenames) {
 											if (($ticks == 1) and (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/)))) {
 												print $logfile "Warning: $name (positive one-intron PCG) intron-exon boundary need to be checked!\n";
 											}
+										}elsif ((abs($end3-$start2) < 4000) and (($start2 > $end2) or ($start3 > $end3) or ($start2 > $end3))) {
+											print $logfile "Warning: $name (positive one-intron PCG) has not been annotated due to two different direction exons!\n";
 										}elsif (abs($end3-$start2) >= 4000) {
 											print $logfile "Warning: $name (positive one-intron PCG) has not been annotated due to two far exons!\n";
 										}
@@ -7727,7 +7745,7 @@ while (@sequence_filenames) {
 											}
 										}
 
-										if (abs($end3-$start2) < 4000) {
+										if ((abs($end3-$start2) < 4000) and ($start2 < $end2) and ($start3 < $end3)) {
 											if (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/))) {# spliced exon,not 3x or have stop codon
 												print $out_annotation "     "."gene"."            ".$start2_new."..".$end."\n";
 												print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -7799,20 +7817,23 @@ while (@sequence_filenames) {
 											}elsif ($ticks == 0) {
 												print $logfile "Warning: $name (positive one-intron PCG) has alternative start codon!\n" if ($name ne "rps12+2");
 											}
+										}elsif ((abs($end3-$start2) < 4000) and (($start2 > $end2) or ($start3 > $end3))) {
+											print $logfile "Warning: $name (positive one-intron PCG) has not been annotated due to two different direction exons!\n";
 										}elsif (abs($end3-$start2) >= 4000) {
 											print $logfile "Warning: $name (positive one-intron PCG) has not been annotated due to two far exons!\n";
 										}
 									}else{
-										print $out_annotation "     "."gene"."            ".$start1."..".$end1."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."CDS"."             "."join(".$start1."..".$end2.",".$start3."..".$end1.")"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/codon_start=1"."\n";
-										print $out_annotation "                     "."/transl_table=11"."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										#print $out_annotation "                     "."/translation=\"$aa\""."\n";
-										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (positive one-intron PCG) maybe pseudogene!\n";
+										#print $out_annotation "     "."gene"."            ".$start1."..".$end1."\n";
+										#print $out_annotation "                     "."/gene=\"$name\""."\n";
+										#print $out_annotation "     "."CDS"."             "."join(".$start1."..".$end2.",".$start3."..".$end1.")"."\n";
+										#print $out_annotation "                     "."/gene=\"$name\""."\n";
+										#print $out_annotation "                     "."/codon_start=1"."\n";
+										#print $out_annotation "                     "."/transl_table=11"."\n";
+										#print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+										##print $out_annotation "                     "."/translation=\"$aa\""."\n";
+										#$gene_number_seq{$name}++;
+										#print $logfile "Warning: $name (positive one-intron PCG) maybe pseudogene!\n";
+										print $logfile "Warning: $name (positive one-intron PCG) has not been annotated due to one of short exon!\n";
 									}
 								}
 							}elsif (($name eq "rpl16") or ($name eq "petB") or ($name eq "petD")) {
@@ -8230,7 +8251,7 @@ while (@sequence_filenames) {
 										}
 									}
 
-									if (abs($start2-$end3) < 4000) {
+									if ((abs($start2-$end3) < 4000) and ($start2 > $end2) and ($start3 > $end3) and ($start2 > $end3)) {
 										if (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/))) {# spliced exon,not 3x or have stop codon
 											print $out_annotation "     "."gene"."            "."complement(".$end3."..".$start2_new.")"."\n";
 											print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -8300,6 +8321,8 @@ while (@sequence_filenames) {
 										if (($ticks == 1) and (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/)))) {
 											print $logfile "Warning: $name (negative one-intron PCG) need to be checked!\n";
 										}
+									}elsif ((abs($start2-$end3) < 4000) and (($start2 < $end2) or ($start3 < $end3) or ($start2 < $end3))) {
+										print $logfile "Warning: $name (negative one-intron PCG) has not been annotated due to two different direction exons!\n";
 									}elsif (abs($start2-$end3) >= 4000) {
 										print $logfile "Warning: $name (negative one-intron PCG) has not been annotated due to two far exons!\n";
 									}
@@ -8629,7 +8652,7 @@ while (@sequence_filenames) {
 											}
 										}
 
-										if (abs($start2-$end3) < 4000) {
+										if ((abs($start2-$end3) < 4000) and ($start2 > $end2) and ($start3 > $end3) and ($start2 > $end3)) {
 											if (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/))) {# spliced exon,not 3x or have stop codon
 												print $out_annotation "     "."gene"."            "."complement(".$end."..".$start_new.")\n";
 												print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -8699,6 +8722,8 @@ while (@sequence_filenames) {
 											if (($ticks == 1) and (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/)))) {
 												print $logfile "Warning: $name (negative one-intron PCG) intron-exon boundary need to be checked!\n";
 											}
+										}elsif ((abs($start2-$end3) < 4000) and (($start2 < $end2) or ($start3 < $end3) or ($start2 < $end3))) {
+											print $logfile "Warning: $name (negative one-intron PCG) has not been annotated due to two different direction exons!\n";
 										}elsif (abs($start2-$end3) >= 4000) {
 											print $logfile "Warning: $name (negative one-intron PCG) has not been annotated due to two far exons!\n";
 										}
@@ -8902,7 +8927,7 @@ while (@sequence_filenames) {
 											}
 										}
 
-										if (abs($start2-$end3) < 4000) {
+										if ((abs($start2-$end3) < 4000) and ($start2 > $end2) and ($start3 > $end3) and ($start2 > $end3)) {
 											if (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/))) {# spliced exon,not 3x or have stop codon
 												print $out_annotation "     "."gene"."            "."complement(".$end."..".$start2_new.")\n";
 												print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -8976,20 +9001,23 @@ while (@sequence_filenames) {
 											}elsif ($ticks == 0) {
 												print $logfile "Warning: $name (negative one-intron PCG) has alternative start codon!\n" if ($name ne "rps12+2");
 											}
+										}elsif ((abs($start2-$end3) < 4000) and (($start2 < $end2) or ($start3 < $end3) or ($start2 < $end3))) {
+											print $logfile "Warning: $name (negative one-intron PCG) has not been annotated due to two different direction exons!\n";
 										}elsif (abs($start2-$end3) >= 4000) {
 											print $logfile "Warning: $name (negative one-intron PCG) has not been annotated due to two far exons!\n";
 										}
 									}else{
-										print $out_annotation "     "."gene"."            "."complement(".$end1."..".$start1.")\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."CDS"."             "."complement(join(".$end1."..".$start3.",".$end2."..".$start1."))"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/codon_start=1"."\n";
-										print $out_annotation "                     "."/transl_table=11"."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										#print $out_annotation "                     "."/translation=\"$aa\""."\n";
-										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (negative one-intron PCG) maybe pseudogene!\n";
+										#print $out_annotation "     "."gene"."            "."complement(".$end1."..".$start1.")\n";
+										#print $out_annotation "                     "."/gene=\"$name\""."\n";
+										#print $out_annotation "     "."CDS"."             "."complement(join(".$end1."..".$start3.",".$end2."..".$start1."))"."\n";
+										#print $out_annotation "                     "."/gene=\"$name\""."\n";
+										#print $out_annotation "                     "."/codon_start=1"."\n";
+										#print $out_annotation "                     "."/transl_table=11"."\n";
+										#print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+										##print $out_annotation "                     "."/translation=\"$aa\""."\n";
+										#$gene_number_seq{$name}++;
+										#print $logfile "Warning: $name (negative one-intron PCG) maybe pseudogene!\n";
+										print $logfile "Warning: $name (negative one-intron PCG) has not been annotated due to one of short exon!\n";
 									}
 								}
 							}elsif (($name eq "rpl16") or ($name eq "petB") or ($name eq "petD")) {
