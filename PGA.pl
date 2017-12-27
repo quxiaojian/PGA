@@ -12,6 +12,7 @@ my $reference_directory=&default("reference","reference");
 my $sequence_directory=&default("target","target");
 my $similarity_value=&default("40","percent");
 my $inverted_repeat=&default("1000","ir");
+my $cnt=&default("1","degree");
 my $output_directory=&default("gb","out");
 my $type=&default("circular","form");
 my $log=&default("warning","log");
@@ -1477,13 +1478,13 @@ while (@sequence_filenames) {
 		}
 	}
 	close $input_IR;
-	unlink ("IR_temp");
+	#unlink ("IR_temp");
 	my (@IR_length,@boundary);
 	foreach my $key (sort {$b <=> $a} keys %IR) {
 		push @IR_length,$key;
 		push @boundary,$IR{$key};
 	}
-	my ($AA,$BB,$CC,$DD)=split /\t/,$boundary[0];
+	my ($AA,$BB,$CC,$DD)=split /\t/,$boundary[$cnt-1];
 	my ($JLB,$JSB,$JLA,$JSA);
 	if ($AA < $CC) {
 		$JLB=$AA;
@@ -15717,7 +15718,7 @@ sub gettime {
 }
 
 sub argument{
-	my @options=("help|h","reference|r:s","target|t:s","percent|p:i","ir|i:i","out|o:s","form|f:s","log|l:s");
+	my @options=("help|h","reference|r:s","target|t:s","ir|i:i","degree|d:i","percent|p:i","out|o:s","form|f:s","log|l:s");
 	my %options;
 	GetOptions(\%options,@options);
 	exec ("pod2usage $0") if ((keys %options)==0 or $options{'h'} or $options{'help'});
@@ -15769,17 +15770,18 @@ __DATA__
 
 =head1 SYNOPSIS
 
-    PGA.pl -r -t [-p -i -o -f -l]
+    PGA.pl -r -t -i -d [-p -o -f -l]
     Copyright (C) 2017 Xiao-Jian Qu
     Please contact <quxiaojian@mail.kib.ac.cn>, if you have any bugs or questions.
 
     [-h -help]         help information.
     [-r -reference]    required: input directory name containing GenBank-format file(s) that from the same or close families. (default: reference)
     [-t -target]       required: input directory name containing FASTA-format file(s) that you want to annotate. (default: target)
-    [-p -percent]      optional: TBLASTN percent identity lower than this value will not be annotated. (default: 40)
     [-i -ir]           optional: allowed minimum value for inverted-repeat (IR) length. (default: 1000)
+    [-d -degree]       optional: 1st (2nd, 3rd and so on) longest IR that you want to annotate. (default: 1)
+    [-p -percent]      optional: TBLASTN percent identity lower than this value will not be annotated. (default: 40)
     [-o -out]          optional: output directory name. (default: gb)
-    [-f -form]         optional: circular or linear for FASTA-format file. (default: circular)
+    [-f -form]         optional: circular or linear form for FASTA-format file. (default: circular)
     [-l -log]          optional: log file name containing warning information for annotated GenBank-format file(s). (default: warning)
 
 =cut
