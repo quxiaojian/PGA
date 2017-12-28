@@ -99,7 +99,7 @@ FEATURES             Location/Qualifiers
                      /product="tRNA-Val"
                      /note="Geneious name: trnV-UAC tRNA"
      tRNA            join(49168..49202, 49692..49741)
-                     /gene="trnL-UAG"
+                     /gene="trnL-UAA"
                      /product="tRNA-Leu"
                      /note="Geneious name: trnL-UAA tRNA"
      tRNA            complement(37759..37847)
@@ -1647,7 +1647,7 @@ FEATURES             Location/Qualifiers
                      /gene="rps4"
                      /note="Geneious name: rps4 gene"
      gene            49168..49741
-                     /gene="trnL-UAG"
+                     /gene="trnL-UAA"
                      /note="Geneious name: trnL-UAA gene"
      gene            complement(126409..126966)
                      /gene="ndhI"
