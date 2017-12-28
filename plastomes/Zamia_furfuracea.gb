@@ -1685,11 +1685,6 @@ FEATURES             Location/Qualifiers
      gene            complement(52278..52640)
                      /gene="ndhC"
                      /note="Geneious name: ndhC gene"
-     gene            69913..70270
-                     /gene="tufA"
-                     /note="translational elongation factor Tu"
-                     /pseudo
-                     /note="Geneious name: tufA gene"
      gene            complement(72980..73327)
                      /gene="rpl20"
                      /note="Geneious name: rpl20 gene"
