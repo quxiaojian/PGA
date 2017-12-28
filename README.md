@@ -32,7 +32,7 @@ chmod a+rwx PGA.pl
 You can test PGA.pl by type PGA.pl, which will show the usage information.<br />
 ```
 Usage:
-        PGA.pl -r -t -i -d [-p -o -f -l]
+        PGA.pl -r -t [-i -d -p -q -o -f -l]
         Copyright (C) 2017 Xiao-Jian Qu
         Please contact <quxiaojian@mail.kib.ac.cn>, if you have any bugs or questions.
 
@@ -42,6 +42,7 @@ Usage:
         [-i -ir]           optional: allowed minimum value for inverted-repeat (IR) length. (default: 1000)
         [-d -degree]       optional: 1st (2nd, 3rd and so on) longest IR that you want to annotate. (default: 1)
         [-p -percent]      optional: TBLASTN percent identity lower than this value will not be annotated. (default: 40)
+        [-q -qcoverage]    optional: query coverage per annotated PCG less than or more than each of these two values (<1,>1), respectively. (default: 0.5,2)
         [-o -out]          optional: output directory name. (default: gb)
         [-f -form]         optional: circular or linear form for FASTA-format file. (default: circular)
         [-l -log]          optional: log file name containing warning information for annotated GenBank-format file(s). (default: warning)
