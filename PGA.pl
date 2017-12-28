@@ -3900,8 +3900,8 @@ while (@sequence_filenames) {
 								last if (defined $end1_new);
 							}
 
-							if ((defined $start1_new) and (defined $end2_new) and (defined $start3_new) and (defined $end1_new)) {
-								if (abs($end1_new-$start1_new) < 3000) {
+							if (abs($end1_new-$start1_new) < 3000) {
+								if ((defined $start1_new) and (defined $end2_new) and (defined $start3_new) and (defined $end1_new)) {
 									print $out_annotation "     "."gene"."            ".$start1_new."..".$end1_new."\n";
 									print $out_annotation "                     "."/gene=\"$name\""."\n";
 									print $out_annotation "     "."tRNA"."            "."join(".$start1_new."..".$end2_new.",".$start3_new."..".$end1_new.")"."\n";
@@ -3945,17 +3945,17 @@ while (@sequence_filenames) {
 											$gene_number_seq{$name}++;
 										}
 									}
-								}elsif (abs($end1_new-$start1_new) >= 3000) {
-									print $logfile "Warning: $name (positive one-intron tRNA) has not been annotated due to two far exons!\n";
+								}elsif ((!defined $start1_new) or (!defined $end2_new) or (!defined $start3_new) or (!defined $end1_new)) {
+									print $out_annotation "     "."gene"."            ".$start1."..".$end1."\n";
+									print $out_annotation "                     "."/gene=\"$name\""."\n";
+									print $out_annotation "     "."tRNA"."            "."join(".$start1."..".$end2.",".$start3."..".$end1.")"."\n";
+									print $out_annotation "                     "."/gene=\"$name\""."\n";
+									print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+									$gene_number_seq{$name}++;
+									print $logfile "Warning: $name (positive one-intron tRNA) need to be checked due to non-identical boundary with reference!\n";
 								}
-							}elsif ((!defined $start1_new) or (!defined $end2_new) or (!defined $start3_new) or (!defined $end1_new)) {
-								print $out_annotation "     "."gene"."            ".$start1."..".$end1."\n";
-								print $out_annotation "                     "."/gene=\"$name\""."\n";
-								print $out_annotation "     "."tRNA"."            "."join(".$start1."..".$end2.",".$start3."..".$end1.")"."\n";
-								print $out_annotation "                     "."/gene=\"$name\""."\n";
-								print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-								$gene_number_seq{$name}++;
-								print $logfile "Warning: $name (positive one-intron tRNA) need to be checked due to non-identical boundary with reference!\n";
+							}elsif (abs($end1_new-$start1_new) >= 3000) {
+								print $logfile "Warning: $name (positive one-intron tRNA) has not been annotated due to two far exons!\n";
 							}
 						}elsif($start1 > $end1){
 							my $seq_string1=substr($sequence,($start1-30),60);
@@ -4021,8 +4021,8 @@ while (@sequence_filenames) {
 								last if (defined $end1_new);
 							}
 
-							if ((defined $start1_new) and (defined $end2_new) and (defined $start3_new) and (defined $end1_new)) {
-								if (abs($start1_new-$end1_new) < 3000) {
+							if (abs($start1_new-$end1_new) < 3000) {
+								if ((defined $start1_new) and (defined $end2_new) and (defined $start3_new) and (defined $end1_new)) {
 									print $out_annotation "     "."gene"."            "."complement(".$end1_new."..".$start1_new.")"."\n";
 									print $out_annotation "                     "."/gene=\"$name\""."\n";
 									print $out_annotation "     "."tRNA"."            "."complement(join(".$end1_new."..".$start3_new.",".$end2_new."..".$start1_new."))"."\n";
@@ -4066,17 +4066,17 @@ while (@sequence_filenames) {
 											$gene_number_seq{$name}++;
 										}
 									}
-								}elsif (abs($start1_new-$end1_new) >= 3000) {
-									print $logfile "Warning: $name (negative one-intron tRNA) has not been annotated due to two far exons!\n";
+								}elsif ((!defined $start1_new) or (!defined $end2_new) or (!defined $start3_new) or (!defined $end1_new)) {
+									print $out_annotation "     "."gene"."            "."complement(".$end1."..".$start1.")"."\n";
+									print $out_annotation "                     "."/gene=\"$name\""."\n";
+									print $out_annotation "     "."tRNA"."            "."complement(join(".$end1."..".$start3.",".$end2."..".$start1."))"."\n";
+									print $out_annotation "                     "."/gene=\"$name\""."\n";
+									print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+									$gene_number_seq{$name}++;
+									print $logfile "Warning: $name (negative one-intron tRNA) need to be checked due to non-identical boundary with reference!\n";
 								}
-							}elsif ((!defined $start1_new) or (!defined $end2_new) or (!defined $start3_new) or (!defined $end1_new)) {
-								print $out_annotation "     "."gene"."            "."complement(".$end1."..".$start1.")"."\n";
-								print $out_annotation "                     "."/gene=\"$name\""."\n";
-								print $out_annotation "     "."tRNA"."            "."complement(join(".$end1."..".$start3.",".$end2."..".$start1."))"."\n";
-								print $out_annotation "                     "."/gene=\"$name\""."\n";
-								print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-								$gene_number_seq{$name}++;
-								print $logfile "Warning: $name (negative one-intron tRNA) need to be checked due to non-identical boundary with reference!\n";
+							}elsif (abs($start1_new-$end1_new) >= 3000) {
+								print $logfile "Warning: $name (negative one-intron tRNA) has not been annotated due to two far exons!\n";
 							}
 						}
 					}elsif(($start1 != $start2) or ($end1 != $end3)){# non-identical tRNA boundary for _gene and -1_coding, -2_coding
@@ -4144,8 +4144,8 @@ while (@sequence_filenames) {
 								last if (defined $end3_new);
 							}
 
-							if ((defined $start2_new) and (defined $end2_new) and (defined $start3_new) and (defined $end3_new)) {
-								if (abs($end3_new-$start2_new) < 3000) {
+							if (abs($end3_new-$start2_new) < 3000) {
+								if ((defined $start2_new) and (defined $end2_new) and (defined $start3_new) and (defined $end3_new)) {
 									print $out_annotation "     "."gene"."            ".$start2_new."..".$end3_new."\n";
 									print $out_annotation "                     "."/gene=\"$name\""."\n";
 									print $out_annotation "     "."tRNA"."            "."join(".$start2_new."..".$end2_new.",".$start3_new."..".$end3_new.")"."\n";
@@ -4189,11 +4189,17 @@ while (@sequence_filenames) {
 											$gene_number_seq{$name}++;
 										}
 									}
-								}elsif (abs($end3_new-$start2_new) >= 3000) {
-									print $logfile "Warning: $name (positive one-intron tRNA) has not been annotated due to two far exons!\n";
+								}elsif ((!defined $start2_new) or (!defined $end2_new) or (!defined $start3_new) or (!defined $end3_new)) {
+									print $out_annotation "     "."gene"."            ".$start1."..".$end1."\n";
+									print $out_annotation "                     "."/gene=\"$name\""."\n";
+									print $out_annotation "     "."tRNA"."            "."join(".$start1."..".$end2.",".$start3."..".$end1.")"."\n";
+									print $out_annotation "                     "."/gene=\"$name\""."\n";
+									print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+									$gene_number_seq{$name}++;
+									print $logfile "Warning: $name (positive one-intron tRNA) need to be checked due to non-identical boundary with reference!\n";
 								}
-							}elsif ((!defined $start2_new) or (!defined $end2_new) or (!defined $start3_new) or (!defined $end3_new)) {
-								print $logfile "Warning: $name (positive one-intron tRNA) need to be checked due to non-identical boundary with reference!\n";
+							}elsif (abs($end3_new-$start2_new) >= 3000) {
+								print $logfile "Warning: $name (positive one-intron tRNA) has not been annotated due to two far exons!\n";
 							}
 						}elsif($start1 > $end1){
 							my ($seq_string1,$seq_string2);
@@ -4267,8 +4273,8 @@ while (@sequence_filenames) {
 								last if (defined $end3_new);
 							}
 
-							if ((defined $start2_new) and (defined $end2_new) and (defined $start3_new) and (defined $end3_new)) {
-								if (abs($start2_new-$end3_new) < 3000) {
+							if (abs($start2_new-$end3_new) < 3000) {
+								if ((defined $start2_new) and (defined $end2_new) and (defined $start3_new) and (defined $end3_new)) {
 									print $out_annotation "     "."gene"."            "."complement(".$end3_new."..".$start2_new.")"."\n";
 									print $out_annotation "                     "."/gene=\"$name\""."\n";
 									print $out_annotation "     "."tRNA"."            "."complement(join(".$end3_new."..".$start3_new.",".$end2_new."..".$start2_new."))"."\n";
@@ -4312,11 +4318,17 @@ while (@sequence_filenames) {
 											$gene_number_seq{$name}++;
 										}
 									}
-								}elsif (abs($start2_new-$end3_new) >= 3000) {
-									print $logfile "Warning: $name (negative one-intron tRNA) has not been annotated due to two far exons!\n";
+								}elsif ((!defined $start2_new) or (!defined $end2_new) or (!defined $start3_new) or (!defined $end3_new)) {
+									print $out_annotation "     "."gene"."            "."complement(".$end1."..".$start1.")"."\n";
+									print $out_annotation "                     "."/gene=\"$name\""."\n";
+									print $out_annotation "     "."tRNA"."            "."complement(join(".$end1."..".$start3.",".$end2."..".$start1."))"."\n";
+									print $out_annotation "                     "."/gene=\"$name\""."\n";
+									print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+									$gene_number_seq{$name}++;
+									print $logfile "Warning: $name (negative one-intron tRNA) need to be checked due to non-identical boundary with reference!\n";
 								}
-							}elsif ((!defined $start2_new) or (!defined $end2_new) or (!defined $start3_new) or (!defined $end3_new)) {
-								print $logfile "Warning: $name (negative one-intron tRNA) need to be checked due to non-identical boundary with reference!\n";
+							}elsif (abs($start2_new-$end3_new) >= 3000) {
+								print $logfile "Warning: $name (negative one-intron tRNA) has not been annotated due to two far exons!\n";
 							}
 						}
 					}
