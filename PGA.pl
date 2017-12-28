@@ -13,6 +13,10 @@ my $sequence_directory=&default("target","target");
 my $inverted_repeat=&default("1000","ir");
 my $cnt=&default("1","degree");
 my $similarity_value=&default("40","percent");
+my $qcoverage=&default("0.5,2","qcoverage");
+my ($short,$long)=split /,/,$qcoverage;
+$short=eval($short);
+$long=eval($long);
 my $output_directory=&default("gb","out");
 my $type=&default("circular","form");
 my $log=&default("warning","log");
@@ -1478,7 +1482,7 @@ while (@sequence_filenames) {
 		}
 	}
 	close $input_IR;
-	#unlink ("IR_temp");
+	unlink ("IR_temp");
 	my (@IR_length,@boundary);
 	foreach my $key (sort {$b <=> $a} keys %IR) {
 		push @IR_length,$key;
@@ -2314,13 +2318,20 @@ while (@sequence_filenames) {
 				}
 
 
-				if(($gene_coding_CDS=~ /((.+)_gene)/) and $name!~ /rrn/ and $name!~ /trn/ and $name!~ /rps12/){# pseudogene (e.g., ycf15,ycf68 etal.)
-					#print $out_annotation "     "."gene"."             ".$start."..".$end."\n" if ($start < $end);
-					#print $out_annotation "     "."gene"."             "."complement(".$end."..".$start.")\n" if ($start > $end);
-					#print $out_annotation "                     "."/gene=\"$name\""."\n";
-					##print $out_annotation "                     "."/translation=\"$name\""."\n";
-					#$gene_number_seq{$name}++;
-					print $logfile "Warning: $name has not been annotated due to without CDS feature in reference!\n";
+				if(($gene_coding_CDS=~ /((.+)_gene)/) and $name!~ /rrn/ and $name!~ /trn/ and $name!~ /rps12/){# psaM(CDS_aa without alignment result),pseudogene (e.g., ycf15,ycf68 etal.)
+					if ($start < $end){
+						#print $out_annotation "     "."gene"."             ".$start."..".$end."\n";
+						#print $out_annotation "                     "."/gene=\"$name\""."\n";
+						##print $out_annotation "                     "."/translation=\"$name\""."\n";
+						#$gene_number_seq{$name}++;
+						print $logfile "Warning: $name (positive no-intron PCG) has not been annotated!\n";
+					}elsif ($start > $end) {
+						#print $out_annotation "     "."gene"."             "."complement(".$end."..".$start.")\n";
+						#print $out_annotation "                     "."/gene=\"$name\""."\n";
+						##print $out_annotation "                     "."/translation=\"$name\""."\n";
+						#$gene_number_seq{$name}++;
+						print $logfile "Warning: $name (negative no-intron PCG) has not been annotated!\n";
+					}
 				}
 			}
 		}
@@ -2429,6 +2440,13 @@ while (@sequence_filenames) {
 									#print $out_annotation "                     "."/translation=\"$aa\""."\n";
 									$gene_number_seq{$name}++;
 								}
+							}
+
+							my $length_pcg=$end1-$start1;
+							if (($length_pcg/$length_ref_pcg) < $short) {
+								print $logfile "Warning: $name (positive no-intron PCG) need to be checked due to query coverage per annotated PCG less than $short!\n";
+							}elsif (($length_pcg/$length_ref_pcg) > $long) {
+								print $logfile "Warning: $name (positive no-intron PCG) need to be checked due to query coverage per annotated PCG more than $long!\n";
 							}
 						}elsif((grep {$_=~ /\*/} @aa) or (($forward_start_codon ne "ATG") and ($forward_start_codon ne "GTG")) or ((($forward_stop_codon ne "TAA") and ($forward_stop_codon ne "TAG") and ($forward_stop_codon ne "TGA")) and ($name ne "rps12+1"))){# non-standard start or stop codon
 							my $gene_length=($end1-$start1+1);
@@ -2582,6 +2600,12 @@ while (@sequence_filenames) {
 											$gene_number_seq{$name}++;
 										}
 									}
+
+									if (($length_pcg/$length_ref_pcg) < $short) {
+										print $logfile "Warning: $name (positive no-intron PCG) need to be checked due to query coverage per annotated PCG less than $short!\n";
+									}elsif (($length_pcg/$length_ref_pcg) > $long) {
+										print $logfile "Warning: $name (positive no-intron PCG) need to be checked due to query coverage per annotated PCG more than $long!\n";
+									}
 								}elsif ($length_pcg < 60) {
 									print $logfile "Warning: $name (positive no-intron PCG) has not been annotated due to short length!\n";
 								}
@@ -2645,6 +2669,12 @@ while (@sequence_filenames) {
 										#print $out_annotation "                     "."/translation=\"$aa2\""."\n";
 										$gene_number_seq{$name}++;
 										print $logfile "Warning: $name (positive no-intron PCG) has alternative start codon!\n";
+
+										if (($length_pcg/$length_ref_pcg) < $short) {
+											print $logfile "Warning: $name (positive no-intron PCG) need to be checked due to query coverage per annotated PCG less than $short!\n";
+										}elsif (($length_pcg/$length_ref_pcg) > $long) {
+											print $logfile "Warning: $name (positive no-intron PCG) need to be checked due to query coverage per annotated PCG more than $long!\n";
+										}
 									}elsif ($length_pcg < 60) {
 										print $logfile "Warning: $name (positive no-intron PCG) has not been annotated due to short length!\n";
 									}
@@ -2717,6 +2747,13 @@ while (@sequence_filenames) {
 									#print $out_annotation "                     "."/translation=\"$aa\""."\n";
 									$gene_number_seq{$name}++;
 								}
+							}
+
+							my $length_pcg=$start1-$end1;
+							if (($length_pcg/$length_ref_pcg) < $short) {
+								print $logfile "Warning: $name (negative no-intron PCG) need to be checked due to query coverage per annotated PCG less than $short!\n";
+							}elsif (($length_pcg/$length_ref_pcg) > $long) {
+								print $logfile "Warning: $name (negative no-intron PCG) need to be checked due to query coverage per annotated PCG more than $long!\n";
 							}
 						}elsif((grep {$_=~ /\*/} @aa) or (($reverse_start_codon ne "ATG") and ($reverse_start_codon ne "GTG")) or ((($reverse_stop_codon ne "TAA") and ($reverse_stop_codon ne "TAG") and ($reverse_stop_codon ne "TGA")) and ($name ne "rps12+1"))){# non-standard start or stop codon
 							my $gene_length=($start1-$end1+1);
@@ -2877,6 +2914,12 @@ while (@sequence_filenames) {
 											$gene_number_seq{$name}++;
 										}
 									}
+
+									if (($length_pcg/$length_ref_pcg) < $short) {
+										print $logfile "Warning: $name (negative no-intron PCG) need to be checked due to query coverage per annotated PCG less than $short!\n";
+									}elsif (($length_pcg/$length_ref_pcg) > $long) {
+										print $logfile "Warning: $name (negative no-intron PCG) need to be checked due to query coverage per annotated PCG more than $long!\n";
+									}
 								}elsif ($length_pcg < 60) {
 									print $logfile "Warning: $name (negative no-intron PCG) has not been annotated due to short length!\n";
 								}
@@ -2936,6 +2979,12 @@ while (@sequence_filenames) {
 										#print $out_annotation "                     "."/translation=\"$aa2\""."\n";
 										$gene_number_seq{$name}++;
 										print $logfile "Warning: $name (negative no-intron PCG) has alternative start codon!\n";
+
+										if (($length_pcg/$length_ref_pcg) < $short) {
+											print $logfile "Warning: $name (negative no-intron PCG) need to be checked due to query coverage per annotated PCG less than $short!\n";
+										}elsif (($length_pcg/$length_ref_pcg) > $long) {
+											print $logfile "Warning: $name (negative no-intron PCG) need to be checked due to query coverage per annotated PCG more than $long!\n";
+										}
 									}elsif ($length_pcg < 60) {
 										print $logfile "Warning: $name (negative no-intron PCG) has not been annotated due to short length!\n";
 									}
@@ -3027,6 +3076,14 @@ while (@sequence_filenames) {
 									$gene_number_seq{$name}++;
 								}
 							}
+
+							my $length_pcg=$end2-$start2;
+							if (($length_pcg/$length_ref_pcg) < $short) {
+								print $logfile "Warning: $name (positive no-intron PCG) need to be checked due to query coverage per annotated PCG less than $short!\n";
+							}elsif (($length_pcg/$length_ref_pcg) > $long) {
+								print $logfile "Warning: $name (positive no-intron PCG) need to be checked due to query coverage per annotated PCG more than $long!\n";
+							}
+
 #						}elsif(($length1 % 3==0) and (!grep {$_=~ /\*/} @aa1) and (($forward_start_codon1 eq "ATG") or ($forward_start_codon1 eq "GTG")) and (($forward_stop_codon1 eq "TAA") or ($forward_stop_codon1 eq "TAG") or ($forward_stop_codon1 eq "TGA"))){# standard start and stop codon for _gene
 #							print $out_annotation "     "."gene"."            ".$start1."..".$end1."\n";
 #							print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -3225,6 +3282,12 @@ while (@sequence_filenames) {
 											$gene_number_seq{$name}++;
 										}
 									}
+
+									if (($length_pcg/$length_ref_pcg) < $short) {
+										print $logfile "Warning: $name (positive no-intron PCG) need to be checked due to query coverage per annotated PCG less than $short!\n";
+									}elsif (($length_pcg/$length_ref_pcg) > $long) {
+										print $logfile "Warning: $name (positive no-intron PCG) need to be checked due to query coverage per annotated PCG more than $long!\n";
+									}
 								}elsif ($length_pcg < 60) {
 									print $logfile "Warning: $name (positive no-intron PCG) has not been annotated due to short length!\n";
 								}
@@ -3288,6 +3351,12 @@ while (@sequence_filenames) {
 										#print $out_annotation "                     "."/translation=\"$aa2\""."\n";
 										$gene_number_seq{$name}++;
 										print $logfile "Warning: $name (positive no-intron PCG) has alternative start codon!\n";
+
+										if (($length_pcg/$length_ref_pcg) < $short) {
+											print $logfile "Warning: $name (positive no-intron PCG) need to be checked due to query coverage per annotated PCG less than $short!\n";
+										}elsif (($length_pcg/$length_ref_pcg) > $long) {
+											print $logfile "Warning: $name (positive no-intron PCG) need to be checked due to query coverage per annotated PCG more than $long!\n";
+										}
 									}elsif ($length_pcg < 60) {
 										print $logfile "Warning: $name (positive no-intron PCG) has not been annotated due to short length!\n";
 									}
@@ -3380,6 +3449,14 @@ while (@sequence_filenames) {
 									$gene_number_seq{$name}++;
 								}
 							}
+
+							my $length_pcg=$start2-$end2;
+							if (($length_pcg/$length_ref_pcg) < $short) {
+								print $logfile "Warning: $name (negative no-intron PCG) need to be checked due to query coverage per annotated PCG less than $short!\n";
+							}elsif (($length_pcg/$length_ref_pcg) > $long) {
+								print $logfile "Warning: $name (negative no-intron PCG) need to be checked due to query coverage per annotated PCG more than $long!\n";
+							}
+
 #						}elsif(($length1 % 3==0) and (!grep {$_=~ /\*/} @aa1) and (($reverse_start_codon1 eq "ATG") or ($reverse_start_codon1 eq "GTG")) and (($reverse_stop_codon1 eq "TAA") or ($reverse_stop_codon1 eq "TAG") or ($reverse_stop_codon1 eq "TGA"))){# standard start and stop codon for _gene
 #							print $out_annotation "     "."gene"."            "."complement(".$end1."..".$start1.")\n";
 #							print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -3584,6 +3661,12 @@ while (@sequence_filenames) {
 											$gene_number_seq{$name}++;
 										}
 									}
+
+									if (($length_pcg/$length_ref_pcg) < $short) {
+										print $logfile "Warning: $name (negative no-intron PCG) need to be checked due to query coverage per annotated PCG less than $short!\n";
+									}elsif (($length_pcg/$length_ref_pcg) > $long) {
+										print $logfile "Warning: $name (negative no-intron PCG) need to be checked due to query coverage per annotated PCG more than $long!\n";
+									}
 								}elsif ($length_pcg < 60) {
 									print $logfile "Warning: $name (negative no-intron PCG) has not been annotated due to short length!\n";
 								}
@@ -3643,6 +3726,12 @@ while (@sequence_filenames) {
 										#print $out_annotation "                     "."/translation=\"$aa\""."\n";
 										$gene_number_seq{$name}++;
 										print $logfile "Warning: $name (negative no-intron PCG) has alternative start codon!\n";
+
+										if (($length_pcg/$length_ref_pcg) < $short) {
+											print $logfile "Warning: $name (negative no-intron PCG) need to be checked due to query coverage per annotated PCG less than $short!\n";
+										}elsif (($length_pcg/$length_ref_pcg) > $long) {
+											print $logfile "Warning: $name (negative no-intron PCG) need to be checked due to query coverage per annotated PCG more than $long!\n";
+										}
 									}elsif ($length_pcg < 60) {
 										print $logfile "Warning: $name (negative no-intron PCG) has not been annotated due to short length!\n";
 									}
@@ -5498,7 +5587,7 @@ while (@sequence_filenames) {
 										##print $out_annotation "                     "."/translation=\"$aa\""."\n";
 										#$gene_number_seq{$name}++;
 										#print $logfile "Warning: $name (positive one-intron PCG) maybe pseudogene!\n";
-										print $logfile "Warning: $name (positive one-intron PCG) has not been annotated due to one of short exon!\n";
+										print $logfile "Warning: $name (positive one-intron PCG) has not been annotated!\n";
 									}
 								}
 							}elsif (($name eq "rpl16") or ($name eq "petB") or ($name eq "petD")) {
@@ -6686,7 +6775,7 @@ while (@sequence_filenames) {
 										##print $out_annotation "                     "."/translation=\"$aa\""."\n";
 										#$gene_number_seq{$name}++;
 										#print $logfile "Warning: $name (negative one-intron PCG) maybe pseudogene!\n";
-										print $logfile "Warning: $name (negative one-intron PCG) has not been annotated due to one of short exon!\n";
+										print $logfile "Warning: $name (negative one-intron PCG) has not been annotated!\n";
 									}
 								}
 							}elsif (($name eq "rpl16") or ($name eq "petB") or ($name eq "petD")) {
@@ -7833,7 +7922,7 @@ while (@sequence_filenames) {
 										##print $out_annotation "                     "."/translation=\"$aa\""."\n";
 										#$gene_number_seq{$name}++;
 										#print $logfile "Warning: $name (positive one-intron PCG) maybe pseudogene!\n";
-										print $logfile "Warning: $name (positive one-intron PCG) has not been annotated due to one of short exon!\n";
+										print $logfile "Warning: $name (positive one-intron PCG) has not been annotated!\n";
 									}
 								}
 							}elsif (($name eq "rpl16") or ($name eq "petB") or ($name eq "petD")) {
@@ -9017,7 +9106,7 @@ while (@sequence_filenames) {
 										##print $out_annotation "                     "."/translation=\"$aa\""."\n";
 										#$gene_number_seq{$name}++;
 										#print $logfile "Warning: $name (negative one-intron PCG) maybe pseudogene!\n";
-										print $logfile "Warning: $name (negative one-intron PCG) has not been annotated due to one of short exon!\n";
+										print $logfile "Warning: $name (negative one-intron PCG) has not been annotated!\n";
 									}
 								}
 							}elsif (($name eq "rpl16") or ($name eq "petB") or ($name eq "petD")) {
@@ -15746,7 +15835,7 @@ sub gettime {
 }
 
 sub argument{
-	my @options=("help|h","reference|r:s","target|t:s","ir|i:i","degree|d:i","percent|p:i","out|o:s","form|f:s","log|l:s");
+	my @options=("help|h","reference|r:s","target|t:s","ir|i:i","degree|d:i","percent|p:i","qcoverage|q:s","out|o:s","form|f:s","log|l:s");
 	my %options;
 	GetOptions(\%options,@options);
 	exec ("pod2usage $0") if ((keys %options)==0 or $options{'h'} or $options{'help'});
@@ -15798,7 +15887,7 @@ __DATA__
 
 =head1 SYNOPSIS
 
-    PGA.pl -r -t -i -d [-p -o -f -l]
+    PGA.pl -r -t [-i -d -p -q -o -f -l]
     Copyright (C) 2017 Xiao-Jian Qu
     Please contact <quxiaojian@mail.kib.ac.cn>, if you have any bugs or questions.
 
@@ -15808,6 +15897,7 @@ __DATA__
     [-i -ir]           optional: allowed minimum value for inverted-repeat (IR) length. (default: 1000)
     [-d -degree]       optional: 1st (2nd, 3rd and so on) longest IR that you want to annotate. (default: 1)
     [-p -percent]      optional: TBLASTN percent identity lower than this value will not be annotated. (default: 40)
+    [-q -qcoverage]    optional: query coverage per annotated PCG less than or more than each of these two values (<1,>1), respectively. (default: 0.5,2)
     [-o -out]          optional: output directory name. (default: gb)
     [-f -form]         optional: circular or linear form for FASTA-format file. (default: circular)
     [-l -log]          optional: log file name containing warning information for annotated GenBank-format file(s). (default: warning)
