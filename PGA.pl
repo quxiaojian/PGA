@@ -2668,7 +2668,7 @@ while (@sequence_filenames) {
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 										#print $out_annotation "                     "."/translation=\"$aa2\""."\n";
 										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (positive no-intron PCG) has alternative start codon!\n";
+										print $logfile "Warning: $name (positive no-intron PCG) has non-canonical start codon!\n";
 
 										if (($length_pcg/$length_ref_pcg) < $short) {
 											print $logfile "Warning: $name (positive no-intron PCG) need to be checked due to query coverage per annotated PCG less than $short!\n";
@@ -2978,7 +2978,7 @@ while (@sequence_filenames) {
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 										#print $out_annotation "                     "."/translation=\"$aa2\""."\n";
 										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (negative no-intron PCG) has alternative start codon!\n";
+										print $logfile "Warning: $name (negative no-intron PCG) has non-canonical start codon!\n";
 
 										if (($length_pcg/$length_ref_pcg) < $short) {
 											print $logfile "Warning: $name (negative no-intron PCG) need to be checked due to query coverage per annotated PCG less than $short!\n";
@@ -3350,7 +3350,7 @@ while (@sequence_filenames) {
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 										#print $out_annotation "                     "."/translation=\"$aa2\""."\n";
 										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (positive no-intron PCG) has alternative start codon!\n";
+										print $logfile "Warning: $name (positive no-intron PCG) has non-canonical start codon!\n";
 
 										if (($length_pcg/$length_ref_pcg) < $short) {
 											print $logfile "Warning: $name (positive no-intron PCG) need to be checked due to query coverage per annotated PCG less than $short!\n";
@@ -3725,7 +3725,7 @@ while (@sequence_filenames) {
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 										#print $out_annotation "                     "."/translation=\"$aa\""."\n";
 										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (negative no-intron PCG) has alternative start codon!\n";
+										print $logfile "Warning: $name (negative no-intron PCG) has non-canonical start codon!\n";
 
 										if (($length_pcg/$length_ref_pcg) < $short) {
 											print $logfile "Warning: $name (negative no-intron PCG) need to be checked due to query coverage per annotated PCG less than $short!\n";
@@ -5579,9 +5579,9 @@ while (@sequence_filenames) {
 												}
 											}
 											if (($ticks == 1) and (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/)))) {
-												print $logfile "Warning: $name (positive one-intron PCG) has alternative start codon and intron-exon boundary need to be checked!\n" if ($name ne "rps12+2");
+												print $logfile "Warning: $name (positive one-intron PCG) has non-canonical start codon and intron-exon boundary need to be checked!\n" if ($name ne "rps12+2");
 											}elsif ($ticks == 0) {
-												print $logfile "Warning: $name (positive one-intron PCG) has alternative start codon!\n" if ($name ne "rps12+2");
+												print $logfile "Warning: $name (positive one-intron PCG) has non-canonical start codon!\n" if ($name ne "rps12+2");
 											}
 										}elsif ((abs($end3-$start2) < 4000) and (($start2 > $end2) or ($start3 > $end3) or ($start2 > $end3))) {
 											print $logfile "Warning: $name (positive one-intron PCG) has not been annotated due to two different direction exons!\n";
@@ -5741,7 +5741,7 @@ while (@sequence_filenames) {
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 										#print $out_annotation "                     "."/translation=\"$aa\""."\n";
 										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (positive one-intron PCG) has alternative start codon!\n";
+										print $logfile "Warning: $name (positive one-intron PCG) has non-canonical start codon!\n";
 									}
 								}
 							}
@@ -6767,9 +6767,9 @@ while (@sequence_filenames) {
 												}
 											}
 											if (($ticks == 1) and (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/)))) {
-												print $logfile "Warning: $name (negative one-intron PCG) has alternative start codon and intron-exon boundary need to be checked!\n" if ($name ne "rps12+2");
+												print $logfile "Warning: $name (negative one-intron PCG) has non-canonical start codon and intron-exon boundary need to be checked!\n" if ($name ne "rps12+2");
 											}elsif ($ticks == 0) {
-												print $logfile "Warning: $name (negative one-intron PCG) has alternative start codon!\n" if ($name ne "rps12+2");
+												print $logfile "Warning: $name (negative one-intron PCG) has non-canonical start codon!\n" if ($name ne "rps12+2");
 											}
 										}elsif ((abs($start2-$end3) < 4000) and (($start2 < $end2) or ($start3 < $end3) or ($start2 < $end3))) {
 											print $logfile "Warning: $name (negative one-intron PCG) has not been annotated due to two different direction exons!\n";
@@ -6936,7 +6936,7 @@ while (@sequence_filenames) {
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 										#print $out_annotation "                     "."/translation=\"$aa\""."\n";
 										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (negative one-intron PCG) has alternative start codon!\n";
+										print $logfile "Warning: $name (negative one-intron PCG) has non-canonical start codon!\n";
 									}
 								}
 							}
@@ -7914,9 +7914,9 @@ while (@sequence_filenames) {
 												}
 											}
 											if (($ticks == 1) and (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/)))) {
-												print $logfile "Warning: $name (positive one-intron PCG) has alternative start codon and intron-exon boundary need to be checked!\n" if ($name ne "rps12+2");
+												print $logfile "Warning: $name (positive one-intron PCG) has non-canonical start codon and intron-exon boundary need to be checked!\n" if ($name ne "rps12+2");
 											}elsif ($ticks == 0) {
-												print $logfile "Warning: $name (positive one-intron PCG) has alternative start codon!\n" if ($name ne "rps12+2");
+												print $logfile "Warning: $name (positive one-intron PCG) has non-canonical start codon!\n" if ($name ne "rps12+2");
 											}
 										}elsif ((abs($end3-$start2) < 4000) and (($start2 > $end2) or ($start3 > $end3))) {
 											print $logfile "Warning: $name (positive one-intron PCG) has not been annotated due to two different direction exons!\n";
@@ -8076,7 +8076,7 @@ while (@sequence_filenames) {
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 										#print $out_annotation "                     "."/translation=\"$aa\""."\n";
 										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (positive one-intron PCG) has alternative start codon!\n";
+										print $logfile "Warning: $name (positive one-intron PCG) has non-canonical start codon!\n";
 									}
 								}
 							}
@@ -9098,9 +9098,9 @@ while (@sequence_filenames) {
 												}
 											}
 											if (($ticks == 1) and (($mark==0) or ((defined $intron_aa) and ($intron_aa=~ /\*/)))) {
-												print $logfile "Warning: $name (negative one-intron PCG) has alternative start codon and intron-exon boundary need to be checked!\n" if ($name ne "rps12+2");
+												print $logfile "Warning: $name (negative one-intron PCG) has non-canonical start codon and intron-exon boundary need to be checked!\n" if ($name ne "rps12+2");
 											}elsif ($ticks == 0) {
-												print $logfile "Warning: $name (negative one-intron PCG) has alternative start codon!\n" if ($name ne "rps12+2");
+												print $logfile "Warning: $name (negative one-intron PCG) has non-canonical start codon!\n" if ($name ne "rps12+2");
 											}
 										}elsif ((abs($start2-$end3) < 4000) and (($start2 < $end2) or ($start3 < $end3) or ($start2 < $end3))) {
 											print $logfile "Warning: $name (negative one-intron PCG) has not been annotated due to two different direction exons!\n";
@@ -9267,7 +9267,7 @@ while (@sequence_filenames) {
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 										#print $out_annotation "                     "."/translation=\"$aa\""."\n";
 										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (negative one-intron PCG) has alternative start codon!\n";
+										print $logfile "Warning: $name (negative one-intron PCG) has non-canonical start codon!\n";
 									}
 								}
 							}
@@ -10834,7 +10834,7 @@ while (@sequence_filenames) {
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 										#print $out_annotation "                     "."/translation=\"$aa\""."\n";
 										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (positive two-intron PCG) has alternative start codon!\n";
+										print $logfile "Warning: $name (positive two-intron PCG) has non-canonical start codon!\n";
 									}elsif (abs($end4-$start2) > 3000) {
 										print $out_annotation "     "."gene"."            ".$start3."..".$end3."\n";
 										print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -12487,7 +12487,7 @@ while (@sequence_filenames) {
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 										#print $out_annotation "                     "."/translation=\"$aa\""."\n";
 										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (negative two-intron PCG) has alternative start codon!\n";
+										print $logfile "Warning: $name (negative two-intron PCG) has non-canonical start codon!\n";
 									}elsif (abs($start2-$end4) > 3000) {
 										print $out_annotation "     "."gene"."            "."complement(".$end3."..".$start3.")\n";
 										print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -14060,7 +14060,7 @@ while (@sequence_filenames) {
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 										#print $out_annotation "                     "."/translation=\"$aa\""."\n";
 										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (positive two-intron PCG) has alternative start codon!\n";
+										print $logfile "Warning: $name (positive two-intron PCG) has non-canonical start codon!\n";
 									}elsif (abs($end4-$start2) > 3000) {
 										print $out_annotation "     "."gene"."            ".$start3."..".$end3."\n";
 										print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -15712,7 +15712,7 @@ while (@sequence_filenames) {
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 										#print $out_annotation "                     "."/translation=\"$aa\""."\n";
 										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (negative two-intron PCG) has alternative start codon!\n";
+										print $logfile "Warning: $name (negative two-intron PCG) has non-canonical start codon!\n";
 									}elsif (abs($start2-$end4) > 3000) {
 										print $out_annotation "     "."gene"."            "."complement(".$end3."..".$start3.")\n";
 										print $out_annotation "                     "."/gene=\"$name\""."\n";
