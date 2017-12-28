@@ -99,7 +99,7 @@ FEATURES             Location/Qualifiers
                      /product="tRNA-Val"
                      /note="Geneious name: trnV-UAC tRNA"
      tRNA            join(49168..49202, 49692..49741)
-                     /gene="trnL-UAA"
+                     /gene="trnL-UAG"
                      /product="tRNA-Leu"
                      /note="Geneious name: trnL-UAA tRNA"
      tRNA            complement(37759..37847)
@@ -1458,6 +1458,17 @@ FEATURES             Location/Qualifiers
                      /db_xref="GI:403488741"
                      /translation="MNLEVLAQLTVLTLIIISGPLVIALLAVRKGNL"
                      /note="Geneious name: ycf12 CDS"
+     CDS             complement(10240..10338)
+                     /gene="psaM"
+                     /locus_tag="ADP42_gp083"
+                     /codon_start=1
+                     /transl_table=11
+                     /product="photosystem I subunit XII"
+                     /protein_id="YP_009158412.1"
+                     /db_xref="GI:885000685"
+                     /db_xref="GeneID:25020614"
+                     /translation="MTSISESQISIALIAALITSILAFRLGKALYQ"
+                     /note="Geneious name: psaM CDS"
      CDS             29326..29415
                      /gene="petN"
                      /codon_start=1
@@ -1636,7 +1647,7 @@ FEATURES             Location/Qualifiers
                      /gene="rps4"
                      /note="Geneious name: rps4 gene"
      gene            49168..49741
-                     /gene="trnL-UAA"
+                     /gene="trnL-UAG"
                      /note="Geneious name: trnL-UAA gene"
      gene            complement(126409..126966)
                      /gene="ndhI"
@@ -1674,6 +1685,11 @@ FEATURES             Location/Qualifiers
      gene            complement(52278..52640)
                      /gene="ndhC"
                      /note="Geneious name: ndhC gene"
+     gene            69913..70270
+                     /gene="tufA"
+                     /note="translational elongation factor Tu"
+                     /pseudo
+                     /note="Geneious name: tufA gene"
      gene            complement(72980..73327)
                      /gene="rpl20"
                      /note="Geneious name: rpl20 gene"
@@ -1776,6 +1792,9 @@ FEATURES             Location/Qualifiers
      gene            10683..10784
                      /gene="ycf12"
                      /note="Geneious name: ycf12 gene"
+     gene            complement(10240..10338)
+                     /gene="psaM"
+                     /note="Geneious name: psaM gene"
      gene            29326..29415
                      /gene="petN"
                      /note="Geneious name: petN gene"
