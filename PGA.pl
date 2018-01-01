@@ -15847,7 +15847,7 @@ sub gettime {
 }
 
 sub argument{
-	my @options=("help|h","reference|r:s","target|t:s","ir|i:i","degree|d:i","percent|p:i","qcoverage|q:s","out|o:s","form|f:s","log|l:s");
+	my @options=("help|h","reference|r:s","target|t:s","ir|i:i","degree|d:i","pidentity|p:i","qcoverage|q:s","out|o:s","form|f:s","log|l:s");
 	my %options;
 	GetOptions(\%options,@options);
 	exec ("pod2usage $0") if ((keys %options)==0 or $options{'h'} or $options{'help'});
@@ -15878,7 +15878,7 @@ __DATA__
 
 =head1 COPYRIGHT
 
-    copyright (C) 2017 Xiao-Jian Qu
+    copyright (C) 2018 Xiao-Jian Qu
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -15900,18 +15900,20 @@ __DATA__
 =head1 SYNOPSIS
 
     PGA.pl -r -t [-i -d -p -q -o -f -l]
-    Copyright (C) 2017 Xiao-Jian Qu
+    Copyright (C) 2018 Xiao-Jian Qu
     Please contact <quxiaojian@mail.kib.ac.cn>, if you have any bugs or questions.
 
     [-h -help]         help information.
-    [-r -reference]    required: input directory name containing GenBank-format file(s) that from the same or close families. (default: reference)
-    [-t -target]       required: input directory name containing FASTA-format file(s) that you want to annotate. (default: target)
-    [-i -ir]           optional: allowed minimum value for inverted-repeat (IR) length. (default: 1000)
-    [-d -degree]       optional: 1st (2nd, 3rd and so on) longest IR that you want to annotate. (default: 1)
-    [-p -percent]      optional: TBLASTN percent identity lower than this value will not be annotated. (default: 40)
-    [-q -qcoverage]    optional: query coverage per annotated PCG less than or more than each of these two values (<1,>1), respectively. (default: 0.5,2)
-    [-o -out]          optional: output directory name. (default: gb)
-    [-f -form]         optional: circular or linear form for FASTA-format file. (default: circular)
-    [-l -log]          optional: log file name containing warning information for annotated GenBank-format file(s). (default: warning)
+    [-r -reference]    required: (default: reference) input directory name containing GenBank-format file(s) that from the same or close families.
+    [-t -target]       required: (default: target) input directory name containing FASTA-format file(s) that you want to annotate.
+    [-i -ir]           optional: (default: 1000) allowed minimum value for inverted-repeat (IR) length.
+    [-d -degree]       optional: (default: 1) 1st (2nd, 3rd and so on) longest IR that you want to annotate.
+    [-p -pidentity]    optional: (default: 40) any PCG with a TBLASTN percent identity less than this value will be listed in the log file and
+                       will not be annotated.
+    [-q -qcoverage]    optional: (default: 0.5,2) any PCG with a query coverage per annotated PCG less or greater than each of these two values (<1,>1)
+                       will be listed in the log file.
+    [-o -out]          optional: (default: gb) output directory name.
+    [-f -form]         optional: (default: circular) circular or linear form for FASTA-format file.
+    [-l -log]          optional: (default: warning) log file name containing warning information for annotated GenBank-format file(s).
 
 =cut
