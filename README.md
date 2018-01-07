@@ -40,7 +40,7 @@ Usage:
         [-r -reference]    required: (default: reference) input directory name containing GenBank-format file(s) that from the same or close families.
         [-t -target]       required: (default: target) input directory name containing FASTA-format file(s) that you want to annotate.
         [-i -ir]           optional: (default: 1000) allowed minimum value for inverted-repeat (IR) length.
-        [-d -degree]       optional: (default: 1) 1st (2nd, 3rd and so on) longest IR that you want to annotate.
+        [-d -degree]       optional: (default: 1) 1st (2nd, 3rd and so on) longest inverted repeat that you want to annotate as IR.
         [-p -pidentity]    optional: (default: 40) any PCG with a TBLASTN percent identity less than this value will be listed in the log file and
                            will not be annotated.
         [-q -qcoverage]    optional: (default: 0.5,2) any PCG with a query coverage per annotated PCG less or greater than each of these two values (<1,>1)
