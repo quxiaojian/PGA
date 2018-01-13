@@ -1,5 +1,5 @@
 **Plastid Genome Annotation**<br />
-Copyright (C) 2017 Xiao-Jian Qu<br />
+Copyright (C) 2018 Xiao-Jian Qu<br />
 
 **Contact**<br />
 quxiaojian@mail.kib.ac.cn<br />
@@ -10,7 +10,11 @@ Perl<br />
 Windows, Linux or Mac<br />
 
 **General Introduction to PGA**<br />
-PGA(Plastid Genome Annotation) is capable of annotating multiple plastid genomes using GenBank-format plastomes as reference. Three steps will be conducted to annotate plastomes: (1) extracting annotation features from GenBank-format reference plastomes, (2) blasting of annotation features against FASTA-format target plastomes, (3) generating GenBank-format files for each FASTA-format plastome sequence, and giving corresponding warning information for further manual check.<br />
+PGA (Plastid Genome Annotation), a standalone command line tool, can perform rapid, accurate, and flexible batch annotation of newly generated target plastomes based on well-annotated reference plastomes. In contrast to current existing tools, PGA uses reference plastomes as the query and unannotated target plastomes as the subject to locate genes, which we refer to as the reverse query-subject BLAST search approach. PGA accurately identifies gene and intron boundaries as well as intron loss. The program outputs GenBank-formatted files as well as a log file to assist users in verifying annotations.<br />
+
+Following six steps will be conducted to annotate plastomes: (1) Preparation of GenBank-formatted reference plastomes; (2) Preparation of FASTA-formatted target plastomes; (3) Reference database generation; (4) BLAST search; (5) Determining feature boundaries; (6) Generating GenBank and log files.<br />
+
+![PGA flowchart](https://github.com/quxiaojian/PGA/blob/master/PGA.tiff)
 
 **Preparations**<br />
 
@@ -32,26 +36,26 @@ chmod a+rwx PGA.pl
 You can test PGA.pl by type PGA.pl, which will show the usage information.<br />
 ```
 Usage:
-        PGA.pl -r -t [-i -d -p -q -o -f -l]
-        Copyright (C) 2018 Xiao-Jian Qu
-        Please contact <quxiaojian@mail.kib.ac.cn>, if you have any bugs or questions.
+    PGA.pl -r -t [-i -d -p -q -o -f -l]
+    Copyright (C) 2018 Xiao-Jian Qu
+    Please contact <quxiaojian@mail.kib.ac.cn>, if you have any bugs or questions.
 
-        [-h -help]         help information.
-        [-r -reference]    required: (default: reference) input directory name containing GenBank-format file(s) that from the same or close families.
-        [-t -target]       required: (default: target) input directory name containing FASTA-format file(s) that you want to annotate.
-        [-i -ir]           optional: (default: 1000) allowed minimum value for inverted-repeat (IR) length.
-        [-d -degree]       optional: (default: 1) 1st (2nd, 3rd and so on) longest inverted repeat that you want to annotate as IR.
-        [-p -pidentity]    optional: (default: 40) any PCG with a TBLASTN percent identity less than this value will be listed in the log file and
-                           will not be annotated.
-        [-q -qcoverage]    optional: (default: 0.5,2) any PCG with a query coverage per annotated PCG less or greater than each of these two values (<1,>1)
-                           will be listed in the log file.
-        [-o -out]          optional: (default: gb) output directory name.
-        [-f -form]         optional: (default: circular) circular or linear form for FASTA-format file.
-        [-l -log]          optional: (default: warning) log file name containing warning information for annotated GenBank-format file(s).
+    [-h -help]         help information.
+    [-r -reference]    required: (default: reference) input directory name containing GenBank-formatted file(s) that from the same or close families.
+    [-t -target]       required: (default: target) input directory name containing FASTA-formatted file(s) that will be annotated.
+    [-i -ir]           optional: (default: 1000) minimum allowed inverted-repeat (IR) length.
+    [-d -degree]       optional: (default: 1) the first (second, third, and so on) longest inverted repeat that will be annotated as the IR.
+    [-p -pidentity]    optional: (default: 40) any PCGs with a TBLASTN percent identity less than this value will be listed in the log file and
+                       will not be annotated.
+    [-q -qcoverage]    optional: (default: 0.5,2) any PCGs with a query coverage per annotated PCG less or greater than each of these two values (<1,>1)
+                       will be listed in the log file.
+    [-o -out]          optional: (default: gb) output directory name.
+    [-f -form]         optional: (default: circular) circular or linear form for FASTA-formatted file.
+    [-l -log]          optional: (default: warning) log file name containing warning information for annotated GenBank-formatted file(s).
 ```
 
 **Test**<br />
-(1) annotating your FASTA-format target plastomes.<br />
+(1) annotating your FASTA-formatted target plastomes.<br />
 ```
 PGA.pl -r reference -t target
 ```
@@ -61,7 +65,13 @@ PGA.pl -r reference -t target -i 1000 -d 1 -p 40 -q 0.5,2 -o gb -f circular -l w
 ```
 
 (2) checking warning information in log file.<br />
-(3) correcting your annotations according to warning information using Geneious.<br />
+(3) correcting your annotations using Geneious according to warning information in log file.<br />
+
+**Boundary Detection Algorithms**<br />
+Three algorithms are applied to (1) determine start and stop codons, (2) locate intron-exon boundaries and detect intron loss, and (3) identify the boundaries of the Inverted Repeat (IR). Following two figures show the first two algorithms, respectively. IR boundary annotation is accomplished via a self-BLASTN search. Two parameters can be adjusted to determine the IR boundaries: minimum allowed IR length (default = 1000) and the first (second, third, and so on) longest inverted repeat that will be annotated as the IR (default = 1).<br />
+![GBDA](https://github.com/quxiaojian/PGA/blob/master/GBDA.tiff)
+
+![IBDA](https://github.com/quxiaojian/PGA/blob/master/IBDA.tiff)
 
 **Citation**<br />
 If you use PGA in you scientific research, please cite:<br />
