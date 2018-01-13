@@ -64,7 +64,7 @@ PGA.pl -r test/1/reference -t test/1/target -i 1000 -d 1 -p 40 -q 0.5,2 -o gb -f
 ```
 
 **Input and Output**<br />
-Annotation of the plastome of Rosa roxburghii using PGA. (a) ¡°Amborella_trichopoda.gb¡± shows the partial GenBank-formatted reference plastome of Amborella trichopoda, as revised from AJ506156. (b) ¡°Rosa_roxburghii.fasta¡± shows the partial FASTA-formatted target plastome of Rosa roxburghii, revised from NC_032038. (c) ¡°Rosa_roxburghii.gb¡± shows the output GenBank-formatted file containing partial annotation information for the target plastome of Rosa roxburghii. (d) ¡°warning.log¡± shows warning and statistical items during the annotation of the target plastome of Rosa roxburghii. The log file indicates the loss of the atpF intron in Rosa roxburghii. There are 114 total genes in the reference and target plastomes.<br />
+Annotation of the plastome of Rosa roxburghii with the plastome of Amborella trichopoda as reference. (a) "Amborella_trichopoda.gb" shows the partial GenBank-formatted reference plastome of Amborella trichopoda, as revised from AJ506156. (b) "Rosa_roxburghii.fasta" shows the partial FASTA-formatted target plastome of Rosa roxburghii, revised from NC_032038. (c) "Rosa_roxburghii.gb" shows the output GenBank-formatted file containing partial annotation information for the target plastome of Rosa roxburghii. (d) "warning.log" shows warning and statistical items during the annotation of the target plastome of Rosa roxburghii. The log file indicates the loss of the atpF intron in Rosa roxburghii. There are 114 total genes in the reference and target plastomes.<br />
 
 ```
 (a) Amborella_trichopoda.gb
@@ -106,9 +106,11 @@ FEATURES          Location/Qualifiers
                          NSELHLRTISANIGMLGTMKNITD"
      gene           complement(14506..16330)
                     /gene="atpF"
+
 (b) Rosa_roxburghii.fasta
 >Rosa_roxburghii
 ATGGGCGAACGACGGGAATTGAACCCGCGCGTGGTGGATTCACAATCCACTGCCTTGATC
+
 (c) Rosa_roxburghii.gb
 LOCUS       Rosa_roxburghii  156749 bp    DNA     circular PLN 25-DEC-2017
 FEATURES             Location/Qualifiers
@@ -132,6 +134,7 @@ FEATURES             Location/Qualifiers
                      /codon_start=1
                      /transl_table=11
                      /product="ATP synthase CF0 subunit I"
+
 (d) warning.log
 Rosa_roxburghii
 Warning: atpF (negative one-intron PCG) lost intron!
@@ -148,8 +151,12 @@ All gene names from the reference plastome(s) that were not annotated in the tar
 
 **Boundary Detection Algorithms**<br />
 Three algorithms are applied to (1) determine start and stop codons, (2) locate intron-exon boundaries and detect intron loss, and (3) identify the boundaries of the Inverted Repeat (IR). Following two figures show the first two algorithms, respectively. IR boundary annotation is accomplished via a self-BLASTN search. Two parameters can be adjusted to determine the IR boundaries: minimum allowed IR length (default = 1000) and the first (second, third, and so on) longest inverted repeat that will be annotated as the IR (default = 1).<br />
+
+Gene Boundary Detection Algorithm<br />
 ![GBDA](https://github.com/quxiaojian/PGA/blob/master/GBDA.png)
 
+
+Intron Boundary Detection Algorithm<br />
 ![IBDA](https://github.com/quxiaojian/PGA/blob/master/IBDA.png)
 
 **Citation**<br />
