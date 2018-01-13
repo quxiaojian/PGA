@@ -15904,16 +15904,16 @@ __DATA__
     Please contact <quxiaojian@mail.kib.ac.cn>, if you have any bugs or questions.
 
     [-h -help]         help information.
-    [-r -reference]    required: (default: reference) input directory name containing GenBank-format file(s) that from the same or close families.
-    [-t -target]       required: (default: target) input directory name containing FASTA-format file(s) that you want to annotate.
-    [-i -ir]           optional: (default: 1000) allowed minimum value for inverted-repeat (IR) length.
-    [-d -degree]       optional: (default: 1) 1st (2nd, 3rd and so on) longest inverted repeat that you want to annotate as IR.
-    [-p -pidentity]    optional: (default: 40) any PCG with a TBLASTN percent identity less than this value will be listed in the log file and
+    [-r -reference]    required: (default: reference) input directory name containing GenBank-formatted file(s) that from the same or close families.
+    [-t -target]       required: (default: target) input directory name containing FASTA-formatted file(s) that will be annotated.
+    [-i -ir]           optional: (default: 1000) minimum allowed inverted-repeat (IR) length.
+    [-d -degree]       optional: (default: 1) the first (second, third, and so on) longest inverted repeat that will be annotated as the IR.
+    [-p -pidentity]    optional: (default: 40) any PCGs with a TBLASTN percent identity less than this value will be listed in the log file and
                        will not be annotated.
-    [-q -qcoverage]    optional: (default: 0.5,2) any PCG with a query coverage per annotated PCG less or greater than each of these two values (<1,>1)
+    [-q -qcoverage]    optional: (default: 0.5,2) any PCGs with a query coverage per annotated PCG less or greater than each of these two values (<1,>1)
                        will be listed in the log file.
     [-o -out]          optional: (default: gb) output directory name.
-    [-f -form]         optional: (default: circular) circular or linear form for FASTA-format file.
-    [-l -log]          optional: (default: warning) log file name containing warning information for annotated GenBank-format file(s).
+    [-f -form]         optional: (default: circular) circular or linear form for FASTA-formatted file.
+    [-l -log]          optional: (default: warning) log file name containing warning information for annotated GenBank-formatted file(s).
 
 =cut
