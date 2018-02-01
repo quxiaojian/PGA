@@ -95,7 +95,7 @@ while (@filenames) {
 		my $tick=0;
 		open (my $in_genbank,"<","$filename_base\_temp2");
 		while (<$in_genbank>){
-			chomp;
+			$_=~ s/\r|\n//g;
 			@row_array=split /\s+/,$_;
 			if (/^LOCUS/i){
 				$species_name=$latin_name;
@@ -222,7 +222,7 @@ while (@filenames) {
 	    }
 		close $in_genebank;
 		foreach (@sequence){
-			chomp;
+			$_=~ s/\r|\n//g;
 			$_=~ s/\s*//g;
 			$_=~ s/\d+//g;
 			push @fas1,$_;
@@ -236,7 +236,7 @@ while (@filenames) {
 		my (%SP1,%GENE1,%STRAND1,%START1,%END1,%TYPE1,%STRAND2,%START2,%END2,%TYPE2,%STRAND3,%START3,%END3,%TYPE3,@output2);
 		my $cnt1=0;
 		foreach (@output1) {
-			chomp;
+			$_=~ s/\r|\n//g;
 			$cnt1++;
 			($SP1{$cnt1},$GENE1{$cnt1},$STRAND1{$cnt1},$START1{$cnt1},$END1{$cnt1},$TYPE1{$cnt1},$STRAND2{$cnt1},$START2{$cnt1},$END2{$cnt1},$TYPE2{$cnt1})=(split /\s+/,$_)[0,1,2,3,4,5,6,7,8,9];
 		}
@@ -291,7 +291,7 @@ while (@filenames) {
 		}
 		my %hash_join;
 		foreach (@output3){
-			chomp;
+			$_=~ s/\r|\n//g;
 			$cnt2++;
 			($SP2{$cnt2},$GENE2{$cnt2},$STRAND4{$cnt2},$START4{$cnt2},$END4{$cnt2},$TYPE4{$cnt2})=(split /\s+/,$_)[0,1,2,3,4,5];
 			my $str=substr($seq1,($START4{$cnt2}-1),($END4{$cnt2}-$START4{$cnt2}+1));
@@ -332,7 +332,7 @@ while (@filenames) {
 		my (%SP3,%GENE3,%STRAND5,%START5,%END5,%TYPE5,$last0,$last1,$last2,@output4);
 		my $cnt3=0;
 		foreach (@output3){
-			chomp;
+			$_=~ s/\r|\n//g;
 			$cnt3++;
 			($SP3{$cnt3},$GENE3{$cnt3},$STRAND5{$cnt3},$START5{$cnt3},$END5{$cnt3},$TYPE5{$cnt3})=(split /\s+/,$_)[0,1,2,3,4,5];
 		}
@@ -369,7 +369,7 @@ while (@filenames) {
 			$seq2=shift @fasta2;
 		}
 		foreach (@output4){
-			chomp;
+			$_=~ s/\r|\n//g;
 			$cnt4++;
 			($SP4{$cnt4},$GENE4{$cnt4},$STRAND6{$cnt4},$START6{$cnt4},$END6{$cnt4},$TYPE6{$cnt4})=(split /\s+/,$_)[0,1,2,3,4,5];
 			my $str=substr($seq2,($START6{$cnt4}-1),($END6{$cnt4}-$START6{$cnt4}+1));
@@ -392,7 +392,7 @@ while (@filenames) {
 		my $tick=0;
 		open (my $in_genbank,"<","$filename_base\_temp2");
 		while (<$in_genbank>){
-			chomp;
+			$_=~ s/\r|\n//g;
 			@row_array=split /\s+/,$_;
 			if (/^LOCUS/i){
 				$species_name=$latin_name;
@@ -519,7 +519,7 @@ while (@filenames) {
 	    }
 		close $in_genebank;
 		foreach (@sequence){
-			chomp;
+			$_=~ s/\r|\n//g;
 			$_=~ s/\s*//g;
 			$_=~ s/\d+//g;
 			push @fas1,$_;
@@ -533,7 +533,7 @@ while (@filenames) {
 		my (%SP1,%GENE1,%STRAND1,%START1,%END1,%TYPE1,%STRAND2,%START2,%END2,%TYPE2,%STRAND3,%START3,%END3,%TYPE3,@output2);
 		my $cnt1=0;
 		foreach (@output1) {
-			chomp;
+			$_=~ s/\r|\n//g;
 			$cnt1++;
 			($SP1{$cnt1},$GENE1{$cnt1},$STRAND1{$cnt1},$START1{$cnt1},$END1{$cnt1},$TYPE1{$cnt1},$STRAND2{$cnt1},$START2{$cnt1},$END2{$cnt1},$TYPE2{$cnt1},$STRAND3{$cnt1},$START3{$cnt1},$END3{$cnt1},$TYPE3{$cnt1})=(split /\s+/,$_)[0,1,2,3,4,5,6,7,8,9,10,11,12,13];
 		}
@@ -632,7 +632,7 @@ while (@filenames) {
 		}
 		my %hash_join;
 		foreach (@output3){
-			chomp;
+			$_=~ s/\r|\n//g;
 			$cnt2++;
 			($SP2{$cnt2},$GENE2{$cnt2},$STRAND4{$cnt2},$START4{$cnt2},$END4{$cnt2},$TYPE4{$cnt2})=(split /\s+/,$_)[0,1,2,3,4,5];
 			my $str=substr($seq1,($START4{$cnt2}-1),($END4{$cnt2}-$START4{$cnt2}+1));
@@ -673,7 +673,7 @@ while (@filenames) {
 		my (%SP3,%GENE3,%STRAND5,%START5,%END5,%TYPE5,$last,@output4);
 		my $cnt3=0;
 		foreach (@output3){
-			chomp;
+			$_=~ s/\r|\n//g;
 			$cnt3++;
 			($SP3{$cnt3},$GENE3{$cnt3},$STRAND5{$cnt3},$START5{$cnt3},$END5{$cnt3},$TYPE5{$cnt3})=(split /\s+/,$_)[0,1,2,3,4,5];
 		}
@@ -703,7 +703,7 @@ while (@filenames) {
 			$seq2=shift @fasta2;
 		}
 		foreach (@output4){
-			chomp;
+			$_=~ s/\r|\n//g;
 			$cnt4++;
 			($SP4{$cnt4},$GENE4{$cnt4},$STRAND6{$cnt4},$START6{$cnt4},$END6{$cnt4},$TYPE6{$cnt4})=(split /\s+/,$_)[0,1,2,3,4,5];
 			my $str=substr($seq2,($START6{$cnt4}-1),($END6{$cnt4}-$START6{$cnt4}+1));
@@ -726,7 +726,7 @@ while (@filenames) {
 		my $tick=0;
 		open (my $in_genbank,"<","$filename_base\_temp2");
 		while (<$in_genbank>){
-			chomp;
+			$_=~ s/\r|\n//g;
 			@row_array=split /\s+/,$_;
 			if (/^LOCUS/i){
 				$species_name=$latin_name;
@@ -854,7 +854,7 @@ while (@filenames) {
 	    }
 		close $in_genebank;
 		foreach (@sequence){
-			chomp;
+			$_=~ s/\r|\n//g;
 			$_=~ s/\s*//g;
 			$_=~ s/\d+//g;
 			push @fas1,$_;
@@ -868,7 +868,7 @@ while (@filenames) {
 		my (%SP1,%GENE1,%STRAND1,%START1,%END1,%TYPE1,%STRAND2,%START2,%END2,%TYPE2,%STRAND3,%START3,%END3,%TYPE3,@output2);
 		my $cnt1=0;
 		foreach (@output1) {
-			chomp;
+			$_=~ s/\r|\n//g;
 			$cnt1++;
 			($SP1{$cnt1},$GENE1{$cnt1},$STRAND1{$cnt1},$START1{$cnt1},$END1{$cnt1},$TYPE1{$cnt1},$STRAND2{$cnt1},$START2{$cnt1},$END2{$cnt1},$TYPE2{$cnt1},$STRAND3{$cnt1},$START3{$cnt1},$END3{$cnt1},$TYPE3{$cnt1})=(split /\s+/,$_)[0,1,2,3,4,5,6,7,8,9,10,11,12,13];
 		}
@@ -979,7 +979,7 @@ while (@filenames) {
 		}
 		my %hash_join;
 		foreach (@output5){
-			chomp;
+			$_=~ s/\r|\n//g;
 			$cnt2++;
 			($SP2{$cnt2},$GENE2{$cnt2},$STRAND4{$cnt2},$START4{$cnt2},$END4{$cnt2},$TYPE4{$cnt2},$STRAND5{$cnt2},$START5{$cnt2},$END5{$cnt2},$TYPE5{$cnt2},$STRAND6{$cnt2},$START6{$cnt2},$END6{$cnt2},$TYPE6{$cnt2})=(split /\s+/,$_)[0,1,2,3,4,5,6,7,8,9,10,11,12,13];
 			if (defined $STRAND5{$cnt2} eq "") {
@@ -1029,7 +1029,7 @@ while (@filenames) {
 		my (%SP3,%GENE3,%STRAND7,%START7,%END7,%TYPE7,$last0,$last1,$last2,@output4);
 		my $cnt3=0;
 		foreach (@output3){
-			chomp;
+			$_=~ s/\r|\n//g;
 			$cnt3++;
 			($SP3{$cnt3},$GENE3{$cnt3},$STRAND7{$cnt3},$START7{$cnt3},$END7{$cnt3},$TYPE7{$cnt3})=(split /\s+/,$_)[0,1,2,3,4,5];
 		}
@@ -1066,7 +1066,7 @@ while (@filenames) {
 			$seq2=shift @fasta2;
 		}
 		foreach (@output4){
-			chomp;
+			$_=~ s/\r|\n//g;
 			$cnt4++;
 			($SP4{$cnt4},$GENE4{$cnt4},$STRAND8{$cnt4},$START8{$cnt4},$END8{$cnt4},$TYPE8{$cnt4})=(split /\s+/,$_)[0,1,2,3,4,5];
 			my $str=substr($seq2,($START8{$cnt4}-1),($END8{$cnt4}-$START8{$cnt4}+1));
@@ -1164,7 +1164,7 @@ my %hash_codon=("---"=>"-","TAA"=>"*","TAG"=>"*","TGA"=>"*","TCA"=>"S","TCC"=>"S
 open (my $in_product,"<","$Bin/product.txt");
 my %hash_product;
 while (<$in_product>){
-	chomp;
+	$_=~ s/\r|\n//g;
 	my @product=split /\t/,$_;
 	$hash_product{$product[0]}=$product[1];
 }
@@ -1178,7 +1178,9 @@ open (my $in_all2,"<","all2.fasta");
 open (my $out_all3,">","all3.fasta");
 my ($header_in_all2,$sequence_in_all2);
 while (defined ($header_in_all2=<$in_all2>) && defined ($sequence_in_all2=<$in_all2>)){
-	chomp ($header_in_all2,$sequence_in_all2);
+	$header_in_all2=~ s/\r|\n//g;
+	$sequence_in_all2=~ s/\r|\n//g;
+
 	my $length=length $sequence_in_all2;
 	my $aa;
 
@@ -1276,7 +1278,9 @@ open (my $out_reference4,">","reference4.fasta");
 my ($header_in_all3,$sequence_in_all3,%hash1_in_all3,%hash2_in_all3,%hash3_in_all3,%hash4_in_all3);
 my %gene_number_ref;
 while (defined ($header_in_all3=<$in_all3>) and defined ($sequence_in_all3=<$in_all3>)){
-	chomp ($header_in_all3,$sequence_in_all3);
+	$header_in_all3=~ s/\r|\n//g;
+	$sequence_in_all3=~ s/\r|\n//g;
+
 	if ($header_in_all3=~ /^>(trn)(.+)-1_coding/ or $header_in_all3=~ /^>(trn)(.+)-2_coding/ or $header_in_all3=~ /^>(trn)(.+)-3_coding/){
 		$hash1_in_all3{$header_in_all3}=$sequence_in_all3;
 	}
@@ -1355,7 +1359,8 @@ while (@sequence_filenames) {
 	my $row_ag=<$input_ag>;
 	print $output_ag $row_ag;
 	while ($row_ag=<$input_ag>){
-		chomp $row_ag;
+		$row_ag=~ s/\r|\n//g;
+
 		if ($row_ag=~ /^>/) {
 			print $output_ag "\n".$row_ag."\n";
 		}else{
@@ -1370,7 +1375,7 @@ while (@sequence_filenames) {
 	open (my $in_fasta,"<",$output_fasta);
 	my @fasta;
 	while (<$in_fasta>){
-		chomp;
+		$_=~ s/\r|\n//g;
 		push @fasta,$_;
 	}
 	close $in_fasta;
@@ -1382,15 +1387,7 @@ while (@sequence_filenames) {
 		$header=$1 if ($head=~ /^>(.+)$/);
 		$sequence=shift @fasta;
 		$sequence= uc $sequence;
-		if ($osname eq "MSWin32") {
-			$length_cp=length $sequence;
-		}elsif ($osname eq "cygwin") {
-			$length_cp=(length $sequence)-1;
-		}elsif ($osname eq "linux") {
-			$length_cp=(length $sequence)-1;
-		}elsif ($osname eq "darwin") {
-			$length_cp=(length $sequence)-1;
-		}
+		$length_cp=length $sequence;
 	}
 	my $rev_coms=reverse $sequence;
 	$rev_coms=~ tr/ACGTacgt/TGCAtgca/;
@@ -1475,7 +1472,7 @@ while (@sequence_filenames) {
 	open (my $input_IR,"<","IR_temp");
 	my %IR;
 	while (<$input_IR>) {
-		chomp;
+		$_=~ s/\r|\n//g;
 		my ($c1,$c2,$c3,$ir_length,$c5,$c6,$qs,$qe,$ss,$se,$c11,$c12)=split /\t/,$_;
 		if (($ir_length != $length_cp) and ($ir_length >= $inverted_repeat)) {
 			$IR{$ir_length}=$qs."\t".$qe."\t".$ss."\t".$se;
@@ -1509,13 +1506,13 @@ while (@sequence_filenames) {
 	open (my $in_bt_ref4,"<","blast_reference4");
 	open (my $out_bt_ref,">>","reference_temp");
 	while(<$in_bt_ref1>){
-		chomp;
+		$_=~ s/\r|\n//g;
 		print $out_bt_ref "$_\n";
 	}
 
 	my (%gene_remain1,%gene_remain2,%gene_remove1,%gene_remove2,%gene_loss,%gene_loss1,%gene_loss2);
 	while(<$in_bt_ref3>){# _CDS_aa
-		chomp;
+		$_=~ s/\r|\n//g;
 		my ($gene,$taxon,$similarity)=split /\t/,$_;
 		if (($similarity >= $similarity_value) and ($gene=~ /(.*)_CDS_aa_(.*)/)) {
 			$gene_remain1{$1}++;
@@ -1534,7 +1531,7 @@ while (@sequence_filenames) {
 	}
 
 	while(<$in_bt_ref4>){# -1/2/3_coding_aa
-		chomp;
+		$_=~ s/\r|\n//g;
 		my ($gene,$taxon,$similarity)=split /\t/,$_;
 		if (($similarity >= $similarity_value) and ($gene=~ /(.*)-(\d)_coding_aa_(.*)/)) {
 			$gene_remain2{$1}++;
@@ -1552,7 +1549,7 @@ while (@sequence_filenames) {
 
 	seek($in_bt_ref4,0,0);
 	while(<$in_bt_ref4>){# -1/2/3_coding_aa
-		chomp;
+		$_=~ s/\r|\n//g;
 		my ($gene,$taxon,$similarity)=split /\t/,$_;
 		my $name;
 		if ($gene=~ /(.*)-(\d)_coding_aa_(.*)/) {
@@ -1573,7 +1570,7 @@ while (@sequence_filenames) {
 	}
 
 	while(<$in_bt_ref2>){# _gene
-		chomp;
+		$_=~ s/\r|\n//g;
 		my ($gene,$taxon,$similarity)=split /\t/,$_;
 		my $name;
 		if ($gene=~ /(.*)_gene/) {
@@ -1594,7 +1591,7 @@ while (@sequence_filenames) {
 	open (my $in_temp,"<","reference_temp");
 	my %hash_temp;
 	while (<$in_temp>) {
-		chomp;
+		$_=~ s/\r|\n//g;
 		my ($qseqid,$sseqid,$pident,$length,$mismatch,$gapopen,$qstart,$qend,$sstart,$send,$evalue,$bitscore)=split (/\s+/,$_);
 		if ($qseqid=~ /((.+)-1_coding)_(?!aa)(.+)/){# trnK-UUU
 			$hash_temp{$1}{$3}=$pident;
@@ -1634,7 +1631,9 @@ while (@sequence_filenames) {
 	open (my $input_ref,"<","all2.fasta");
 	my ($h_ref,$s_ref,%hash_exon,%hash_exon_length,%hash_exon_sequence);
 	while (defined ($h_ref=<$input_ref>) and defined ($s_ref=<$input_ref>)){
-		chomp ($h_ref,$s_ref);
+		$h_ref=~ s/\r|\n//g;
+		$s_ref=~ s/\r|\n//g;
+
 		$h_ref=~ s/^>//g;
 		my $len=length $s_ref;
 		if ($h_ref=~ /petB-1/) {
@@ -1686,7 +1685,7 @@ while (@sequence_filenames) {
 	open (my $out_ref,">","reference.tab");
 	my @array_reference;
 	while (<$in_ref>){
-		chomp;
+		$_=~ s/\r|\n//g;
 		my ($qseqid,$sseqid,$pident,$length,$mismatch,$gapopen,$qstart,$qend,$sstart,$send,$evalue,$bitscore)=split (/\s+/,$_);
 		push @array_reference,[$qseqid,$sseqid,$pident,$length,$mismatch,$gapopen,$qstart,$qend,$sstart,$send,$evalue,$bitscore];
 	}
@@ -1886,7 +1885,7 @@ while (@sequence_filenames) {
 	############################################################
 	open (my $in_annotation,"<","$header.tab");
 	my $contig=<$in_annotation>;
-	chomp $contig;
+	$contig=~ s/\r|\n//g;
 	my %hash;
 	while (<$in_annotation>){
 		my @array=split /\t/,$_;
@@ -15767,7 +15766,7 @@ while (@sequence_filenames) {
 	open (my $input_temp,"<","$output_directory/$temp.gb");
 	open (my $output_temp,">","$output_directory/$header.gb");
 	while (<$input_temp>) {
-		chomp;
+		$_=~ s/\r|\n//g;
 		$_=~ s/rps12\+1/rps12/g;
 		$_=~ s/rps12\+2/rps12/g;
 		print $output_temp "$_\n";
