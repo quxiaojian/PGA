@@ -1121,6 +1121,13 @@ foreach my $file (@input_directory){
 		close $output_CDS;
 	}
 }
+unlink("$filename_base\_CDS.bed");
+unlink("$filename_base\_CDS.fasta");
+unlink("$filename_base\_coding.bed");
+unlink("$filename_base\_coding.fasta");
+unlink("$filename_base\_gene.bed");
+unlink("$filename_base\_gene.fasta");
+
 
 open (my $in_gene,"<","gene.fasta");
 open (my $in_coding,"<","coding.fasta");
@@ -1371,6 +1378,20 @@ while (@sequence_filenames) {
 	close $input_ag;
 	close $output_ag;
 
+	#fasta_sequence_with_length_cp*2
+	open (my $in_fasta_2,"<",$output_fasta);
+	open (my $out_fasta_2,">","fasta_temp");
+	while (<$in_fasta_2>) {
+		$_=~ s/\r|\n//g;
+		if ($_=~ /^>/) {
+			print $out_fasta_2 "$_\n";
+		}elsif ($_!~ /^>/) {
+			print $out_fasta_2 $_.$_."\n";
+		}
+	}
+	close $in_fasta_2;
+	close $out_fasta_2;
+
 	#fasta_sequence
 	open (my $in_fasta,"<",$output_fasta);
 	my @fasta;
@@ -1408,8 +1429,6 @@ while (@sequence_filenames) {
 
 	if ($osname eq "MSWin32") {
 		system ("makeblastdb.exe -in $output_fasta -hash_index -dbtype nucl");
-		#IRb and IRa
-		system ("blastn.exe -task blastn -query $output_fasta -db $output_fasta -outfmt 6 -perc_identity 99 -out IR_temp");
 		#-max_hsps 1(nucleotide,RNA,including _gene RNA and -1/-2_coding tRNA)
 		system ("blastn.exe -task blastn -query reference1.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference1");# -evalue 0.001 or 0.01
 		#-max_hsps 1(nucleotide,PCG,including _gene PCG)
@@ -1419,10 +1438,11 @@ while (@sequence_filenames) {
 		system ("tblastn.exe -task tblastn -query reference3.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference3");# -evalue 0.001 or 0.01 -max_intron_length 1000?
 		#-max_hsps 1(amino acid,intron PCG,including -1/-2/-3_coding_aa PCG)
 		system ("tblastn.exe -task tblastn -query reference4.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference4");# -evalue 0.001 or 0.01 -qcov_hsp_perc 20?
+		#IRb and IRa
+		system ("makeblastdb.exe -in fasta_temp -hash_index -dbtype nucl");
+		system ("blastn.exe -task blastn -query fasta_temp -db fasta_temp -outfmt 6 -perc_identity 99 -out IR_temp");
 	}elsif ($osname eq "cygwin") {
 		system ("makeblastdb -in $output_fasta -hash_index -dbtype nucl");
-		#IRb and IRa
-		system ("blastn -task blastn -query $output_fasta -db $output_fasta -outfmt 6 -perc_identity 99 -out IR_temp");
 		#-max_hsps 1(nucleotide,RNA,including _gene RNA and -1/-2_coding tRNA)
 		system ("blastn -task blastn -query reference1.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference1");# -evalue 0.001 or 0.01
 		#-max_hsps 1(nucleotide,PCG,including _gene PCG)
@@ -1432,10 +1452,11 @@ while (@sequence_filenames) {
 		system ("tblastn -task tblastn -query reference3.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference3");# -evalue 0.001 or 0.01 -max_intron_length 1000?
 		#-max_hsps 1(amino acid,intron PCG,including -1/-2/-3_coding_aa PCG)
 		system ("tblastn -task tblastn -query reference4.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference4");# -evalue 0.001 or 0.01 -qcov_hsp_perc 20?
+		#IRb and IRa
+		system ("makeblastdb -in fasta_temp -hash_index -dbtype nucl");
+		system ("blastn -task blastn -query fasta_temp -db fasta_temp -outfmt 6 -perc_identity 99 -out IR_temp");
 	}elsif ($osname eq "linux") {
 		system ("makeblastdb -in $output_fasta -hash_index -dbtype nucl");
-		#IRb and IRa
-		system ("blastn -task blastn -query $output_fasta -db $output_fasta -outfmt 6 -perc_identity 99 -out IR_temp");
 		#-max_hsps 1(nucleotide,RNA,including _gene RNA and -1/-2_coding tRNA)
 		system ("blastn -task blastn -query reference1.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference1");# -evalue 0.001 or 0.01
 		#-max_hsps 1(nucleotide,PCG,including _gene PCG)
@@ -1445,10 +1466,11 @@ while (@sequence_filenames) {
 		system ("tblastn -task tblastn -query reference3.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference3");# -evalue 0.001 or 0.01 -max_intron_length 1000?
 		#-max_hsps 1(amino acid,intron PCG,including -1/-2/-3_coding_aa PCG)
 		system ("tblastn -task tblastn -query reference4.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference4");# -evalue 0.001 or 0.01 -qcov_hsp_perc 20?
+		#IRb and IRa
+		system ("makeblastdb -in fasta_temp -hash_index -dbtype nucl");
+		system ("blastn -task blastn -query fasta_temp -db fasta_temp -outfmt 6 -perc_identity 99 -out IR_temp");
 	}elsif ($osname eq "darwin") {
 		system ("makeblastdb -in $output_fasta -hash_index -dbtype nucl");
-		#IRb and IRa
-		system ("blastn -task blastn -query $output_fasta -db $output_fasta -outfmt 6 -perc_identity 99 -out IR_temp");
 		#-max_hsps 1(nucleotide,RNA,including _gene RNA and -1/-2_coding tRNA)
 		system ("blastn -task blastn -query reference1.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference1");# -evalue 0.001 or 0.01
 		#-max_hsps 1(nucleotide,PCG,including _gene PCG)
@@ -1458,15 +1480,34 @@ while (@sequence_filenames) {
 		system ("tblastn -task tblastn -query reference3.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference3");# -evalue 0.001 or 0.01 -max_intron_length 1000?
 		#-max_hsps 1(amino acid,intron PCG,including -1/-2/-3_coding_aa PCG)
 		system ("tblastn -task tblastn -query reference4.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference4");# -evalue 0.001 or 0.01 -qcov_hsp_perc 20?
+		#IRb and IRa
+		system ("makeblastdb -in fasta_temp -hash_index -dbtype nucl");
+		system ("blastn -task blastn -query fasta_temp -db fasta_temp -outfmt 6 -perc_identity 99 -out IR_temp");
 	}
 
 
 	unlink("$output_fasta");
+	unlink("$output_fasta.nhd");
+	unlink("$output_fasta.nhi");
+	unlink("$output_fasta.nhr");
+	unlink("$output_fasta.nin");
+	unlink("$output_fasta.nog");
+	unlink("$output_fasta.nsd");
+	unlink("$output_fasta.nsi");
+	unlink("$output_fasta.nsq");
 	unlink ("reference_temp");
+	unlink ("fasta_temp");
+	unlink ("fasta_temp.nhd");
+	unlink ("fasta_temp.nhi");
+	unlink ("fasta_temp.nhr");
+	unlink ("fasta_temp.nin");
+	unlink ("fasta_temp.nog");
+	unlink ("fasta_temp.nsd");
+	unlink ("fasta_temp.nsi");
+	unlink ("fasta_temp.nsq");
 	my $now5=&gettime;
 	print "$now5 || Finish blasting reference to sequence!";
 	print "\n";
-
 
 	#select IR region
 	open (my $input_IR,"<","IR_temp");
@@ -1474,7 +1515,7 @@ while (@sequence_filenames) {
 	while (<$input_IR>) {
 		$_=~ s/\r|\n//g;
 		my ($c1,$c2,$c3,$ir_length,$c5,$c6,$qs,$qe,$ss,$se,$c11,$c12)=split /\t/,$_;
-		if (($ir_length != $length_cp) and ($ir_length >= $inverted_repeat)) {
+		if (($ir_length != 2 * $length_cp) and ($ir_length != $length_cp) and ($ir_length >= $inverted_repeat) and ($qe <= $length_cp) and ($se <= $length_cp) and ($qs < $ss)) {
 			$IR{$ir_length}=$qs."\t".$qe."\t".$ss."\t".$se;
 		}
 	}
@@ -1485,19 +1526,20 @@ while (@sequence_filenames) {
 		push @IR_length,$key;
 		push @boundary,$IR{$key};
 	}
-	my ($AA,$BB,$CC,$DD)=split /\t/,$boundary[$cnt-1];
+	my ($AA,$BB,$CC,$DD)=split /\t/,$boundary[0];
 	my ($JLB,$JSB,$JLA,$JSA);
-	if ($AA < $CC) {
+	if ($CC <= $length_cp) {
 		$JLB=$AA;
 		$JSB=$BB;
 		$JLA=$CC;
 		$JSA=$DD;
-	}elsif ($AA > $CC) {
-		$JLB=$DD;
-		$JSB=$CC;
-		$JLA=$BB;
-		$JSA=$AA;
+	}elsif ($CC > $length_cp) {
+		$JLB=$AA;
+		$JSB=$BB;
+		$JLA=$CC-$length_cp;
+		$JSA=$DD;
 	}
+	#print "$JLB\t$JSB\t$JLA\t$JSA\n";
 
 	#set threshold of similarity value
 	open (my $in_bt_ref1,"<","blast_reference1");
@@ -1935,7 +1977,6 @@ while (@sequence_filenames) {
 		print $out_annotation "                     /rpt_type=\"inverted\""."\n";
 	}
 
-
 	my %gene_number_seq;
 	foreach my $name (sort keys %hash){
 		############################################################
@@ -1961,9 +2002,14 @@ while (@sequence_filenames) {
 						if ($start >= 31) {
 							$seq_string1=substr($sequence,($start-31),60);
 						}elsif ($start < 31) {
-							$seq_string1=substr($sequence,0,60);
+							$seq_string1=substr($sequence,($length_cp-(30-$start)-1),(30-$start)).substr($sequence,0,$start).substr($sequence,($start-1),30);
 						}
-						my $seq_string2=substr($sequence,($end-30),60);
+						my $seq_string2;
+						if ($end <= $length_cp-30) {
+							$seq_string2=substr($sequence,($end-30),60);
+						}elsif ($end > $length_cp-30) {
+							$seq_string2=substr($sequence,($end-30),($length_cp-$end+30)).substr($sequence,0,(30-($length_cp-$end)));
+						}
 
 						my ($start_new,$end_new);
 						for (my $i=0;$i<$x;$i+=1) {
@@ -1973,7 +2019,14 @@ while (@sequence_filenames) {
 								my $repeat=substr ($seq_string1,-$j,$y);
 								if (($repeat eq $match_ref_rna) and ($marks == 0)) {
 									$start_new=$start+30-$j-$i if ($start >= 31);
-									$start_new=61-$j-$i if ($start < 31);
+									if ($start < 31) {
+										my $start_temp=$start+30-$j-$i;
+										if ($start_temp > 0) {
+											$start_new=$start_temp;
+										}elsif ($start_temp <= 0) {
+											$start_new=$length_cp+$start_temp;
+										}
+									}
 									$marks++;
 								}
 							}
@@ -1985,7 +2038,15 @@ while (@sequence_filenames) {
 							for (my $j=0;$j<60;$j+=1) {
 								my $repeat=substr ($seq_string2,$j,$y);
 								if (($repeat eq $match_ref_rna) and ($marks == 0)) {
-									$end_new=$end-30+($j+$y)+($i-$y);
+									$end_new=$end-30+($j+$y)+($i-$y) if ($end <= ($length_cp-30));
+									if ($end > ($length_cp-30)) {
+										my $end_temp=$end-30+($j+$y)+($i-$y);
+										if ($end_temp <= $length_cp) {
+											$end_new=$end_temp;
+										}elsif ($end_temp > $length_cp) {
+											$end_new=$end_temp-$length_cp;
+										}
+									}
 									$marks++;
 								}
 							}
@@ -1993,7 +2054,13 @@ while (@sequence_filenames) {
 						}
 
 						if ((defined $start_new) and (defined $end_new)) {
-							my $length_trn=$end_new-$start_new;
+							my $length_trn;
+							if ($end_new > $start_new) {
+								$length_trn=$end_new-$start_new;
+							}elsif ($end_new < $start_new) {
+								$length_trn=$end_new+($length_cp-$start_new);
+							}
+
 							if ($length_trn >= 70) {
 								print $out_annotation "     "."gene"."            ".$start_new."..".$end_new."\n";
 								print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -2001,8 +2068,14 @@ while (@sequence_filenames) {
 								print $out_annotation "                     "."/gene=\"$name\""."\n";
 								print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 								$gene_number_seq{$name}++;
+
 								my ($S,$E);
-								my $string=substr($sequence,($start_new-1),($end_new-$start_new+1));
+								my $string;
+								if ($end_new > $start_new) {
+									$string=substr($sequence,($start_new-1),($end_new-$start_new+1));
+								}elsif ($end_new < $start_new) {
+									$string=substr($sequence,($start_new-1),($length_cp-$start_new+1)).substr($sequence,0,$end_new);
+								}
 								my $lengths=length $string;
 								for (my $i=0;$i<($length_cp-$lengths);$i+=1){
 									my $repeat=substr ($sequence,$i,$lengths);
@@ -2042,19 +2115,24 @@ while (@sequence_filenames) {
 								print $out_annotation "                     "."/gene=\"$name\""."\n";
 								print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 								$gene_number_seq{$name}++;
-								print $logfile "Warning: $name (positive no-intron tRNA) need to be checked due to non-identical boundary with reference!\n";
+								print $logfile "Warning: $name (positive no-intron tRNA) must be checked due to non-identical boundary with reference!\n";
 							}elsif ($length_trn < 70) {
 								print $logfile "Warning: $name (positive no-intron tRNA) has not been annotated due to short length!\n";
 							}
 						}
 					}
 					if ($start > $end) {
-						my $seq_string1=substr($sequence,($start-30),60);
+						my $seq_string1;
+						if ($start <= ($length_cp-30)) {
+							$seq_string1=substr($sequence,($start-30),60);
+						}elsif ($start > ($length_cp-30)) {
+							$seq_string1=substr($sequence,($start-30),($length_cp-$start+30)).substr($sequence,0,(30-($length_cp-$start)));
+						}
 						my $seq_string2;
 						if ($end >= 31) {
 							$seq_string2=substr($sequence,($end-31),60);
 						}elsif ($end < 31) {
-							$seq_string2=substr($sequence,0,60);
+							$seq_string2=substr($sequence,($length_cp-(30-$end)-1),(30-$end)).substr($sequence,0,$end).substr($sequence,($end-1),30);
 						}
 						my $rev_seq_string1=reverse $seq_string1;
 						$rev_seq_string1=~ tr/ACGTacgt/TGCAtgca/;
@@ -2068,7 +2146,15 @@ while (@sequence_filenames) {
 							for (my $j=$y;$j<60;$j+=1) {
 								my $repeat=substr ($rev_seq_string1,-$j,$y);
 								if (($repeat eq $match_ref_rna) and ($marks == 0)) {
-									$start_new=$start-30+$j+$i;
+									$start_new=$start-30+$j+$i if ($start <= ($length_cp-30));
+									if ($start > ($length_cp-30)) {
+										my $start_temp=$start-30+$j+$i;
+										if ($start_temp <= $length_cp) {
+											$start_new=$start_temp;
+										}elsif ($start_temp > $length_cp) {
+											$start_new=$start_temp-$length_cp;
+										}
+									}
 									$marks++;
 								}
 							}
@@ -2081,7 +2167,14 @@ while (@sequence_filenames) {
 								my $repeat=substr ($rev_seq_string2,$j,$y);
 								if (($repeat eq $match_ref_rna) and ($marks == 0)) {
 									$end_new=$end+30-($j+$y)-($i-$y) if ($end >= 31);
-									$end_new=61-($j+$y)-($i-$y) if ($end < 31);
+									if ($end < 31) {
+										my $end_temp=$end+30-($j+$y)-($i-$y);
+										if ($end_temp > 0) {
+											$end_new=$end_temp;
+										}elsif ($end_temp <= 0) {
+											$end_new=$length_cp+$end_temp;
+										}
+									}
 									$marks++;
 								}
 							}
@@ -2089,7 +2182,13 @@ while (@sequence_filenames) {
 						}
 
 						if ((defined $start_new) and (defined $end_new)) {
-							my $length_trn=$start_new-$end_new;
+							my $length_trn;
+							if ($end_new < $start_new) {
+								$length_trn=$start_new-$end_new;
+							}elsif ($end_new > $start_new) {
+								$length_trn=$start_new+($length_cp-$end_new);
+							}
+
 							if ($length_trn >= 70) {
 								print $out_annotation "     "."gene"."            "."complement(".$end_new."..".$start_new.")\n";
 								print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -2097,8 +2196,14 @@ while (@sequence_filenames) {
 								print $out_annotation "                     "."/gene=\"$name\""."\n";
 								print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 								$gene_number_seq{$name}++;
+
 								my ($S,$E);
-								my $string=substr($sequence,($end_new-1),($start_new-$end_new+1));
+								my $string;
+								if ($end_new < $start_new) {
+									$string=substr($sequence,($end_new-1),($start_new-$end_new+1));
+								}elsif ($end_new > $start_new) {
+									$string=substr($sequence,($end_new-1),($length_cp-$end_new+1)).substr($sequence,0,$start_new);
+								}
 								my $lengths=length $string;
 								for (my $i=0;$i<($length_cp-$lengths);$i+=1){
 									my $repeat=substr ($sequence,$i,$lengths);
@@ -2138,7 +2243,7 @@ while (@sequence_filenames) {
 								print $out_annotation "                     "."/gene=\"$name\""."\n";
 								print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 								$gene_number_seq{$name}++;
-								print $logfile "Warning: $name (negative no-intron tRNA) need to be checked due to non-identical boundary with reference!\n";
+								print $logfile "Warning: $name (negative no-intron tRNA) must be checked due to non-identical boundary with reference!\n";
 							}elsif ($length_trn < 70) {
 								print $logfile "Warning: $name (negative no-intron tRNA) has not been annotated due to short length!\n";
 							}
@@ -2151,20 +2256,20 @@ while (@sequence_filenames) {
 					if ($start < $end) {
 						my $seq_string1;
 						if ($start >= 801) {
-							$seq_string1=substr($sequence,($start-801),1000);
+							$seq_string1=substr($sequence,($start-801),900);
 						}elsif ($start < 801) {
-							$seq_string1=substr($sequence,0,1000);
+							$seq_string1=substr($sequence,0,900);
 						}
-						my $seq_string2=substr($sequence,($end-200),1000);
+						my $seq_string2=substr($sequence,($end-100),900);
 
 						my ($start_new,$end_new);
 						for (my $i=0;$i<$x;$i+=1) {
 							my $match_ref_rna=substr ($sequence_ref_rna,$i,$z);
 							my $marks=0;
-							for (my $j=$z;$j<1000;$j+=1) {
+							for (my $j=$z;$j<900;$j+=1) {
 								my $repeat=substr ($seq_string1,-$j,$z);
 								if (($repeat eq $match_ref_rna) and ($marks == 0)) {
-									$start_new=$start+200-$j-$i;
+									$start_new=$start+100-$j-$i;
 									$marks++;
 								}
 							}
@@ -2173,10 +2278,10 @@ while (@sequence_filenames) {
 						for (my $i=$z;$i<$x;$i+=1) {
 							my $match_ref_rna=substr ($sequence_ref_rna,-$i,$z);
 							my $marks=0;
-							for (my $j=0;$j<1000;$j+=1) {
+							for (my $j=0;$j<900;$j+=1) {
 								my $repeat=substr ($seq_string2,$j,$z);
 								if (($repeat eq $match_ref_rna) and ($marks == 0)) {
-									$end_new=$end-200+($j+$z)+($i-$z);
+									$end_new=$end-100+($j+$z)+($i-$z);
 									$marks++;
 								}
 							}
@@ -2226,16 +2331,17 @@ while (@sequence_filenames) {
 							print $out_annotation "                     "."/gene=\"$name\""."\n";
 							print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 							$gene_number_seq{$name}++;
-							print $logfile "Warning: $name (positive rRNA) need to be checked due to non-identical boundary with reference!\n";
+							print $logfile "Warning: $name (positive rRNA) must be checked due to non-identical boundary with reference!\n";
 						}
 					}
+
 					if ($start > $end) {
-						my $seq_string1=substr($sequence,($start-200),1000);
+						my $seq_string1=substr($sequence,($start-100),900);
 						my $seq_string2;
 						if ($end >= 801) {
-							$seq_string2=substr($sequence,($end-801),1000);
+							$seq_string2=substr($sequence,($end-801),900);
 						}elsif ($end < 801) {
-							$seq_string2=substr($sequence,0,1000);
+							$seq_string2=substr($sequence,0,900);
 						}
 						my $rev_seq_string1=reverse $seq_string1;
 						$rev_seq_string1=~ tr/ACGTacgt/TGCAtgca/;
@@ -2246,10 +2352,10 @@ while (@sequence_filenames) {
 						for (my $i=0;$i<$x;$i+=1) {
 							my $match_ref_rna=substr ($sequence_ref_rna,$i,$z);
 							my $marks=0;
-							for (my $j=$z;$j<1000;$j+=1) {
+							for (my $j=$z;$j<900;$j+=1) {
 								my $repeat=substr ($rev_seq_string1,-$j,$z);
 								if (($repeat eq $match_ref_rna) and ($marks == 0)) {
-									$start_new=$start-200+$j+$i;
+									$start_new=$start-100+$j+$i;
 									$marks++;
 								}
 							}
@@ -2258,10 +2364,10 @@ while (@sequence_filenames) {
 						for (my $i=$z;$i<$x;$i+=1) {
 							my $match_ref_rna=substr ($sequence_ref_rna,-$i,$z);
 							my $marks=0;
-							for (my $j=0;$j<1000;$j+=1) {
+							for (my $j=0;$j<900;$j+=1) {
 								my $repeat=substr ($rev_seq_string2,$j,$z);
 								if (($repeat eq $match_ref_rna) and ($marks == 0)) {
-									$end_new=$end+200-($j+$z)-($i-$z);
+									$end_new=$end+100-($j+$z)-($i-$z);
 									$marks++;
 								}
 							}
@@ -2311,7 +2417,7 @@ while (@sequence_filenames) {
 							print $out_annotation "                     "."/gene=\"$name\""."\n";
 							print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 							$gene_number_seq{$name}++;
-							print $logfile "Warning: $name (negative rRNA) need to be checked due to non-identical boundary with reference!\n";
+							print $logfile "Warning: $name (negative rRNA) must be checked due to non-identical boundary with reference!\n";
 						}
 					}
 				}
@@ -3898,63 +4004,82 @@ while (@sequence_filenames) {
 								}
 								last if (defined $end1_new);
 							}
+							my $length_trna=$end1-$start1;
 
-							if (abs($end1_new-$start1_new) < 3000) {
-								if ((defined $start1_new) and (defined $end2_new) and (defined $start3_new) and (defined $end1_new)) {
-									print $out_annotation "     "."gene"."            ".$start1_new."..".$end1_new."\n";
-									print $out_annotation "                     "."/gene=\"$name\""."\n";
-									print $out_annotation "     "."tRNA"."            "."join(".$start1_new."..".$end2_new.",".$start3_new."..".$end1_new.")"."\n";
-									print $out_annotation "                     "."/gene=\"$name\""."\n";
-									print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-									$gene_number_seq{$name}++;
-									my ($S1,$E1,$E2,$S3);
-									my $string=substr($sequence,($start1_new-1),($end1_new-$start1_new+1));
-									my $lengths=length $string;
-									my $L1=$end2_new-$start1_new+1;
-									my $L2=$end1_new-$start3_new+1;
-									my $rev_coms=reverse $sequence;
-									$rev_coms=~ tr/ACGTacgt/TGCAtgca/;
-									for (my $i=0;$i<($length_cp-$lengths);$i+=1){
-										my $repeat=substr ($sequence,$i,$lengths);
-										if (($repeat eq $string) and (($i+1) ne $start1_new)) {
-											$S1=$i+1;
-											$E2=$i+$L1-1+1;
-											$S3=$i+$lengths-$L2+1;
-											$E1=$i+$lengths-1+1;
-											print $out_annotation "     "."gene"."            ".$S1."..".$E1."\n";
+							if ((defined $start1_new) and (defined $end2_new) and (defined $start3_new) and (defined $end1_new)) {
+								if (abs($end1_new-$start1_new) < 3000) {
+									if ($end2_new < $end1_new) {
+										print $out_annotation "     "."gene"."            ".$start1_new."..".$end1_new."\n";
+										print $out_annotation "                     "."/gene=\"$name\""."\n";
+										print $out_annotation "     "."tRNA"."            "."join(".$start1_new."..".$end2_new.",".$start3_new."..".$end1_new.")"."\n";
+										print $out_annotation "                     "."/gene=\"$name\""."\n";
+										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+										$gene_number_seq{$name}++;
+										my ($S1,$E1,$E2,$S3);
+										my $string=substr($sequence,($start1_new-1),($end1_new-$start1_new+1));
+										my $lengths=length $string;
+										my $L1=$end2_new-$start1_new+1;
+										my $L2=$end1_new-$start3_new+1;
+										my $rev_coms=reverse $sequence;
+										$rev_coms=~ tr/ACGTacgt/TGCAtgca/;
+										for (my $i=0;$i<($length_cp-$lengths);$i+=1){
+											my $repeat=substr ($sequence,$i,$lengths);
+											if (($repeat eq $string) and (($i+1) ne $start1_new)) {
+												$S1=$i+1;
+												$E2=$i+$L1-1+1;
+												$S3=$i+$lengths-$L2+1;
+												$E1=$i+$lengths-1+1;
+												print $out_annotation "     "."gene"."            ".$S1."..".$E1."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "     "."tRNA"."            "."join(".$S1."..".$E2.",".$S3."..".$E1.")"."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+												$gene_number_seq{$name}++;
+											}
+										}
+										for (my $i=0;$i<($length_cp-$lengths);$i+=1){
+											my $repeat=substr ($rev_coms,$i,$lengths);
+											if ($repeat eq $string) {
+												$S1=$length_cp-$i-1+1;
+												$E2=$length_cp-$i-$L1+1;
+												$S3=$length_cp-$i-$lengths-1+$L2+1;
+												$E1=$length_cp-$i-$lengths+1;
+												print $out_annotation "     "."gene"."            "."complement(".$E1."..".$S1.")"."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "     "."tRNA"."            "."complement(join(".$E1."..".$S3.",".$E2."..".$S1."))"."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+												$gene_number_seq{$name}++;
+											}
+										}
+									}elsif ($end2_new > $end1_new) {
+										if ($length_trna >= 70) {
+											print $out_annotation "     "."gene"."            ".$start1."..".$end1."\n";
 											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "     "."tRNA"."            "."join(".$S1."..".$E2.",".$S3."..".$E1.")"."\n";
+											print $out_annotation "     "."tRNA"."            "."join(".$start1."..".($start1+37).",".($end1-37)."..".$end1.")"."\n";
 											print $out_annotation "                     "."/gene=\"$name\""."\n";
 											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (positive one-intron tRNA) must be checked due to non-identical boundary with reference!\n";
+										}elsif ($length_trna < 70) {
+											print $logfile "Warning: $name (positive one-intron tRNA) has not been annotated due to short length!\n";
 										}
 									}
-									for (my $i=0;$i<($length_cp-$lengths);$i+=1){
-										my $repeat=substr ($rev_coms,$i,$lengths);
-										if ($repeat eq $string) {
-											$S1=$length_cp-$i-1+1;
-											$E2=$length_cp-$i-$L1+1;
-											$S3=$length_cp-$i-$lengths-1+$L2+1;
-											$E1=$length_cp-$i-$lengths+1;
-											print $out_annotation "     "."gene"."            "."complement(".$E1."..".$S1.")"."\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "     "."tRNA"."            "."complement(join(".$E1."..".$S3.",".$E2."..".$S1."))"."\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-											$gene_number_seq{$name}++;
-										}
-									}
-								}elsif ((!defined $start1_new) or (!defined $end2_new) or (!defined $start3_new) or (!defined $end1_new)) {
+								}elsif (abs($end1_new-$start1_new) >= 3000) {
+									print $logfile "Warning: $name (positive one-intron tRNA) has not been annotated due to two far exons!\n";
+								}
+							}elsif ((!defined $start1_new) or (!defined $end2_new) or (!defined $start3_new) or (!defined $end1_new)) {
+								if ($length_trna >= 70) {
 									print $out_annotation "     "."gene"."            ".$start1."..".$end1."\n";
 									print $out_annotation "                     "."/gene=\"$name\""."\n";
-									print $out_annotation "     "."tRNA"."            "."join(".$start1."..".$end2.",".$start3."..".$end1.")"."\n";
+									print $out_annotation "     "."tRNA"."            "."join(".$start1."..".($start1+37).",".($end1-37)."..".$end1.")"."\n";
 									print $out_annotation "                     "."/gene=\"$name\""."\n";
 									print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 									$gene_number_seq{$name}++;
-									print $logfile "Warning: $name (positive one-intron tRNA) need to be checked due to non-identical boundary with reference!\n";
+									print $logfile "Warning: $name (positive one-intron tRNA) must be checked due to non-identical boundary with reference!\n";
+								}elsif ($length_trna < 70) {
+									print $logfile "Warning: $name (positive one-intron tRNA) has not been annotated due to short length!\n";
 								}
-							}elsif (abs($end1_new-$start1_new) >= 3000) {
-								print $logfile "Warning: $name (positive one-intron tRNA) has not been annotated due to two far exons!\n";
 							}
 						}elsif($start1 > $end1){
 							my $seq_string1=substr($sequence,($start1-30),60);
@@ -4019,63 +4144,82 @@ while (@sequence_filenames) {
 								}
 								last if (defined $end1_new);
 							}
+							my $length_trna=$start1-$end1;
 
-							if (abs($start1_new-$end1_new) < 3000) {
-								if ((defined $start1_new) and (defined $end2_new) and (defined $start3_new) and (defined $end1_new)) {
-									print $out_annotation "     "."gene"."            "."complement(".$end1_new."..".$start1_new.")"."\n";
-									print $out_annotation "                     "."/gene=\"$name\""."\n";
-									print $out_annotation "     "."tRNA"."            "."complement(join(".$end1_new."..".$start3_new.",".$end2_new."..".$start1_new."))"."\n";
-									print $out_annotation "                     "."/gene=\"$name\""."\n";
-									print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-									$gene_number_seq{$name}++;
-									my ($S1,$E1,$E2,$S3);
-									my $string=substr($sequence,($end1_new-1),($start1_new-$end1_new+1));
-									my $lengths=length $string;
-									my $L1=$start1_new-$end2_new+1;
-									my $L2=$start3_new-$end1_new+1;
-									my $rev_coms=reverse $sequence;
-									$rev_coms=~ tr/ACGTacgt/TGCAtgca/;
-									for (my $i=0;$i<($length_cp-$lengths);$i+=1){
-										my $repeat=substr ($sequence,$i,$lengths);
-										if (($repeat eq $string) and (($i+1) ne $end1_new)) {
-											$E1=$i+1;
-											$S3=$i+$L2-1+1;
-											$E2=$i+$lengths-$L1+1;
-											$S1=$i+$lengths-1+1;
-											print $out_annotation "     "."gene"."            "."complement(".$E1."..".$S1.")"."\n";
+							if ((defined $start1_new) and (defined $end2_new) and (defined $start3_new) and (defined $end1_new)) {
+								if (abs($start1_new-$end1_new) < 3000) {
+									if ($end2_new > $end1_new) {
+										print $out_annotation "     "."gene"."            "."complement(".$end1_new."..".$start1_new.")"."\n";
+										print $out_annotation "                     "."/gene=\"$name\""."\n";
+										print $out_annotation "     "."tRNA"."            "."complement(join(".$end1_new."..".$start3_new.",".$end2_new."..".$start1_new."))"."\n";
+										print $out_annotation "                     "."/gene=\"$name\""."\n";
+										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+										$gene_number_seq{$name}++;
+										my ($S1,$E1,$E2,$S3);
+										my $string=substr($sequence,($end1_new-1),($start1_new-$end1_new+1));
+										my $lengths=length $string;
+										my $L1=$start1_new-$end2_new+1;
+										my $L2=$start3_new-$end1_new+1;
+										my $rev_coms=reverse $sequence;
+										$rev_coms=~ tr/ACGTacgt/TGCAtgca/;
+										for (my $i=0;$i<($length_cp-$lengths);$i+=1){
+											my $repeat=substr ($sequence,$i,$lengths);
+											if (($repeat eq $string) and (($i+1) ne $end1_new)) {
+												$E1=$i+1;
+												$S3=$i+$L2-1+1;
+												$E2=$i+$lengths-$L1+1;
+												$S1=$i+$lengths-1+1;
+												print $out_annotation "     "."gene"."            "."complement(".$E1."..".$S1.")"."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "     "."tRNA"."            "."complement(join(".$E1."..".$S3.",".$E2."..".$S1."))"."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+												$gene_number_seq{$name}++;
+											}
+										}
+										for (my $i=0;$i<($length_cp-$lengths);$i+=1){
+											my $repeat=substr ($rev_coms,$i,$lengths);
+											if ($repeat eq $string) {
+												$E1=$length_cp-$i-1+1;
+												$S3=$length_cp-$i-$L2+1;
+												$E2=$length_cp-$i-$lengths-1+$L1+1;
+												$S1=$length_cp-$i-$lengths+1;
+												print $out_annotation "     "."gene"."            ".$S1."..".$E1."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "     "."tRNA"."            "."join(".$S1."..".$E2.",".$S3."..".$E1.")"."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+												$gene_number_seq{$name}++;
+											}
+										}
+									}elsif ($end2_new < $end1_new) {
+										if ($length_trna >= 70) {
+											print $out_annotation "     "."gene"."            "."complement(".$end1."..".$start1.")"."\n";
 											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "     "."tRNA"."            "."complement(join(".$E1."..".$S3.",".$E2."..".$S1."))"."\n";
+											print $out_annotation "     "."tRNA"."            "."complement(join(".$end1."..".($end1+37).",".($start1-37)."..".$start1."))"."\n";
 											print $out_annotation "                     "."/gene=\"$name\""."\n";
 											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (negative one-intron tRNA) must be checked due to non-identical boundary with reference!\n";
+										}elsif ($length_trna < 70) {
+											print $logfile "Warning: $name (negative one-intron tRNA) has not been annotated due to short length!\n";
 										}
 									}
-									for (my $i=0;$i<($length_cp-$lengths);$i+=1){
-										my $repeat=substr ($rev_coms,$i,$lengths);
-										if ($repeat eq $string) {
-											$E1=$length_cp-$i-1+1;
-											$S3=$length_cp-$i-$L2+1;
-											$E2=$length_cp-$i-$lengths-1+$L1+1;
-											$S1=$length_cp-$i-$lengths+1;
-											print $out_annotation "     "."gene"."            ".$S1."..".$E1."\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "     "."tRNA"."            "."join(".$S1."..".$E2.",".$S3."..".$E1.")"."\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-											$gene_number_seq{$name}++;
-										}
-									}
-								}elsif ((!defined $start1_new) or (!defined $end2_new) or (!defined $start3_new) or (!defined $end1_new)) {
+								}elsif (abs($start1_new-$end1_new) >= 3000) {
+									print $logfile "Warning: $name (negative one-intron tRNA) has not been annotated due to two far exons!\n";
+								}
+							}elsif ((!defined $start1_new) or (!defined $end2_new) or (!defined $start3_new) or (!defined $end1_new)) {
+								if ($length_trna >= 70) {
 									print $out_annotation "     "."gene"."            "."complement(".$end1."..".$start1.")"."\n";
 									print $out_annotation "                     "."/gene=\"$name\""."\n";
-									print $out_annotation "     "."tRNA"."            "."complement(join(".$end1."..".$start3.",".$end2."..".$start1."))"."\n";
+									print $out_annotation "     "."tRNA"."            "."complement(join(".$end1."..".($end1+37).",".($start1-37)."..".$start1."))"."\n";
 									print $out_annotation "                     "."/gene=\"$name\""."\n";
 									print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 									$gene_number_seq{$name}++;
-									print $logfile "Warning: $name (negative one-intron tRNA) need to be checked due to non-identical boundary with reference!\n";
+									print $logfile "Warning: $name (negative one-intron tRNA) must be checked due to non-identical boundary with reference!\n";
+								}elsif ($length_trna < 70) {
+									print $logfile "Warning: $name (negative one-intron tRNA) has not been annotated due to short length!\n";
 								}
-							}elsif (abs($start1_new-$end1_new) >= 3000) {
-								print $logfile "Warning: $name (negative one-intron tRNA) has not been annotated due to two far exons!\n";
 							}
 						}
 					}elsif(($start1 != $start2) or ($end1 != $end3)){# non-identical tRNA boundary for _gene and -1_coding, -2_coding
@@ -4142,63 +4286,82 @@ while (@sequence_filenames) {
 								}
 								last if (defined $end3_new);
 							}
+							my $length_trna=$end1-$start1;
 
-							if (abs($end3_new-$start2_new) < 3000) {
-								if ((defined $start2_new) and (defined $end2_new) and (defined $start3_new) and (defined $end3_new)) {
-									print $out_annotation "     "."gene"."            ".$start2_new."..".$end3_new."\n";
-									print $out_annotation "                     "."/gene=\"$name\""."\n";
-									print $out_annotation "     "."tRNA"."            "."join(".$start2_new."..".$end2_new.",".$start3_new."..".$end3_new.")"."\n";
-									print $out_annotation "                     "."/gene=\"$name\""."\n";
-									print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-									$gene_number_seq{$name}++;
-									my ($S1,$E1,$E2,$S3);
-									my $string=substr($sequence,($start2_new-1),($end3_new-$start2_new+1));
-									my $lengths=length $string;
-									my $L1=$end2_new-$start2_new+1;
-									my $L2=$end3_new-$start3_new+1;
-									my $rev_coms=reverse $sequence;
-									$rev_coms=~ tr/ACGTacgt/TGCAtgca/;
-									for (my $i=0;$i<($length_cp-$lengths);$i+=1){
-										my $repeat=substr ($sequence,$i,$lengths);
-										if (($repeat eq $string) and (($i+1) ne $start2_new)) {
-											$S1=$i+1;
-											$E2=$i+$L1-1+1;
-											$S3=$i+$lengths-$L2+1;
-											$E1=$i+$lengths-1+1;
-											print $out_annotation "     "."gene"."            ".$S1."..".$E1."\n";
+							if ((defined $start2_new) and (defined $end2_new) and (defined $start3_new) and (defined $end3_new)) {
+								if (abs($end3_new-$start2_new) < 3000) {
+									if ($end2_new < $end3_new) {
+										print $out_annotation "     "."gene"."            ".$start2_new."..".$end3_new."\n";
+										print $out_annotation "                     "."/gene=\"$name\""."\n";
+										print $out_annotation "     "."tRNA"."            "."join(".$start2_new."..".$end2_new.",".$start3_new."..".$end3_new.")"."\n";
+										print $out_annotation "                     "."/gene=\"$name\""."\n";
+										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+										$gene_number_seq{$name}++;
+										my ($S1,$E1,$E2,$S3);
+										my $string=substr($sequence,($start2_new-1),($end3_new-$start2_new+1));
+										my $lengths=length $string;
+										my $L1=$end2_new-$start2_new+1;
+										my $L2=$end3_new-$start3_new+1;
+										my $rev_coms=reverse $sequence;
+										$rev_coms=~ tr/ACGTacgt/TGCAtgca/;
+										for (my $i=0;$i<($length_cp-$lengths);$i+=1){
+											my $repeat=substr ($sequence,$i,$lengths);
+											if (($repeat eq $string) and (($i+1) ne $start2_new)) {
+												$S1=$i+1;
+												$E2=$i+$L1-1+1;
+												$S3=$i+$lengths-$L2+1;
+												$E1=$i+$lengths-1+1;
+												print $out_annotation "     "."gene"."            ".$S1."..".$E1."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "     "."tRNA"."            "."join(".$S1."..".$E2.",".$S3."..".$E1.")"."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+												$gene_number_seq{$name}++;
+											}
+										}
+										for (my $i=0;$i<($length_cp-$lengths);$i+=1){
+											my $repeat=substr ($rev_coms,$i,$lengths);
+											if ($repeat eq $string) {
+												$S1=$length_cp-$i-1+1;
+												$E2=$length_cp-$i-$L1+1;
+												$S3=$length_cp-$i-$lengths-1+$L2+1;
+												$E1=$length_cp-$i-$lengths+1;
+												print $out_annotation "     "."gene"."            "."complement(".$E1."..".$S1.")"."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "     "."tRNA"."            "."complement(join(".$E1."..".$S3.",".$E2."..".$S1."))"."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+												$gene_number_seq{$name}++;
+											}
+										}
+									}elsif ($end2_new > $end3_new) {
+										if ($length_trna >= 70) {
+											print $out_annotation "     "."gene"."            ".$start1."..".$end1."\n";
 											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "     "."tRNA"."            "."join(".$S1."..".$E2.",".$S3."..".$E1.")"."\n";
+											print $out_annotation "     "."tRNA"."            "."join(".$start1."..".($start1+37).",".($end1-37)."..".$end1.")"."\n";
 											print $out_annotation "                     "."/gene=\"$name\""."\n";
 											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (positive one-intron tRNA) must be checked due to non-identical boundary with reference!\n";
+										}elsif ($length_trna < 70) {
+											print $logfile "Warning: $name (positive one-intron tRNA) has not been annotated due to short length!\n";
 										}
 									}
-									for (my $i=0;$i<($length_cp-$lengths);$i+=1){
-										my $repeat=substr ($rev_coms,$i,$lengths);
-										if ($repeat eq $string) {
-											$S1=$length_cp-$i-1+1;
-											$E2=$length_cp-$i-$L1+1;
-											$S3=$length_cp-$i-$lengths-1+$L2+1;
-											$E1=$length_cp-$i-$lengths+1;
-											print $out_annotation "     "."gene"."            "."complement(".$E1."..".$S1.")"."\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "     "."tRNA"."            "."complement(join(".$E1."..".$S3.",".$E2."..".$S1."))"."\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-											$gene_number_seq{$name}++;
-										}
-									}
-								}elsif ((!defined $start2_new) or (!defined $end2_new) or (!defined $start3_new) or (!defined $end3_new)) {
+								}elsif (abs($end3_new-$start2_new) >= 3000) {
+									print $logfile "Warning: $name (positive one-intron tRNA) has not been annotated due to two far exons!\n";
+								}
+							}elsif ((!defined $start2_new) or (!defined $end2_new) or (!defined $start3_new) or (!defined $end3_new)) {
+								if ($length_trna >= 70) {
 									print $out_annotation "     "."gene"."            ".$start1."..".$end1."\n";
 									print $out_annotation "                     "."/gene=\"$name\""."\n";
-									print $out_annotation "     "."tRNA"."            "."join(".$start1."..".$end2.",".$start3."..".$end1.")"."\n";
+									print $out_annotation "     "."tRNA"."            "."join(".$start1."..".($start1+37).",".($end1-37)."..".$end1.")"."\n";
 									print $out_annotation "                     "."/gene=\"$name\""."\n";
 									print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 									$gene_number_seq{$name}++;
-									print $logfile "Warning: $name (positive one-intron tRNA) need to be checked due to non-identical boundary with reference!\n";
+									print $logfile "Warning: $name (positive one-intron tRNA) must be checked due to non-identical boundary with reference!\n";
+								}elsif ($length_trna < 70) {
+									print $logfile "Warning: $name (positive one-intron tRNA) has not been annotated due to short length!\n";
 								}
-							}elsif (abs($end3_new-$start2_new) >= 3000) {
-								print $logfile "Warning: $name (positive one-intron tRNA) has not been annotated due to two far exons!\n";
 							}
 						}elsif($start1 > $end1){
 							my ($seq_string1,$seq_string2);
@@ -4271,63 +4434,82 @@ while (@sequence_filenames) {
 								}
 								last if (defined $end3_new);
 							}
+							my $length_trna=$start1-$end1;
 
-							if (abs($start2_new-$end3_new) < 3000) {
-								if ((defined $start2_new) and (defined $end2_new) and (defined $start3_new) and (defined $end3_new)) {
-									print $out_annotation "     "."gene"."            "."complement(".$end3_new."..".$start2_new.")"."\n";
-									print $out_annotation "                     "."/gene=\"$name\""."\n";
-									print $out_annotation "     "."tRNA"."            "."complement(join(".$end3_new."..".$start3_new.",".$end2_new."..".$start2_new."))"."\n";
-									print $out_annotation "                     "."/gene=\"$name\""."\n";
-									print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-									$gene_number_seq{$name}++;
-									my ($S1,$E1,$E2,$S3);
-									my $string=substr($sequence,($end3_new-1),($start2_new-$end3_new+1));
-									my $lengths=length $string;
-									my $L1=$start2_new-$end2_new+1;
-									my $L2=$start3_new-$end3_new+1;
-									my $rev_coms=reverse $sequence;
-									$rev_coms=~ tr/ACGTacgt/TGCAtgca/;
-									for (my $i=0;$i<($length_cp-$lengths);$i+=1){
-										my $repeat=substr ($sequence,$i,$lengths);
-										if (($repeat eq $string) and (($i+1) ne $end3_new)) {
-											$E1=$i+1;
-											$S3=$i+$L2-1+1;
-											$E2=$i+$lengths-$L1+1;
-											$S1=$i+$lengths-1+1;
-											print $out_annotation "     "."gene"."            "."complement(".$E1."..".$S1.")"."\n";
+							if ((defined $start2_new) and (defined $end2_new) and (defined $start3_new) and (defined $end3_new)) {
+								if (abs($start2_new-$end3_new) < 3000) {
+									if ($end2_new > $end3_new) {
+										print $out_annotation "     "."gene"."            "."complement(".$end3_new."..".$start2_new.")"."\n";
+										print $out_annotation "                     "."/gene=\"$name\""."\n";
+										print $out_annotation "     "."tRNA"."            "."complement(join(".$end3_new."..".$start3_new.",".$end2_new."..".$start2_new."))"."\n";
+										print $out_annotation "                     "."/gene=\"$name\""."\n";
+										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+										$gene_number_seq{$name}++;
+										my ($S1,$E1,$E2,$S3);
+										my $string=substr($sequence,($end3_new-1),($start2_new-$end3_new+1));
+										my $lengths=length $string;
+										my $L1=$start2_new-$end2_new+1;
+										my $L2=$start3_new-$end3_new+1;
+										my $rev_coms=reverse $sequence;
+										$rev_coms=~ tr/ACGTacgt/TGCAtgca/;
+										for (my $i=0;$i<($length_cp-$lengths);$i+=1){
+											my $repeat=substr ($sequence,$i,$lengths);
+											if (($repeat eq $string) and (($i+1) ne $end3_new)) {
+												$E1=$i+1;
+												$S3=$i+$L2-1+1;
+												$E2=$i+$lengths-$L1+1;
+												$S1=$i+$lengths-1+1;
+												print $out_annotation "     "."gene"."            "."complement(".$E1."..".$S1.")"."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "     "."tRNA"."            "."complement(join(".$E1."..".$S3.",".$E2."..".$S1."))"."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+												$gene_number_seq{$name}++;
+											}
+										}
+										for (my $i=0;$i<($length_cp-$lengths);$i+=1){
+											my $repeat=substr ($rev_coms,$i,$lengths);
+											if ($repeat eq $string) {
+												$E1=$length_cp-$i-1+1;
+												$S3=$length_cp-$i-$L2+1;
+												$E2=$length_cp-$i-$lengths-1+$L1+1;
+												$S1=$length_cp-$i-$lengths+1;
+												print $out_annotation "     "."gene"."            ".$S1."..".$E1."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "     "."tRNA"."            "."join(".$S1."..".$E2.",".$S3."..".$E1.")"."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+												$gene_number_seq{$name}++;
+											}
+										}
+									}elsif ($end2_new < $end3_new) {
+										if ($length_trna >= 70) {
+											print $out_annotation "     "."gene"."            "."complement(".$end1."..".$start1.")"."\n";
 											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "     "."tRNA"."            "."complement(join(".$E1."..".$S3.",".$E2."..".$S1."))"."\n";
+											print $out_annotation "     "."tRNA"."            "."complement(join(".$end1."..".($end1+37).",".($start1-37)."..".$start1."))"."\n";
 											print $out_annotation "                     "."/gene=\"$name\""."\n";
 											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (negative one-intron tRNA) must be checked due to non-identical boundary with reference!\n";
+										}elsif ($length_trna < 70) {
+											print $logfile "Warning: $name (negative one-intron tRNA) has not been annotated due to short length!\n";
 										}
 									}
-									for (my $i=0;$i<($length_cp-$lengths);$i+=1){
-										my $repeat=substr ($rev_coms,$i,$lengths);
-										if ($repeat eq $string) {
-											$E1=$length_cp-$i-1+1;
-											$S3=$length_cp-$i-$L2+1;
-											$E2=$length_cp-$i-$lengths-1+$L1+1;
-											$S1=$length_cp-$i-$lengths+1;
-											print $out_annotation "     "."gene"."            ".$S1."..".$E1."\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "     "."tRNA"."            "."join(".$S1."..".$E2.",".$S3."..".$E1.")"."\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-											$gene_number_seq{$name}++;
-										}
-									}
-								}elsif ((!defined $start2_new) or (!defined $end2_new) or (!defined $start3_new) or (!defined $end3_new)) {
+								}elsif (abs($start2_new-$end3_new) >= 3000) {
+									print $logfile "Warning: $name (negative one-intron tRNA) has not been annotated due to two far exons!\n";
+								}
+							}elsif ((!defined $start2_new) or (!defined $end2_new) or (!defined $start3_new) or (!defined $end3_new)) {
+								if ($length_trna >= 70) {
 									print $out_annotation "     "."gene"."            "."complement(".$end1."..".$start1.")"."\n";
 									print $out_annotation "                     "."/gene=\"$name\""."\n";
-									print $out_annotation "     "."tRNA"."            "."complement(join(".$end1."..".$start3.",".$end2."..".$start1."))"."\n";
+									print $out_annotation "     "."tRNA"."            "."complement(join(".$end1."..".($end1+37).",".($start1-37)."..".$start1."))"."\n";
 									print $out_annotation "                     "."/gene=\"$name\""."\n";
 									print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 									$gene_number_seq{$name}++;
-									print $logfile "Warning: $name (negative one-intron tRNA) need to be checked due to non-identical boundary with reference!\n";
+									print $logfile "Warning: $name (negative one-intron tRNA) must be checked due to non-identical boundary with reference!\n";
+								}elsif ($length_trna < 70) {
+									print $logfile "Warning: $name (negative one-intron tRNA) has not been annotated due to short length!\n";
 								}
-							}elsif (abs($start2_new-$end3_new) >= 3000) {
-								print $logfile "Warning: $name (negative one-intron tRNA) has not been annotated due to two far exons!\n";
 							}
 						}
 					}
@@ -4607,10 +4789,14 @@ while (@sequence_filenames) {
 							my $length=length $str;
 							my $forward_start_codon=substr($str,0,3);
 							my $forward_stop_codon=substr($str,($length-3),3);
-							my $str1=substr($sequence,($start1-1),($end2-$start1+1));
-							my $str2=substr($sequence,($start3-1),($end1-$start3+1));
+							my ($str1,$str2);
+							$str1=substr($sequence,($start1-1),($end2-$start1+1)) if ($start1 < $end2);
+							$str1=substr($sequence,($end2-1),($start1-$end2+1)) if ($start1 > $end2);
+							$str2=substr($sequence,($start3-1),($end1-$start3+1)) if ($start3 < $end1);
+							$str2=substr($sequence,($end1-1),($start3-$end1+1)) if ($start3 > $end1);
 							my $str3=$str1.$str2;
 							my $length_exon=length $str3;
+							my $length_exon2=length $str2;
 
 							my $aa_exon;
 							for (my $i=0;$i<($length_exon-3);$i+=3){# delete stop codon
@@ -5602,145 +5788,151 @@ while (@sequence_filenames) {
 									}
 								}
 							}elsif (($name eq "rpl16") or ($name eq "petB") or ($name eq "petD")) {
-								if (($length_ref_exon1 % 3==0) and ($length_exon % 3==0) and (!grep {$_=~ /\*/} @aa_exon) and (($forward_start_codon eq "ATG") or ($forward_start_codon eq "GTG")) and (($forward_stop_codon eq "TAA") or ($forward_stop_codon eq "TAG") or ($forward_stop_codon eq "TGA"))){# standard start and stop codon for _gene
-									print $out_annotation "     "."gene"."            ".$start1."..".$end1."\n";
-									print $out_annotation "                     "."/gene=\"$name\""."\n";
-									print $out_annotation "     "."CDS"."             "."join(".$start1."..".$end2.",".$start3."..".$end1.")"."\n";
-									print $out_annotation "                     "."/gene=\"$name\""."\n";
-									print $out_annotation "                     "."/codon_start=1"."\n";
-									print $out_annotation "                     "."/transl_table=11"."\n";
-									print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-									#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-									$gene_number_seq{$name}++;
-								}elsif(($length_ref_exon1 % 3!=0) or (grep {$_=~ /\*/} @aa_exon) or (($forward_start_codon ne "ATG") and ($forward_start_codon ne "GTG")) or (($forward_stop_codon ne "TAA") and ($forward_stop_codon ne "TAG") and ($forward_stop_codon ne "TGA"))){# non-standard start or stop codon for _gene
-									my $start_left;
-									if ($start1>=9000) {
-										$start_left=$start1-9000;
-									}elsif ($start1<9000){
-										$start_left=$start1-(int($start1/3)-1)*3;
-									}
-									my $start_right=$start1+60;
-									my $length_exon1=($end2-$start1+1);
-									my $end_right;
-									if (($length_cp-$start3)>=9000) {
-										$end_right=$start3+9000;
-									}elsif (($length_cp-$start3)<9000){
-										$end_right=$start3+((int(($length_cp-$start3)/3)-1)*3);
-									}
-									my $str1=substr($sequence,($start_left-1),($start_right-$start_left));
-									my $str2=substr($sequence,($start3-1),($end_right-$start3));
-									my $length1=length $str1;
-									my $length2=length $str2;
-									my $coding_1_length=$hash_exon_length{"$name-1_coding"};
-									my $coding_1_sequence=$hash_exon_sequence{"$name-1_coding"};
-									my $left_start_position;
-									for (my $i=0;$i<($length1-3);$i+=1){
-										my $exon=substr ($str1,$i,$coding_1_length);
-										$exon=lc $exon;
-										if ($exon eq $coding_1_sequence) {
-											$left_start_position=$i;
-										}
-									}
-
-									my $aa2;#right range for stop codon
-									for (my $k=0;$k<($length2-3);$k+=3){# delete stop codon
-										my $codon=substr ($str2,$k,3);
-										$codon=uc $codon;
-										if (exists $hash_codon{$codon}){
-											$aa2.=$hash_codon{$codon};
-										}else{
-											$aa2.="X";
-											my $n=$k+1;
-											#print "Bad codon $codon in position $n of gene $name in species $contig!\n";
-										}
-									}
-									my @aa2=split //,$aa2;
-									my @star2;
-									foreach (0..$#aa2){
-										if ($aa2[$_]=~ /\*/){
-											push @star2,$_;
-										}
-									}
-									my $right_star_position=shift @star2;
-									if ((defined $left_start_position) and (defined $right_star_position)){
-										my $start=$start_left+$left_start_position;
-										my $end=($start3-1)+($right_star_position * 3+3);
-
-										my ($str1,$str2,$str,$length,$end2_new,$start3_new);
-										$end2_new=$start+$coding_1_length-1;
-										if ($length_ref_exon1 % 3==0) {
-											$start3_new=$start3;
-										}elsif ($length_ref_exon1 % 3==1) {
-											$start3_new=$start3-2;
-										}elsif ($length_ref_exon1 % 3==2) {
-											$start3_new=$start3-1;
-										}
-										$str1=substr($sequence,($start-1),($end2_new-($start-1)));
-										$str2=substr($sequence,($start3_new-1),($end-($start3_new-1)));
-										$str=$str1.$str2;
-										$length=length $str;
-
-										my $aa;
-										for (my $i=0;$i<($length-3);$i+=3){# delete stop codon
-											my $codon=substr ($str,$i,3);
-											$codon=uc $codon;
-											if (exists $hash_codon{$codon}){
-												$aa.=$hash_codon{$codon};
-											}else{
-												$aa.="X";
-												my $j=$i+1;
-												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
-											}
-										}
-										print $out_annotation "     "."gene"."            ".$start."..".$end."\n";
+								if ($length_exon2 < 150) {
+									print $logfile "Warning: $name (positive one-intron PCG) has not been annotated due to short length!\n";
+								}elsif ($length_exon2 >= 150) {
+									if (($length_ref_exon1 % 3==0) and ($length_exon % 3==0) and (!grep {$_=~ /\*/} @aa_exon) and (($forward_start_codon eq "ATG") or ($forward_start_codon eq "GTG")) and (($forward_stop_codon eq "TAA") or ($forward_stop_codon eq "TAG") or ($forward_stop_codon eq "TGA"))){# standard start and stop codon for _gene
+										print $out_annotation "     "."gene"."            ".$start1."..".$end1."\n";
 										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."CDS"."             "."join(".$start."..".$end2_new.",".$start3_new."..".$end.")"."\n";
+										print $out_annotation "     "."CDS"."             "."join(".$start1."..".$end2.",".$start3."..".$end1.")"."\n";
 										print $out_annotation "                     "."/gene=\"$name\""."\n";
 										print $out_annotation "                     "."/codon_start=1"."\n";
 										print $out_annotation "                     "."/transl_table=11"."\n";
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										#print $out_annotation "                     "."/translation=\"$aa\""."\n";
+										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 										$gene_number_seq{$name}++;
-									}elsif ((!defined $left_start_position) and (defined $right_star_position)){
-										my $end=($start3-1)+($right_star_position * 3+3);
-
-										my ($str1,$str2,$str,$length,$end2_new,$start3_new);
-										$end2_new=$start1+$coding_1_length-1;
-										if ($length_ref_exon1 % 3==0) {
-											$start3_new=$start3;
-										}elsif ($length_ref_exon1 % 3==1) {
-											$start3_new=$start3-2;
-										}elsif ($length_ref_exon1 % 3==2) {
-											$start3_new=$start3-1;
+									}elsif(($length_ref_exon1 % 3!=0) or (grep {$_=~ /\*/} @aa_exon) or (($forward_start_codon ne "ATG") and ($forward_start_codon ne "GTG")) or (($forward_stop_codon ne "TAA") and ($forward_stop_codon ne "TAG") and ($forward_stop_codon ne "TGA"))){# non-standard start or stop codon for _gene
+										my $start_left;
+										if ($start1>=9000) {
+											$start_left=$start1-9000;
+										}elsif ($start1<9000){
+											$start_left=$start1-(int($start1/3)-1)*3;
 										}
-										$str1=substr($sequence,($start1-1),($end2_new-($start1-1)));
-										$str2=substr($sequence,($start3_new-1),($end-($start3_new-1)));
-										$str=$str1.$str2;
-										$length=length $str;
-
-										my $aa;
-										#for (my $i=0;$i<$length;$i+=3){# remain stop codon, either (length ($seq)-1) or (length ($seq)-2) is OK
-										for (my $i=0;$i<($length-3);$i+=3){# delete stop codon
-											my $codon=substr ($str,$i,3);
-											$codon=uc $codon;
-											if (exists $hash_codon{$codon}){
-												$aa.=$hash_codon{$codon};
-											}else{
-												$aa.="X";
-												my $j=$i+1;
-												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										my $start_right=$start1+60;
+										my $length_exon1=($end2-$start1+1);
+										my $end_right;
+										if (($length_cp-$start3)>=9000) {
+											$end_right=$start3+9000;
+										}elsif (($length_cp-$start3)<9000){
+											$end_right=$start3+((int(($length_cp-$start3)/3)-1)*3);
+										}
+										my $str1=substr($sequence,($start_left-1),($start_right-$start_left));
+										my $str2=substr($sequence,($start3-1),($end_right-$start3));
+										my $length1=length $str1;
+										my $length2=length $str2;
+										my $coding_1_length=$hash_exon_length{"$name-1_coding"};
+										my $coding_1_sequence=$hash_exon_sequence{"$name-1_coding"};
+										my $left_start_position;
+										for (my $i=0;$i<($length1-3);$i+=1){
+											my $exon=substr ($str1,$i,$coding_1_length);
+											$exon=lc $exon;
+											if ($exon eq $coding_1_sequence) {
+												$left_start_position=$i;
 											}
 										}
-										print $out_annotation "     "."gene"."            ".$start1."..".$end."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."CDS"."             "."join(".$start1."..".$end2_new.",".$start3_new."..".$end.")"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/codon_start=1"."\n";
-										print $out_annotation "                     "."/transl_table=11"."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										#print $out_annotation "                     "."/translation=\"$aa\""."\n";
-										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (positive one-intron PCG) has non-canonical start codon!\n";
+
+										my $aa2;#right range for stop codon
+										for (my $k=0;$k<($length2-3);$k+=3){# delete stop codon
+											my $codon=substr ($str2,$k,3);
+											$codon=uc $codon;
+											if (exists $hash_codon{$codon}){
+												$aa2.=$hash_codon{$codon};
+											}else{
+												$aa2.="X";
+												my $n=$k+1;
+												#print "Bad codon $codon in position $n of gene $name in species $contig!\n";
+											}
+										}
+										my @aa2=split //,$aa2;
+										my @star2;
+										foreach (0..$#aa2){
+											if ($aa2[$_]=~ /\*/){
+												push @star2,$_;
+											}
+										}
+										my $right_star_position=shift @star2;
+										if ((defined $left_start_position) and (defined $right_star_position)){
+											my $start=$start_left+$left_start_position;
+											my $end=($start3-1)+($right_star_position * 3+3);
+
+											my ($str1,$str2,$str,$length,$end2_new,$start3_new);
+											$end2_new=$start+$coding_1_length-1;
+											if ($length_ref_exon1 % 3==0) {
+												$start3_new=$start3;
+											}elsif ($length_ref_exon1 % 3==1) {
+												$start3_new=$start3-2;
+											}elsif ($length_ref_exon1 % 3==2) {
+												$start3_new=$start3-1;
+											}
+											$str1=substr($sequence,($start-1),($end2_new-($start-1)));
+											$str2=substr($sequence,($start3_new-1),($end-($start3_new-1)));
+											$str=$str1.$str2;
+											$length=length $str;
+
+											my $aa;
+											for (my $i=0;$i<($length-3);$i+=3){# delete stop codon
+												my $codon=substr ($str,$i,3);
+												$codon=uc $codon;
+												if (exists $hash_codon{$codon}){
+													$aa.=$hash_codon{$codon};
+												}else{
+													$aa.="X";
+													my $j=$i+1;
+													#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												}
+											}
+											print $out_annotation "     "."gene"."            ".$start."..".$end."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "     "."CDS"."             "."join(".$start."..".$end2_new.",".$start3_new."..".$end.")"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/codon_start=1"."\n";
+											print $out_annotation "                     "."/transl_table=11"."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											#print $out_annotation "                     "."/translation=\"$aa\""."\n";
+											$gene_number_seq{$name}++;
+										}elsif ((!defined $left_start_position) and (defined $right_star_position)){
+											my $end=($start3-1)+($right_star_position * 3+3);
+
+											my ($str1,$str2,$str,$length,$end2_new,$start3_new);
+											$end2_new=$start1+$coding_1_length-1;
+											if ($length_ref_exon1 % 3==0) {
+												$start3_new=$start3;
+											}elsif ($length_ref_exon1 % 3==1) {
+												$start3_new=$start3-2;
+											}elsif ($length_ref_exon1 % 3==2) {
+												$start3_new=$start3-1;
+											}
+											$str1=substr($sequence,($start1-1),($end2_new-($start1-1)));
+											$str2=substr($sequence,($start3_new-1),($end-($start3_new-1)));
+											$str=$str1.$str2;
+											$length=length $str;
+
+											my $aa;
+											#for (my $i=0;$i<$length;$i+=3){# remain stop codon, either (length ($seq)-1) or (length ($seq)-2) is OK
+											for (my $i=0;$i<($length-3);$i+=3){# delete stop codon
+												my $codon=substr ($str,$i,3);
+												$codon=uc $codon;
+												if (exists $hash_codon{$codon}){
+													$aa.=$hash_codon{$codon};
+												}else{
+													$aa.="X";
+													my $j=$i+1;
+													#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												}
+											}
+											#print $out_annotation "     "."gene"."            ".$start1."..".$end."\n";
+											print $out_annotation "     "."gene"."            ".$start3."..".$end."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											#print $out_annotation "     "."CDS"."             "."join(".$start1."..".$end2_new.",".$start3_new."..".$end.")"."\n";
+											print $out_annotation "     "."CDS"."             ".$start3."..".$end."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/codon_start=1"."\n";
+											print $out_annotation "                     "."/transl_table=11"."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											#print $out_annotation "                     "."/translation=\"$aa\""."\n";
+											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (positive one-intron PCG) must be checked due to exon 1 not found!\n";
+										}
 									}
 								}
 							}
@@ -5751,14 +5943,18 @@ while (@sequence_filenames) {
 							my $length=length $str;
 							my $reverse_start_codon=substr($rev_com,0,3);
 							my $reverse_stop_codon=substr($rev_com,($length-3),3);
-							my $str1=substr($sequence,($end2-1),($start1-$end2+1));
-							my $str2=substr($sequence,($end1-1),($start3-$end1+1));
+							my ($str1,$str2);
+							$str1=substr($sequence,($end2-1),($start1-$end2+1)) if ($end2 < $start1);
+							$str1=substr($sequence,($start1-1),($end2-$start1+1)) if ($end2 > $start1);
+							$str2=substr($sequence,($end1-1),($start3-$end1+1)) if ($end1 < $start3);
+							$str2=substr($sequence,($start3-1),($end1-$start3+1)) if ($end1 > $start3);
 							my $rev_com1=reverse $str1;
 							$rev_com1=~ tr/ACGTacgt/TGCAtgca/;
 							my $rev_com2=reverse $str2;
 							$rev_com2=~ tr/ACGTacgt/TGCAtgca/;
 							my $str3=$rev_com1.$rev_com2;
 							my $length_exon=length $str3;
+							my $length_exon2=length $str2;
 							my $aa_exon;
 							for (my $i=0;$i<($length_exon-3);$i+=3){# delete stop codon
 								my $codon=substr ($str3,$i,3);
@@ -6790,162 +6986,172 @@ while (@sequence_filenames) {
 									}
 								}
 							}elsif (($name eq "rpl16") or ($name eq "petB") or ($name eq "petD")) {
-								if (($length_ref_exon1 % 3==0) and ($length_exon % 3==0) and (!grep {$_=~ /\*/} @aa_exon) and (($reverse_start_codon eq "ATG") or ($reverse_start_codon eq "GTG")) and (($reverse_stop_codon eq "TAA") or ($reverse_stop_codon eq "TAG") or ($reverse_stop_codon eq "TGA"))){# standard start and stop codon for _gene
-									print $out_annotation "     "."gene"."            "."complement(".$end1."..".$start1.")"."\n";
-									print $out_annotation "                     "."/gene=\"$name\""."\n";
-									print $out_annotation "     "."CDS"."             "."complement(join(".$end1."..".$start3.",".$end2."..".$start1."))"."\n";
-									print $out_annotation "                     "."/gene=\"$name\""."\n";
-									print $out_annotation "                     "."/codon_start=1"."\n";
-									print $out_annotation "                     "."/transl_table=11"."\n";
-									print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-									#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-									$gene_number_seq{$name}++;
-								}elsif(($length_ref_exon1 % 3!=0) or (grep {$_=~ /\*/} @aa_exon) or (($reverse_start_codon ne "ATG") and ($reverse_start_codon ne "GTG")) or (($reverse_stop_codon ne "TAA") and ($reverse_stop_codon ne "TAG") and ($reverse_stop_codon ne "TGA"))){# non-standard start or stop codon for _gene
-									my $start_left=$start1-60;
-									my $start_right;
-									if (($length_cp-$start1)>=9000) {
-										$start_right=$start1+9000;
-									}elsif (($length_cp-$start1)<9000){
-										$start_right=$start1+(int(($length_cp-$start1)/3)-1)*3;
-									}
-									my $length_exon1=($start1-$end2+1);
-									my $end_left;
-									if ($start3>=9000) {
-										$end_left=$start3-9000;
-									}elsif ($start3<9000){
-										$end_left=$start3-((int($start3/3)-1)*3);
-									}
-									my $str1=substr($sequence,($start_left),($start_right-$start_left));
-									my $str2=substr($sequence,($end_left),($start3-$end_left));
-									my $length1=length $str1;
-									my $length2=length $str2;
-									my $rev_com1=reverse $str1;
-									$rev_com1=~ tr/ACGTacgt/TGCAtgca/;
-									my $rev_com2=reverse $str2;
-									$rev_com2=~ tr/ACGTacgt/TGCAtgca/;
-									my $coding_1_length=$hash_exon_length{"$name-1_coding"};
-									my $coding_1_sequence=$hash_exon_sequence{"$name-1_coding"};
-									my $right_start_position;
-									for (my $i=0;$i<($length1-3);$i+=1){
-										my $exon=substr ($rev_com1,$i,$coding_1_length);
-										$exon=lc $exon;
-										if ($exon eq $coding_1_sequence) {
-											$right_start_position=$i;
-										}
-									}
-
-									my $aa2;#right range for stop codon
-									for (my $k=0;$k<($length2-3);$k+=3){# delete stop codon
-										my $codon=substr ($rev_com2,$k,3);
-										$codon=uc $codon;
-										if (exists $hash_codon{$codon}){
-											$aa2.=$hash_codon{$codon};
-										}else{
-											$aa2.="X";
-											my $n=$k+1;
-											#print "Bad codon $codon in position $n of gene $name in species $contig!\n";
-										}
-									}
-									my @aa2=split //,$aa2;
-									my @star2;
-									foreach (0..$#aa2){
-										if ($aa2[$_]=~ /\*/){
-											push @star2,$_;
-										}
-									}
-									my $left_star_position=shift @star2;
-									if ((defined $right_start_position) and (defined $left_star_position)){
-										my $start=$start_right-$right_start_position;
-										my $end=($start3+1)-($left_star_position * 3+3);
-
-										my ($str1,$str2,$str,$length,$rev_com,$end2_new,$start3_new);
-										$end2_new=$start-$coding_1_length+1;
-										if ($length_ref_exon1 % 3==0) {
-											$start3_new=$start3;
-										}elsif ($length_ref_exon1 % 3==1) {
-											$start3_new=$start3+2;
-										}elsif ($length_ref_exon1 % 3==2) {
-											$start3_new=$start3+1;
-										}
-										$str1=substr($sequence,($end2_new-1),($start-($end2_new-1)));
-										$str2=substr($sequence,($end-1),($start3_new-($end-1)));
-										$str=$str1.$str2;
-										$length=length $str;
-										$rev_com=reverse $str;
-										$rev_com=~ tr/ACGTacgt/TGCAtgca/;
-
-										my $aa;
-										for (my $i=0;$i<($length-3);$i+=3){# delete stop codon
-											my $codon=substr ($rev_com,$i,3);
-											$codon=uc $codon;
-											if (exists $hash_codon{$codon}){
-												$aa.=$hash_codon{$codon};
-											}else{
-												$aa.="X";
-												my $j=$i+1;
-												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
-											}
-										}
-										print $out_annotation "     "."gene"."            "."complement(".$end."..".$start.")\n";
+								if ($length_exon2 < 150) {
+									print $logfile "Warning: $name (negative one-intron PCG) has not been annotated due to short length!\n";
+								}elsif ($length_exon2 >= 150) {
+									if (($length_ref_exon1 % 3==0) and ($length_exon % 3==0) and (!grep {$_=~ /\*/} @aa_exon) and (($reverse_start_codon eq "ATG") or ($reverse_start_codon eq "GTG")) and (($reverse_stop_codon eq "TAA") or ($reverse_stop_codon eq "TAG") or ($reverse_stop_codon eq "TGA"))){# standard start and stop codon for _gene
+										print $out_annotation "     "."gene"."            "."complement(".$end1."..".$start1.")"."\n";
 										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."CDS"."             "."complement(join(".$end."..".$start3_new.",".$end2_new."..".$start."))"."\n";
+										print $out_annotation "     "."CDS"."             "."complement(join(".$end1."..".$start3.",".$end2."..".$start1."))"."\n";
 										print $out_annotation "                     "."/gene=\"$name\""."\n";
 										print $out_annotation "                     "."/codon_start=1"."\n";
 										print $out_annotation "                     "."/transl_table=11"."\n";
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										#print $out_annotation "                     "."/translation=\"$aa\""."\n";
+										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 										$gene_number_seq{$name}++;
-									}elsif ((!defined $right_start_position) and (defined $left_star_position)){
-										my $end=($start3+1)-($left_star_position * 3+3);
-
-										my ($str1,$str2,$str,$length,$rev_com,$end2_new,$start3_new);
-										$end2_new=$start1-$coding_1_length+1;
-										if ($length_ref_exon1 % 3==0) {
-											$start3_new=$start3;
-										}elsif ($length_ref_exon1 % 3==1) {
-											$start3_new=$start3+2;
-										}elsif ($length_ref_exon1 % 3==2) {
-											$start3_new=$start3+1;
+									}elsif(($length_ref_exon1 % 3!=0) or (grep {$_=~ /\*/} @aa_exon) or (($reverse_start_codon ne "ATG") and ($reverse_start_codon ne "GTG")) or (($reverse_stop_codon ne "TAA") and ($reverse_stop_codon ne "TAG") and ($reverse_stop_codon ne "TGA"))){# non-standard start or stop codon for _gene
+										my $start_left=$start1-60;
+										my $start_right;
+										if (($length_cp-$start1)>=9000) {
+											$start_right=$start1+9000;
+										}elsif (($length_cp-$start1)<9000){
+											$start_right=$start1+(int(($length_cp-$start1)/3)-1)*3;
 										}
-										$str1=substr($sequence,($end2_new-1),($start1-($end2_new-1)));
-										$str2=substr($sequence,($end-1),($start3_new-($end-1)));
-										$str=$str1.$str2;
-										$length=length $str;
-										$rev_com=reverse $str;
-										$rev_com=~ tr/ACGTacgt/TGCAtgca/;
-
-										my $aa;
-										for (my $i=0;$i<($length-3);$i+=3){# delete stop codon
-											my $codon=substr ($rev_com,$i,3);
-											$codon=uc $codon;
-											if (exists $hash_codon{$codon}){
-												$aa.=$hash_codon{$codon};
-											}else{
-												$aa.="X";
-												my $j=$i+1;
-												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										my $length_exon1=($start1-$end2+1);
+										my $end_left;
+										if ($start3>=9000) {
+											$end_left=$start3-9000;
+										}elsif ($start3<9000){
+											$end_left=$start3-((int($start3/3)-1)*3);
+										}
+										my $str1=substr($sequence,($start_left),($start_right-$start_left));
+										my $str2=substr($sequence,($end_left),($start3-$end_left));
+										my $length1=length $str1;
+										my $length2=length $str2;
+										my $rev_com1=reverse $str1;
+										$rev_com1=~ tr/ACGTacgt/TGCAtgca/;
+										my $rev_com2=reverse $str2;
+										$rev_com2=~ tr/ACGTacgt/TGCAtgca/;
+										my $coding_1_length=$hash_exon_length{"$name-1_coding"};
+										my $coding_1_sequence=$hash_exon_sequence{"$name-1_coding"};
+										my $right_start_position;
+										for (my $i=0;$i<($length1-3);$i+=1){
+											my $exon=substr ($rev_com1,$i,$coding_1_length);
+											$exon=lc $exon;
+											if ($exon eq $coding_1_sequence) {
+												$right_start_position=$i;
 											}
 										}
-										print $out_annotation "     "."gene"."            "."complement(".$end."..".$start1.")\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."CDS"."             "."complement(join(".$end."..".$start3_new.",".$end2_new."..".$start1."))"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/codon_start=1"."\n";
-										print $out_annotation "                     "."/transl_table=11"."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										#print $out_annotation "                     "."/translation=\"$aa\""."\n";
-										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (negative one-intron PCG) has non-canonical start codon!\n";
+
+										my $aa2;#right range for stop codon
+										for (my $k=0;$k<($length2-3);$k+=3){# delete stop codon
+											my $codon=substr ($rev_com2,$k,3);
+											$codon=uc $codon;
+											if (exists $hash_codon{$codon}){
+												$aa2.=$hash_codon{$codon};
+											}else{
+												$aa2.="X";
+												my $n=$k+1;
+												#print "Bad codon $codon in position $n of gene $name in species $contig!\n";
+											}
+										}
+										my @aa2=split //,$aa2;
+										my @star2;
+										foreach (0..$#aa2){
+											if ($aa2[$_]=~ /\*/){
+												push @star2,$_;
+											}
+										}
+										my $left_star_position=shift @star2;
+										if ((defined $right_start_position) and (defined $left_star_position)){
+											my $start=$start_right-$right_start_position;
+											my $end=($start3+1)-($left_star_position * 3+3);
+
+											my ($str1,$str2,$str,$length,$rev_com,$end2_new,$start3_new);
+											$end2_new=$start-$coding_1_length+1;
+											if ($length_ref_exon1 % 3==0) {
+												$start3_new=$start3;
+											}elsif ($length_ref_exon1 % 3==1) {
+												$start3_new=$start3+2;
+											}elsif ($length_ref_exon1 % 3==2) {
+												$start3_new=$start3+1;
+											}
+											$str1=substr($sequence,($end2_new-1),($start-($end2_new-1)));
+											$str2=substr($sequence,($end-1),($start3_new-($end-1)));
+											$str=$str1.$str2;
+											$length=length $str;
+											$rev_com=reverse $str;
+											$rev_com=~ tr/ACGTacgt/TGCAtgca/;
+
+											my $aa;
+											for (my $i=0;$i<($length-3);$i+=3){# delete stop codon
+												my $codon=substr ($rev_com,$i,3);
+												$codon=uc $codon;
+												if (exists $hash_codon{$codon}){
+													$aa.=$hash_codon{$codon};
+												}else{
+													$aa.="X";
+													my $j=$i+1;
+													#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												}
+											}
+											print $out_annotation "     "."gene"."            "."complement(".$end."..".$start.")\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "     "."CDS"."             "."complement(join(".$end."..".$start3_new.",".$end2_new."..".$start."))"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/codon_start=1"."\n";
+											print $out_annotation "                     "."/transl_table=11"."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											#print $out_annotation "                     "."/translation=\"$aa\""."\n";
+											$gene_number_seq{$name}++;
+										}elsif ((!defined $right_start_position) and (defined $left_star_position)){
+											my $end=($start3+1)-($left_star_position * 3+3);
+
+											my ($str1,$str2,$str,$length,$rev_com,$end2_new,$start3_new);
+											$end2_new=$start1-$coding_1_length+1;
+											if ($length_ref_exon1 % 3==0) {
+												$start3_new=$start3;
+											}elsif ($length_ref_exon1 % 3==1) {
+												$start3_new=$start3+2;
+											}elsif ($length_ref_exon1 % 3==2) {
+												$start3_new=$start3+1;
+											}
+											$str1=substr($sequence,($end2_new-1),($start1-($end2_new-1)));
+											$str2=substr($sequence,($end-1),($start3_new-($end-1)));
+											$str=$str1.$str2;
+											$length=length $str;
+											$rev_com=reverse $str;
+											$rev_com=~ tr/ACGTacgt/TGCAtgca/;
+
+											my $aa;
+											for (my $i=0;$i<($length-3);$i+=3){# delete stop codon
+												my $codon=substr ($rev_com,$i,3);
+												$codon=uc $codon;
+												if (exists $hash_codon{$codon}){
+													$aa.=$hash_codon{$codon};
+												}else{
+													$aa.="X";
+													my $j=$i+1;
+													#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												}
+											}
+											#print $out_annotation "     "."gene"."            "."complement(".$end."..".$start1.")\n";
+											print $out_annotation "     "."gene"."            "."complement(".$end."..".$start3.")\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											#print $out_annotation "     "."CDS"."             "."complement(join(".$end."..".$start3_new.",".$end2_new."..".$start1."))"."\n";
+											print $out_annotation "     "."CDS"."             "."complement(".$end."..".$start3.")"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/codon_start=1"."\n";
+											print $out_annotation "                     "."/transl_table=11"."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											#print $out_annotation "                     "."/translation=\"$aa\""."\n";
+											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (negative one-intron PCG) must be checked due to exon 1 not found!\n";
+										}
 									}
 								}
 							}
 						}
 					}elsif ((($start1 != $start2) and (!defined $start4)) or ((!defined $start4) and ($end1 != $end3))){# non-identical PCG boundary for _gene and -1_coding_aa, -2_coding_aa
 						if ($start1 < $end1){# positive
-							my $str1=substr($sequence,($start2-1),($end2-$start2+1));
-							my $str2=substr($sequence,($start3-1),($end3-$start3+1));
+							my ($str1,$str2);
+							$str1=substr($sequence,($start2-1),($end2-$start2+1)) if ($end2 > $start2);
+							$str1=substr($sequence,($end2-1),($start2-$end2+1)) if ($end2 < $start2);
+							$str2=substr($sequence,($start3-1),($end3-$start3+1)) if ($end3 > $start3);
+							$str2=substr($sequence,($end3-1),($start3-$end3+1)) if ($end3 < $start3);
 							my $str3=$str1.$str2;
 							my $length_exon=length $str3;
+							my $length_exon2=length $str2;
 							my $forward_start_codon=substr($str3,0,3);
 							my $forward_stop_codon=substr($str3,($length_exon-3),3);
 							my $aa_exon;
@@ -7937,157 +8143,167 @@ while (@sequence_filenames) {
 									}
 								}
 							}elsif (($name eq "rpl16") or ($name eq "petB") or ($name eq "petD")) {
-								if (($length_ref_exon1 % 3==0) and ($length_exon % 3==0) and (!grep {$_=~ /\*/} @aa_exon) and (($forward_start_codon eq "ATG") or ($forward_start_codon eq "GTG")) and (($forward_stop_codon eq "TAA") or ($forward_stop_codon eq "TAG") or ($forward_stop_codon eq "TGA"))){# standard start and stop codon for _gene
-									print $out_annotation "     "."gene"."            ".$start2."..".$end3."\n";
-									print $out_annotation "                     "."/gene=\"$name\""."\n";
-									print $out_annotation "     "."CDS"."             "."join(".$start2."..".$end2.",".$start3."..".$end3.")"."\n";
-									print $out_annotation "                     "."/gene=\"$name\""."\n";
-									print $out_annotation "                     "."/codon_start=1"."\n";
-									print $out_annotation "                     "."/transl_table=11"."\n";
-									print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-									#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-									$gene_number_seq{$name}++;
-								}elsif(($length_ref_exon1 % 3!=0) or (grep {$_=~ /\*/} @aa_exon) or (($forward_start_codon ne "ATG") and ($forward_start_codon ne "GTG")) or (($forward_stop_codon ne "TAA") and ($forward_stop_codon ne "TAG") and ($forward_stop_codon ne "TGA"))){# non-standard start or stop codon for _gene
-									my $start_left;
-									if ($start2>=9000) {
-										$start_left=$start2-9000;
-									}elsif ($start2<9000){
-										$start_left=$start2-(int($start2/3)-1)*3;
-									}
-									my $start_right=$start2+60;
-									my $length_exon1=($end2-$start2+1);
-									my $end_right;
-									if (($length_cp-$start3)>=9000) {
-										$end_right=$start3+9000;
-									}elsif (($length_cp-$start3)<9000){
-										$end_right=$start3+((int(($length_cp-$start3)/3)-1)*3);
-									}
-									my $str1=substr($sequence,($start_left-1),($start_right-$start_left+1));
-									my $str2=substr($sequence,($start3-1),($end_right-$start3));
-									my $length1=length $str1;
-									my $length2=length $str2;
-									my $coding_1_length=$hash_exon_length{"$name-1_coding"};
-									my $coding_1_sequence=$hash_exon_sequence{"$name-1_coding"};
-									my $left_start_position;
-									for (my $i=0;$i<($length1-3);$i+=1){
-										my $exon=substr ($str1,$i,$coding_1_length);
-										$exon=lc $exon;
-										if ($exon eq $coding_1_sequence) {
-											$left_start_position=$i;
-										}
-									}
-
-									my $aa2;#right range for stop codon
-									for (my $k=0;$k<($length2-3);$k+=3){# delete stop codon
-										my $codon=substr ($str2,$k,3);
-										$codon=uc $codon;
-										if (exists $hash_codon{$codon}){
-											$aa2.=$hash_codon{$codon};
-										}else{
-											$aa2.="X";
-											my $n=$k+1;
-											#print "Bad codon $codon in position $n of gene $name in species $contig!\n";
-										}
-									}
-									my @aa2=split //,$aa2;
-									my @star2;
-									foreach (0..$#aa2){
-										if ($aa2[$_]=~ /\*/){
-											push @star2,$_;
-										}
-									}
-									my $right_star_position=shift @star2;
-
-									if ((defined $left_start_position) and (defined $right_star_position)){
-										my $start=$start_left+$left_start_position;
-										my $end=($start3-1)+($right_star_position * 3+3);
-
-										my ($str1,$str2,$str,$length,$end2_new,$start3_new);
-										$end2_new=$start+$coding_1_length-1;
-										if ($length_ref_exon1 % 3==0) {
-											$start3_new=$start3;
-										}elsif ($length_ref_exon1 % 3==1) {
-											$start3_new=$start3-2;
-										}elsif ($length_ref_exon1 % 3==2) {
-											$start3_new=$start3-1;
-										}
-										$str1=substr($sequence,($start-1),($end2_new-($start-1)));
-										$str2=substr($sequence,($start3_new-1),($end-($start3_new-1)));
-										$str=$str1.$str2;
-										$length=length $str;
-
-										my $aa;
-										for (my $i=0;$i<($length-3);$i+=3){# delete stop codon
-											my $codon=substr ($str,$i,3);
-											$codon=uc $codon;
-											if (exists $hash_codon{$codon}){
-												$aa.=$hash_codon{$codon};
-											}else{
-												$aa.="X";
-												my $j=$i+1;
-												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
-											}
-										}
-										print $out_annotation "     "."gene"."            ".$start."..".$end."\n";
+								if ($length_exon2 < 150) {
+									print $logfile "Warning: $name (positive one-intron PCG) has not been annotated due to short length!\n";
+								}elsif ($length_exon2 >= 150) {
+									if (($length_ref_exon1 % 3==0) and ($length_exon % 3==0) and (!grep {$_=~ /\*/} @aa_exon) and (($forward_start_codon eq "ATG") or ($forward_start_codon eq "GTG")) and (($forward_stop_codon eq "TAA") or ($forward_stop_codon eq "TAG") or ($forward_stop_codon eq "TGA"))){# standard start and stop codon for _gene
+										print $out_annotation "     "."gene"."            ".$start2."..".$end3."\n";
 										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."CDS"."             "."join(".$start."..".$end2_new.",".$start3_new."..".$end.")"."\n";
+										print $out_annotation "     "."CDS"."             "."join(".$start2."..".$end2.",".$start3."..".$end3.")"."\n";
 										print $out_annotation "                     "."/gene=\"$name\""."\n";
 										print $out_annotation "                     "."/codon_start=1"."\n";
 										print $out_annotation "                     "."/transl_table=11"."\n";
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										#print $out_annotation "                     "."/translation=\"$aa\""."\n";
+										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 										$gene_number_seq{$name}++;
-									}elsif ((!defined $left_start_position) and (defined $right_star_position)){
-										my $end=($start3-1)+($right_star_position * 3+3);
-
-										my ($str1,$str2,$str,$length,$end2_new,$start3_new);
-										$end2_new=$start1+$coding_1_length-1;
-										if ($length_ref_exon1 % 3==0) {
-											$start3_new=$start3;
-										}elsif ($length_ref_exon1 % 3==1) {
-											$start3_new=$start3-2;
-										}elsif ($length_ref_exon1 % 3==2) {
-											$start3_new=$start3-1;
+									}elsif(($length_ref_exon1 % 3!=0) or (grep {$_=~ /\*/} @aa_exon) or (($forward_start_codon ne "ATG") and ($forward_start_codon ne "GTG")) or (($forward_stop_codon ne "TAA") and ($forward_stop_codon ne "TAG") and ($forward_stop_codon ne "TGA"))){# non-standard start or stop codon for _gene
+										my $start_left;
+										if ($start2>=9000) {
+											$start_left=$start2-9000;
+										}elsif ($start2<9000){
+											$start_left=$start2-(int($start2/3)-1)*3;
 										}
-										$str1=substr($sequence,($start1-1),($end2_new-($start1-1)));
-										$str2=substr($sequence,($start3_new-1),($end-($start3_new-1)));
-										$str=$str1.$str2;
-										$length=length $str;
-
-										my $aa;
-										for (my $i=0;$i<($length-3);$i+=3){# delete stop codon
-											my $codon=substr ($str,$i,3);
-											$codon=uc $codon;
-											if (exists $hash_codon{$codon}){
-												$aa.=$hash_codon{$codon};
-											}else{
-												$aa.="X";
-												my $j=$i+1;
-												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										my $start_right=$start2+60;
+										my $length_exon1=($end2-$start2+1);
+										my $end_right;
+										if (($length_cp-$start3)>=9000) {
+											$end_right=$start3+9000;
+										}elsif (($length_cp-$start3)<9000){
+											$end_right=$start3+((int(($length_cp-$start3)/3)-1)*3);
+										}
+										my $str1=substr($sequence,($start_left-1),($start_right-$start_left+1));
+										my $str2=substr($sequence,($start3-1),($end_right-$start3));
+										my $length1=length $str1;
+										my $length2=length $str2;
+										my $coding_1_length=$hash_exon_length{"$name-1_coding"};
+										my $coding_1_sequence=$hash_exon_sequence{"$name-1_coding"};
+										my $left_start_position;
+										for (my $i=0;$i<($length1-3);$i+=1){
+											my $exon=substr ($str1,$i,$coding_1_length);
+											$exon=lc $exon;
+											if ($exon eq $coding_1_sequence) {
+												$left_start_position=$i;
 											}
 										}
-										print $out_annotation "     "."gene"."            ".$start2."..".$end."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."CDS"."             "."join(".$start2."..".$end2_new.",".$start3_new."..".$end.")"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/codon_start=1"."\n";
-										print $out_annotation "                     "."/transl_table=11"."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										#print $out_annotation "                     "."/translation=\"$aa\""."\n";
-										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (positive one-intron PCG) has non-canonical start codon!\n";
+
+										my $aa2;#right range for stop codon
+										for (my $k=0;$k<($length2-3);$k+=3){# delete stop codon
+											my $codon=substr ($str2,$k,3);
+											$codon=uc $codon;
+											if (exists $hash_codon{$codon}){
+												$aa2.=$hash_codon{$codon};
+											}else{
+												$aa2.="X";
+												my $n=$k+1;
+												#print "Bad codon $codon in position $n of gene $name in species $contig!\n";
+											}
+										}
+										my @aa2=split //,$aa2;
+										my @star2;
+										foreach (0..$#aa2){
+											if ($aa2[$_]=~ /\*/){
+												push @star2,$_;
+											}
+										}
+										my $right_star_position=shift @star2;
+
+										if ((defined $left_start_position) and (defined $right_star_position)){
+											my $start=$start_left+$left_start_position;
+											my $end=($start3-1)+($right_star_position * 3+3);
+
+											my ($str1,$str2,$str,$length,$end2_new,$start3_new);
+											$end2_new=$start+$coding_1_length-1;
+											if ($length_ref_exon1 % 3==0) {
+												$start3_new=$start3;
+											}elsif ($length_ref_exon1 % 3==1) {
+												$start3_new=$start3-2;
+											}elsif ($length_ref_exon1 % 3==2) {
+												$start3_new=$start3-1;
+											}
+											$str1=substr($sequence,($start-1),($end2_new-($start-1)));
+											$str2=substr($sequence,($start3_new-1),($end-($start3_new-1)));
+											$str=$str1.$str2;
+											$length=length $str;
+
+											my $aa;
+											for (my $i=0;$i<($length-3);$i+=3){# delete stop codon
+												my $codon=substr ($str,$i,3);
+												$codon=uc $codon;
+												if (exists $hash_codon{$codon}){
+													$aa.=$hash_codon{$codon};
+												}else{
+													$aa.="X";
+													my $j=$i+1;
+													#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												}
+											}
+											print $out_annotation "     "."gene"."            ".$start."..".$end."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "     "."CDS"."             "."join(".$start."..".$end2_new.",".$start3_new."..".$end.")"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/codon_start=1"."\n";
+											print $out_annotation "                     "."/transl_table=11"."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											#print $out_annotation "                     "."/translation=\"$aa\""."\n";
+											$gene_number_seq{$name}++;
+										}elsif ((!defined $left_start_position) and (defined $right_star_position)){
+											my $end=($start3-1)+($right_star_position * 3+3);
+
+											my ($str1,$str2,$str,$length,$end2_new,$start3_new);
+											$end2_new=$start1+$coding_1_length-1;
+											if ($length_ref_exon1 % 3==0) {
+												$start3_new=$start3;
+											}elsif ($length_ref_exon1 % 3==1) {
+												$start3_new=$start3-2;
+											}elsif ($length_ref_exon1 % 3==2) {
+												$start3_new=$start3-1;
+											}
+											$str1=substr($sequence,($start1-1),($end2_new-($start1-1)));
+											$str2=substr($sequence,($start3_new-1),($end-($start3_new-1)));
+											$str=$str1.$str2;
+											$length=length $str;
+
+											my $aa;
+											for (my $i=0;$i<($length-3);$i+=3){# delete stop codon
+												my $codon=substr ($str,$i,3);
+												$codon=uc $codon;
+												if (exists $hash_codon{$codon}){
+													$aa.=$hash_codon{$codon};
+												}else{
+													$aa.="X";
+													my $j=$i+1;
+													#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												}
+											}
+											#print $out_annotation "     "."gene"."            ".$start2."..".$end."\n";
+											print $out_annotation "     "."gene"."            ".$start3."..".$end."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											#print $out_annotation "     "."CDS"."             "."join(".$start2."..".$end2_new.",".$start3_new."..".$end.")"."\n";
+											print $out_annotation "     "."CDS"."             ".$start3."..".$end."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/codon_start=1"."\n";
+											print $out_annotation "                     "."/transl_table=11"."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											#print $out_annotation "                     "."/translation=\"$aa\""."\n";
+											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (positive one-intron PCG) must be checked due to exon 1 not found!\n";
+										}
 									}
 								}
 							}
 						}elsif($start1 > $end1){# negative
-							my $str1=substr($sequence,($end2-1),($start2-$end2+1));
-							my $str2=substr($sequence,($end3-1),($start3-$end3+1));
+							my ($str1,$str2);
+							$str1=substr($sequence,($end2-1),($start2-$end2+1)) if ($end2 < $start2);
+							$str1=substr($sequence,($start2-1),($end2-$start2+1)) if ($end2 > $start2);
+							$str2=substr($sequence,($end3-1),($start3-$end3+1)) if ($end3 < $start3);
+							$str2=substr($sequence,($start3-1),($end3-$start3+1)) if ($end3 > $start3);
 							my $rev_com1=reverse $str1;
 							$rev_com1=~ tr/ACGTacgt/TGCAtgca/;
 							my $rev_com2=reverse $str2;
 							$rev_com2=~ tr/ACGTacgt/TGCAtgca/;
 							my $str3=$rev_com1.$rev_com2;
 							my $length_exon=length $str3;
+							my $length_exon2=length $str2;
 							my $reverse_start_codon=substr($str3,0,3);
 							my $reverse_stop_codon=substr($str3,($length_exon-3),3);
 							my $aa_exon;
@@ -9121,152 +9337,158 @@ while (@sequence_filenames) {
 									}
 								}
 							}elsif (($name eq "rpl16") or ($name eq "petB") or ($name eq "petD")) {
-								if (($length_ref_exon1 % 3==0) and ($length_exon % 3==0) and (!grep {$_=~ /\*/} @aa_exon) and (($reverse_start_codon eq "ATG") or ($reverse_start_codon eq "GTG")) and (($reverse_stop_codon eq "TAA") or ($reverse_stop_codon eq "TAG") or ($reverse_stop_codon eq "TGA"))){# standard start and stop codon for _gene
-									print $out_annotation "     "."gene"."            "."complement(".$end3."..".$start2.")"."\n";
-									print $out_annotation "                     "."/gene=\"$name\""."\n";
-									print $out_annotation "     "."CDS"."             "."complement(join(".$end3."..".$start3.",".$end2."..".$start2."))"."\n";
-									print $out_annotation "                     "."/gene=\"$name\""."\n";
-									print $out_annotation "                     "."/codon_start=1"."\n";
-									print $out_annotation "                     "."/transl_table=11"."\n";
-									print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-									#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-									$gene_number_seq{$name}++;
-								}elsif(($length_ref_exon1 % 3!=0) or (grep {$_=~ /\*/} @aa_exon) or (($reverse_start_codon ne "ATG") and ($reverse_start_codon ne "GTG")) or (($reverse_stop_codon ne "TAA") and ($reverse_stop_codon ne "TAG") and ($reverse_stop_codon ne "TGA"))){# non-standard start or stop codon for _gene
-									my $start_left=$start2-60;
-									my $start_right;
-									if (($length_cp-$start2)>=9000) {
-										$start_right=$start2+9000;
-									}elsif (($length_cp-$start2)<9000){
-										$start_right=$start2+(int(($length_cp-$start2)/3)-1)*3;
-									}
-									my $length_exon1=($start2-$end2+1);
-									my $end_left;
-									if ($start3>=9000) {
-										$end_left=$start3-9000;
-									}elsif ($start3<9000){
-										$end_left=$start3-(int($start3/3)-1)*3;
-									}
-									my $str1=substr($sequence,($start_left),($start_right-$start_left));
-									my $str2=substr($sequence,($end_left),($start3-$end_left));
-									my $length1=length $str1;
-									my $length2=length $str2;
-									my $rev_com1=reverse $str1;
-									$rev_com1=~ tr/ACGTacgt/TGCAtgca/;
-									my $rev_com2=reverse $str2;
-									$rev_com2=~ tr/ACGTacgt/TGCAtgca/;
-									my $coding_1_length=$hash_exon_length{"$name-1_coding"};
-									my $coding_1_sequence=$hash_exon_sequence{"$name-1_coding"};
-									my $right_start_position;
-									for (my $i=0;$i<($length1-3);$i+=1){
-										my $exon=substr ($rev_com1,$i,$coding_1_length);
-										$exon=lc $exon;
-										if ($exon eq $coding_1_sequence) {
-											$right_start_position=$i;
-										}
-									}
-
-									my $aa2;#right range for stop codon
-									for (my $k=0;$k<($length2-3);$k+=3){# delete stop codon
-										my $codon=substr ($rev_com2,$k,3);
-										$codon=uc $codon;
-										if (exists $hash_codon{$codon}){
-											$aa2.=$hash_codon{$codon};
-										}else{
-											$aa2.="X";
-											my $n=$k+1;
-											#print "Bad codon $codon in position $n of gene $name in species $contig!\n";
-										}
-									}
-									my @aa2=split //,$aa2;
-									my @star2;
-									foreach (0..$#aa2){
-										if ($aa2[$_]=~ /\*/){
-											push @star2,$_;
-										}
-									}
-									my $left_star_position=shift @star2;
-									if ((defined $right_start_position) and (defined $left_star_position)){
-										my $start=$start_right-$right_start_position;
-										my $end=($start3+1)-($left_star_position * 3+3);
-
-										my ($str1,$str2,$str,$length,$rev_com,$end2_new,$start3_new);
-										$end2_new=$start-$coding_1_length+1;
-										if ($length_ref_exon1 % 3==0) {
-											$start3_new=$start3;
-										}elsif ($length_ref_exon1 % 3==1) {
-											$start3_new=$start3+2;
-										}elsif ($length_ref_exon1 % 3==2) {
-											$start3_new=$start3+1;
-										}
-										$str1=substr($sequence,($end2_new-1),($start-($end2_new-1)));
-										$str2=substr($sequence,($end-1),($start3_new-($end-1)));
-										$str=$str1.$str2;
-										$length=length $str;
-										$rev_com=reverse $str;
-										$rev_com=~ tr/ACGTacgt/TGCAtgca/;
-
-										my $aa;
-										for (my $i=0;$i<($length-3);$i+=3){# delete stop codon
-											my $codon=substr ($rev_com,$i,3);
-											$codon=uc $codon;
-											if (exists $hash_codon{$codon}){
-												$aa.=$hash_codon{$codon};
-											}else{
-												$aa.="X";
-												my $j=$i+1;
-												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
-											}
-										}
-										print $out_annotation "     "."gene"."            "."complement(".$end."..".$start.")\n";
+								if ($length_exon2 < 150) {
+									print $logfile "Warning: $name (negative one-intron PCG) has not been annotated due to short length!\n";
+								}elsif ($length_exon2 >= 150) {
+									if (($length_ref_exon1 % 3==0) and ($length_exon % 3==0) and (!grep {$_=~ /\*/} @aa_exon) and (($reverse_start_codon eq "ATG") or ($reverse_start_codon eq "GTG")) and (($reverse_stop_codon eq "TAA") or ($reverse_stop_codon eq "TAG") or ($reverse_stop_codon eq "TGA"))){# standard start and stop codon for _gene
+										print $out_annotation "     "."gene"."            "."complement(".$end3."..".$start2.")"."\n";
 										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."CDS"."             "."complement(join(".$end."..".$start3_new.",".$end2_new."..".$start."))"."\n";
+										print $out_annotation "     "."CDS"."             "."complement(join(".$end3."..".$start3.",".$end2."..".$start2."))"."\n";
 										print $out_annotation "                     "."/gene=\"$name\""."\n";
 										print $out_annotation "                     "."/codon_start=1"."\n";
 										print $out_annotation "                     "."/transl_table=11"."\n";
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										#print $out_annotation "                     "."/translation=\"$aa\""."\n";
+										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 										$gene_number_seq{$name}++;
-									}elsif ((!defined $right_start_position) and (defined $left_star_position)){
-										my $end=($start3+1)-($left_star_position * 3+3);
-
-										my ($str1,$str2,$str,$length,$rev_com,$end2_new,$start3_new);
-										$end2_new=$start1-$coding_1_length+1;
-										if ($length_ref_exon1 % 3==0) {
-											$start3_new=$start3;
-										}elsif ($length_ref_exon1 % 3==1) {
-											$start3_new=$start3+2;
-										}elsif ($length_ref_exon1 % 3==2) {
-											$start3_new=$start3+1;
+									}elsif(($length_ref_exon1 % 3!=0) or (grep {$_=~ /\*/} @aa_exon) or (($reverse_start_codon ne "ATG") and ($reverse_start_codon ne "GTG")) or (($reverse_stop_codon ne "TAA") and ($reverse_stop_codon ne "TAG") and ($reverse_stop_codon ne "TGA"))){# non-standard start or stop codon for _gene
+										my $start_left=$start2-60;
+										my $start_right;
+										if (($length_cp-$start2)>=9000) {
+											$start_right=$start2+9000;
+										}elsif (($length_cp-$start2)<9000){
+											$start_right=$start2+(int(($length_cp-$start2)/3)-1)*3;
 										}
-										$str1=substr($sequence,($end2_new-1),($start1-($end2_new-1)));
-										$str2=substr($sequence,($end-1),($start3_new-($end-1)));
-										$str=$str1.$str2;
-										$length=length $str;
-										$rev_com=reverse $str;
-										$rev_com=~ tr/ACGTacgt/TGCAtgca/;
-
-										my $aa;
-										for (my $i=0;$i<($length-3);$i+=3){# delete stop codon
-											my $codon=substr ($rev_com,$i,3);
-											$codon=uc $codon;
-											if (exists $hash_codon{$codon}){
-												$aa.=$hash_codon{$codon};
-											}else{
-												$aa.="X";
-												my $j=$i+1;
-												#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										my $length_exon1=($start2-$end2+1);
+										my $end_left;
+										if ($start3>=9000) {
+											$end_left=$start3-9000;
+										}elsif ($start3<9000){
+											$end_left=$start3-(int($start3/3)-1)*3;
+										}
+										my $str1=substr($sequence,($start_left),($start_right-$start_left));
+										my $str2=substr($sequence,($end_left),($start3-$end_left));
+										my $length1=length $str1;
+										my $length2=length $str2;
+										my $rev_com1=reverse $str1;
+										$rev_com1=~ tr/ACGTacgt/TGCAtgca/;
+										my $rev_com2=reverse $str2;
+										$rev_com2=~ tr/ACGTacgt/TGCAtgca/;
+										my $coding_1_length=$hash_exon_length{"$name-1_coding"};
+										my $coding_1_sequence=$hash_exon_sequence{"$name-1_coding"};
+										my $right_start_position;
+										for (my $i=0;$i<($length1-3);$i+=1){
+											my $exon=substr ($rev_com1,$i,$coding_1_length);
+											$exon=lc $exon;
+											if ($exon eq $coding_1_sequence) {
+												$right_start_position=$i;
 											}
 										}
-										print $out_annotation "     "."gene"."            "."complement(".$end."..".$start2.")\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."CDS"."             "."complement(join(".$end."..".$start3_new.",".$end2_new."..".$start2."))"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/codon_start=1"."\n";
-										print $out_annotation "                     "."/transl_table=11"."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										#print $out_annotation "                     "."/translation=\"$aa\""."\n";
-										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (negative one-intron PCG) has non-canonical start codon!\n";
+
+										my $aa2;#right range for stop codon
+										for (my $k=0;$k<($length2-3);$k+=3){# delete stop codon
+											my $codon=substr ($rev_com2,$k,3);
+											$codon=uc $codon;
+											if (exists $hash_codon{$codon}){
+												$aa2.=$hash_codon{$codon};
+											}else{
+												$aa2.="X";
+												my $n=$k+1;
+												#print "Bad codon $codon in position $n of gene $name in species $contig!\n";
+											}
+										}
+										my @aa2=split //,$aa2;
+										my @star2;
+										foreach (0..$#aa2){
+											if ($aa2[$_]=~ /\*/){
+												push @star2,$_;
+											}
+										}
+										my $left_star_position=shift @star2;
+										if ((defined $right_start_position) and (defined $left_star_position)){
+											my $start=$start_right-$right_start_position;
+											my $end=($start3+1)-($left_star_position * 3+3);
+
+											my ($str1,$str2,$str,$length,$rev_com,$end2_new,$start3_new);
+											$end2_new=$start-$coding_1_length+1;
+											if ($length_ref_exon1 % 3==0) {
+												$start3_new=$start3;
+											}elsif ($length_ref_exon1 % 3==1) {
+												$start3_new=$start3+2;
+											}elsif ($length_ref_exon1 % 3==2) {
+												$start3_new=$start3+1;
+											}
+											$str1=substr($sequence,($end2_new-1),($start-($end2_new-1)));
+											$str2=substr($sequence,($end-1),($start3_new-($end-1)));
+											$str=$str1.$str2;
+											$length=length $str;
+											$rev_com=reverse $str;
+											$rev_com=~ tr/ACGTacgt/TGCAtgca/;
+
+											my $aa;
+											for (my $i=0;$i<($length-3);$i+=3){# delete stop codon
+												my $codon=substr ($rev_com,$i,3);
+												$codon=uc $codon;
+												if (exists $hash_codon{$codon}){
+													$aa.=$hash_codon{$codon};
+												}else{
+													$aa.="X";
+													my $j=$i+1;
+													#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												}
+											}
+											print $out_annotation "     "."gene"."            "."complement(".$end."..".$start.")\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "     "."CDS"."             "."complement(join(".$end."..".$start3_new.",".$end2_new."..".$start."))"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/codon_start=1"."\n";
+											print $out_annotation "                     "."/transl_table=11"."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											#print $out_annotation "                     "."/translation=\"$aa\""."\n";
+											$gene_number_seq{$name}++;
+										}elsif ((!defined $right_start_position) and (defined $left_star_position)){
+											my $end=($start3+1)-($left_star_position * 3+3);
+
+											my ($str1,$str2,$str,$length,$rev_com,$end2_new,$start3_new);
+											$end2_new=$start1-$coding_1_length+1;
+											if ($length_ref_exon1 % 3==0) {
+												$start3_new=$start3;
+											}elsif ($length_ref_exon1 % 3==1) {
+												$start3_new=$start3+2;
+											}elsif ($length_ref_exon1 % 3==2) {
+												$start3_new=$start3+1;
+											}
+											$str1=substr($sequence,($end2_new-1),($start1-($end2_new-1)));
+											$str2=substr($sequence,($end-1),($start3_new-($end-1)));
+											$str=$str1.$str2;
+											$length=length $str;
+											$rev_com=reverse $str;
+											$rev_com=~ tr/ACGTacgt/TGCAtgca/;
+
+											my $aa;
+											for (my $i=0;$i<($length-3);$i+=3){# delete stop codon
+												my $codon=substr ($rev_com,$i,3);
+												$codon=uc $codon;
+												if (exists $hash_codon{$codon}){
+													$aa.=$hash_codon{$codon};
+												}else{
+													$aa.="X";
+													my $j=$i+1;
+													#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+												}
+											}
+											#print $out_annotation "     "."gene"."            "."complement(".$end."..".$start2.")\n";
+											print $out_annotation "     "."gene"."            "."complement(".$end."..".$start3.")\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											#print $out_annotation "     "."CDS"."             "."complement(join(".$end."..".$start3_new.",".$end2_new."..".$start2."))"."\n";
+											print $out_annotation "     "."CDS"."             "."complement(".$end."..".$start3.")"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/codon_start=1"."\n";
+											print $out_annotation "                     "."/transl_table=11"."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											#print $out_annotation "                     "."/translation=\"$aa\""."\n";
+											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (negative one-intron PCG) must be checked due to exon 1 not found!\n";
+										}
 									}
 								}
 							}
@@ -9943,49 +10165,53 @@ while (@sequence_filenames) {
 
 								#if ((defined $end2_new) and (defined $start3_new) and (defined $end3_new) and (defined $start4_new)) {
 								if (abs($end4-$start2) < 3000) {
-									if ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length > 30) and ($intron2_length > 30))) {# (two introns) spliced exon,not 3x or have stop codon
-										print $out_annotation "     "."gene"."            ".$start1."..".$end1."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."CDS"."             "."join(".$start1."..".$end2_new.",".$start3_new."..".$end3_new.",".$start4_new."..".$end1.")"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/codon_start=1"."\n";
-										print $out_annotation "                     "."/transl_table=11"."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-										$gene_number_seq{$name}++;
-									}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length < 30) and ($intron2_length < 30))) {# (no intron) joined exon,no intron or no stop codon
-										print $out_annotation "     "."gene"."            ".$start1."..".$end1."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."CDS"."             ".$start1."..".$end1."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/codon_start=1"."\n";
-										print $out_annotation "                     "."/transl_table=11"."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (positive two-intron PCG) lost two introns!\n";
-									}elsif ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length > 30) and ($intron2_length < 30))) {# (loss intron2)
-										print $out_annotation "     "."gene"."            ".$start1."..".$end1."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."CDS"."             "."join(".$start1."..".$end2_new.",".$start3_new."..".$end1.")"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/codon_start=1"."\n";
-										print $out_annotation "                     "."/transl_table=11"."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (positive two-intron PCG) lost intron 2!\n";
-									}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length < 30) and ($intron2_length > 30))) {# (loss intron1)
-										print $out_annotation "     "."gene"."            ".$start1."..".$end1."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."CDS"."             "."join(".$start1."..".$end3_new.",".$start4_new."..".$end1.")"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/codon_start=1"."\n";
-										print $out_annotation "                     "."/transl_table=11"."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (positive two-intron PCG) lost intron 1!\n";
+									if (($start3 > $end2) and ($start4 > $end3)) {
+										if ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length > 30) and ($intron2_length > 30))) {# (two introns) spliced exon,not 3x or have stop codon
+											print $out_annotation "     "."gene"."            ".$start1."..".$end1."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "     "."CDS"."             "."join(".$start1."..".$end2_new.",".$start3_new."..".$end3_new.",".$start4_new."..".$end1.")"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/codon_start=1"."\n";
+											print $out_annotation "                     "."/transl_table=11"."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
+											$gene_number_seq{$name}++;
+										}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length < 30) and ($intron2_length < 30))) {# (no intron) joined exon,no intron or no stop codon
+											print $out_annotation "     "."gene"."            ".$start1."..".$end1."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "     "."CDS"."             ".$start1."..".$end1."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/codon_start=1"."\n";
+											print $out_annotation "                     "."/transl_table=11"."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
+											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (positive two-intron PCG) lost two introns!\n";
+										}elsif ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length > 30) and ($intron2_length < 30))) {# (loss intron2)
+											print $out_annotation "     "."gene"."            ".$start1."..".$end1."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "     "."CDS"."             "."join(".$start1."..".$end2_new.",".$start3_new."..".$end1.")"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/codon_start=1"."\n";
+											print $out_annotation "                     "."/transl_table=11"."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
+											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (positive two-intron PCG) lost intron 2!\n";
+										}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length < 30) and ($intron2_length > 30))) {# (loss intron1)
+											print $out_annotation "     "."gene"."            ".$start1."..".$end1."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "     "."CDS"."             "."join(".$start1."..".$end3_new.",".$start4_new."..".$end1.")"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/codon_start=1"."\n";
+											print $out_annotation "                     "."/transl_table=11"."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
+											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (positive two-intron PCG) lost intron 1!\n";
+										}
+									}elsif (($start3 < $end2) or ($start4 < $end3)) {
+										print $logfile "Warning: $name (positive two-intron PCG) has not been annotated!\n";
 									}
 								#}elsif ((!defined $end2_new) or (!defined $start3_new) or (!defined $end3_new) or (!defined $start4_new)) {
 								}elsif (abs($end4-$start2) > 3000) {
@@ -9998,7 +10224,7 @@ while (@sequence_filenames) {
 									print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 									#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 									$gene_number_seq{$name}++;
-									print $logfile "Warning: $name (positive two-intron PCG) need to be checked!\n";
+									print $logfile "Warning: $name (positive two-intron PCG) must be checked!\n";
 								}
 							}elsif((grep {$_=~ /\*/} @aa_exon) or (($forward_start_codon ne "ATG") and ($forward_start_codon ne "GTG")) or (($forward_stop_codon ne "TAA") and ($forward_stop_codon ne "TAG") and ($forward_stop_codon ne "TGA"))){# non-standard start or stop codon for _gene
 								my $start_left;
@@ -10755,49 +10981,53 @@ while (@sequence_filenames) {
 
 									#if ((defined $end2_new) and (defined $start3_new) and (defined $end3_new) and (defined $start4_new)) {
 									if (abs($end4-$start2) < 3000) {
-										if ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length > 30) and ($intron2_length > 30))) {# (two introns) spliced exon,not 3x or have stop codon
-											print $out_annotation "     "."gene"."            ".$start."..".$end."\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "     "."CDS"."             "."join(".$start."..".$end2_new.",".$start3_new."..".$end3_new.",".$start4_new."..".$end.")"."\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "                     "."/codon_start=1"."\n";
-											print $out_annotation "                     "."/transl_table=11"."\n";
-											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-											$gene_number_seq{$name}++;
-										}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length < 30) and ($intron2_length < 30))) {# (no intron) joined exon,no intron or no stop codon
-											print $out_annotation "     "."gene"."            ".$start."..".$end."\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "     "."CDS"."             ".$start."..".$end."\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "                     "."/codon_start=1"."\n";
-											print $out_annotation "                     "."/transl_table=11"."\n";
-											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-											$gene_number_seq{$name}++;
-											print $logfile "Warning: $name (positive two-intron PCG) lost two introns!\n";
-										}elsif ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length > 30) and ($intron2_length < 30))) {# (loss intron2)
-											print $out_annotation "     "."gene"."            ".$start."..".$end."\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "     "."CDS"."             "."join(".$start."..".$end2_new.",".$start3_new."..".$end.")"."\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "                     "."/codon_start=1"."\n";
-											print $out_annotation "                     "."/transl_table=11"."\n";
-											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-											$gene_number_seq{$name}++;
-											print $logfile "Warning: $name (positive two-intron PCG) lost intron 2!\n";
-										}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length < 30) and ($intron2_length > 30))) {# (loss intron1)
-											print $out_annotation "     "."gene"."            ".$start."..".$end."\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "     "."CDS"."             "."join(".$start."..".$end3_new.",".$start4_new."..".$end.")"."\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "                     "."/codon_start=1"."\n";
-											print $out_annotation "                     "."/transl_table=11"."\n";
-											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-											$gene_number_seq{$name}++;
-											print $logfile "Warning: $name (positive two-intron PCG) lost intron 1!\n";
+										if (($start3 > $end2) and ($start4 > $end3)) {
+											if ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length > 30) and ($intron2_length > 30))) {# (two introns) spliced exon,not 3x or have stop codon
+												print $out_annotation "     "."gene"."            ".$start."..".$end."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "     "."CDS"."             "."join(".$start."..".$end2_new.",".$start3_new."..".$end3_new.",".$start4_new."..".$end.")"."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "                     "."/codon_start=1"."\n";
+												print $out_annotation "                     "."/transl_table=11"."\n";
+												print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+												#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
+												$gene_number_seq{$name}++;
+											}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length < 30) and ($intron2_length < 30))) {# (no intron) joined exon,no intron or no stop codon
+												print $out_annotation "     "."gene"."            ".$start."..".$end."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "     "."CDS"."             ".$start."..".$end."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "                     "."/codon_start=1"."\n";
+												print $out_annotation "                     "."/transl_table=11"."\n";
+												print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+												#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
+												$gene_number_seq{$name}++;
+												print $logfile "Warning: $name (positive two-intron PCG) lost two introns!\n";
+											}elsif ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length > 30) and ($intron2_length < 30))) {# (loss intron2)
+												print $out_annotation "     "."gene"."            ".$start."..".$end."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "     "."CDS"."             "."join(".$start."..".$end2_new.",".$start3_new."..".$end.")"."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "                     "."/codon_start=1"."\n";
+												print $out_annotation "                     "."/transl_table=11"."\n";
+												print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+												#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
+												$gene_number_seq{$name}++;
+												print $logfile "Warning: $name (positive two-intron PCG) lost intron 2!\n";
+											}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length < 30) and ($intron2_length > 30))) {# (loss intron1)
+												print $out_annotation "     "."gene"."            ".$start."..".$end."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "     "."CDS"."             "."join(".$start."..".$end3_new.",".$start4_new."..".$end.")"."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "                     "."/codon_start=1"."\n";
+												print $out_annotation "                     "."/transl_table=11"."\n";
+												print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+												#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
+												$gene_number_seq{$name}++;
+												print $logfile "Warning: $name (positive two-intron PCG) lost intron 1!\n";
+											}
+										}elsif (($start3 < $end2) or ($start4 < $end3)) {
+											print $logfile "Warning: $name (positive two-intron PCG) has not been annotated!\n";
 										}
 									#}elsif ((!defined $end2_new) or (!defined $start3_new) or (!defined $end3_new) or (!defined $start4_new)) {
 									}elsif (abs($end4-$start2) > 3000) {
@@ -10810,7 +11040,7 @@ while (@sequence_filenames) {
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (positive two-intron PCG) need to be checked!\n";
+										print $logfile "Warning: $name (positive two-intron PCG) must be checked!\n";
 									}
 								}elsif ((!defined $left_start_position) and (defined $right_star_position)){
 									my $end;
@@ -10824,16 +11054,20 @@ while (@sequence_filenames) {
 										$end=($start4)+($left_star_position * 3+3);
 									}
 									if (abs($end4-$start2) < 3000) {
-										print $out_annotation "     "."gene"."            ".$start1."..".$end."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."CDS"."             "."join(".$start1."..".$end2.",".$start3."..".$end3.",".$start4."..".$end.")"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/codon_start=1"."\n";
-										print $out_annotation "                     "."/transl_table=11"."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										#print $out_annotation "                     "."/translation=\"$aa\""."\n";
-										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (positive two-intron PCG) has non-canonical start codon!\n";
+										if (($start3 > $end2) and ($start4 > $end3)) {
+											print $out_annotation "     "."gene"."            ".$start1."..".$end."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "     "."CDS"."             "."join(".$start1."..".$end2.",".$start3."..".$end3.",".$start4."..".$end.")"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/codon_start=1"."\n";
+											print $out_annotation "                     "."/transl_table=11"."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											#print $out_annotation "                     "."/translation=\"$aa\""."\n";
+											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (positive two-intron PCG) has non-canonical start codon!\n";
+										}elsif (($start3 < $end2) or ($start4 < $end3)) {
+											print $logfile "Warning: $name (positive two-intron PCG) has not been annotated!\n";
+										}
 									}elsif (abs($end4-$start2) > 3000) {
 										print $out_annotation "     "."gene"."            ".$start3."..".$end3."\n";
 										print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -10844,7 +11078,7 @@ while (@sequence_filenames) {
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 										#print $out_annotation "                     "."/translation=\"$aa\""."\n";
 										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (positive two-intron PCG) need to be checked!\n";
+										print $logfile "Warning: $name (positive two-intron PCG) must be checked!\n";
 									}
 								}
 							}else{
@@ -11558,49 +11792,53 @@ while (@sequence_filenames) {
 
 								#if ((defined $end2_new) and (defined $start3_new) and (defined $end3_new) and (defined $start4_new)) {
 								if (abs($start2-$end4) < 3000) {
-									if ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length > 30) and ($intron2_length > 30))) {# (two introns) spliced exon,not 3x or have stop codon
-										print $out_annotation "     "."gene"."            "."complement(".$end1."..".$start1.")\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."CDS"."             "."complement(join(".$end1."..".$start4_new.",".$end3_new."..".$start3_new.",".$end2_new."..".$start1."))"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/codon_start=1"."\n";
-										print $out_annotation "                     "."/transl_table=11"."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-										$gene_number_seq{$name}++;
-									}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length < 30) and ($intron2_length < 30))) {# (no intron) joined exon,no intron or no stop codon
-										print $out_annotation "     "."gene"."            "."complement(".$end1."..".$start1.")\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."CDS"."             "."complement(".$end1."..".$start1.")\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/codon_start=1"."\n";
-										print $out_annotation "                     "."/transl_table=11"."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (negative two-intron PCG) lost two introns!\n";
-									}elsif ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length > 30) and ($intron2_length < 30))) {# (loss intron2)
-										print $out_annotation "     "."gene"."            "."complement(".$end1."..".$start1.")\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."CDS"."             "."complement(join(".$end1."..".$start3_new.",".$end2_new."..".$start1."))"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/codon_start=1"."\n";
-										print $out_annotation "                     "."/transl_table=11"."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (negative two-intron PCG) lost intron 2!\n";
-									}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length < 30) and ($intron2_length > 30))) {# (loss intron1)
-										print $out_annotation "     "."gene"."            "."complement(".$end1."..".$start1.")\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."CDS"."             "."complement(join(".$end1."..".$start4_new.",".$end3_new."..".$start1."))"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/codon_start=1"."\n";
-										print $out_annotation "                     "."/transl_table=11"."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (negative two-intron PCG) lost intron 1!\n";
+									if (($start3 < $end2) and ($start4 < $end3)) {
+										if ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length > 30) and ($intron2_length > 30))) {# (two introns) spliced exon,not 3x or have stop codon
+											print $out_annotation "     "."gene"."            "."complement(".$end1."..".$start1.")\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "     "."CDS"."             "."complement(join(".$end1."..".$start4_new.",".$end3_new."..".$start3_new.",".$end2_new."..".$start1."))"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/codon_start=1"."\n";
+											print $out_annotation "                     "."/transl_table=11"."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
+											$gene_number_seq{$name}++;
+										}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length < 30) and ($intron2_length < 30))) {# (no intron) joined exon,no intron or no stop codon
+											print $out_annotation "     "."gene"."            "."complement(".$end1."..".$start1.")\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "     "."CDS"."             "."complement(".$end1."..".$start1.")\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/codon_start=1"."\n";
+											print $out_annotation "                     "."/transl_table=11"."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
+											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (negative two-intron PCG) lost two introns!\n";
+										}elsif ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length > 30) and ($intron2_length < 30))) {# (loss intron2)
+											print $out_annotation "     "."gene"."            "."complement(".$end1."..".$start1.")\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "     "."CDS"."             "."complement(join(".$end1."..".$start3_new.",".$end2_new."..".$start1."))"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/codon_start=1"."\n";
+											print $out_annotation "                     "."/transl_table=11"."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
+											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (negative two-intron PCG) lost intron 2!\n";
+										}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length < 30) and ($intron2_length > 30))) {# (loss intron1)
+											print $out_annotation "     "."gene"."            "."complement(".$end1."..".$start1.")\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "     "."CDS"."             "."complement(join(".$end1."..".$start4_new.",".$end3_new."..".$start1."))"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/codon_start=1"."\n";
+											print $out_annotation "                     "."/transl_table=11"."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
+											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (negative two-intron PCG) lost intron 1!\n";
+										}
+									}elsif (($start3 > $end2) or ($start4 > $end3)) {
+										print $logfile "Warning: $name (negative two-intron PCG) has not been annotated!\n";
 									}
 								#}elsif ((!defined $end2_new) or (!defined $start3_new) or (!defined $end3_new) or (!defined $start4_new)) {
 								}elsif (abs($start2-$end4) > 3000) {
@@ -11613,7 +11851,7 @@ while (@sequence_filenames) {
 									print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 									#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 									$gene_number_seq{$name}++;
-									print $logfile "Warning: $name (negative two-intron PCG) need to be checked!\n";
+									print $logfile "Warning: $name (negative two-intron PCG) must be checked!\n";
 								}
 							}elsif((grep {$_=~ /\*/} @aa_exon) or (($reverse_start_codon ne "ATG") and ($reverse_start_codon ne "GTG")) or (($reverse_stop_codon ne "TAA") and ($reverse_stop_codon ne "TAG") and ($reverse_stop_codon ne "TGA"))){# non-standard start or stop codon for _gene
 								my $start_left=$start1-60;
@@ -12408,49 +12646,53 @@ while (@sequence_filenames) {
 
 									#if ((defined $end2_new) and (defined $start3_new) and (defined $end3_new) and (defined $start4_new)) {
 									if (abs($start2-$end4) < 3000) {
-										if ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length > 30) and ($intron2_length > 30))) {# (two introns) spliced exon,not 3x or have stop codon
-											print $out_annotation "     "."gene"."            "."complement(".$end."..".$start.")\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "     "."CDS"."             "."complement(join(".$end."..".$start4_new.",".$end3_new."..".$start3_new.",".$end2_new."..".$start."))"."\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "                     "."/codon_start=1"."\n";
-											print $out_annotation "                     "."/transl_table=11"."\n";
-											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-											$gene_number_seq{$name}++;
-										}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length < 30) and ($intron2_length < 30))) {# (no intron) joined exon,no intron or no stop codon
-											print $out_annotation "     "."gene"."            "."complement(".$end."..".$start.")\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "     "."CDS"."             "."complement(".$end."..".$start.")\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "                     "."/codon_start=1"."\n";
-											print $out_annotation "                     "."/transl_table=11"."\n";
-											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-											$gene_number_seq{$name}++;
-											print $logfile "Warning: $name (negative two-intron PCG) lost two introns!\n";
-										}elsif ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length > 30) and ($intron2_length < 30))) {# (loss intron2)
-											print $out_annotation "     "."gene"."            "."complement(".$end."..".$start.")\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "     "."CDS"."             "."complement(join(".$end."..".$start3_new.",".$end2_new."..".$start."))"."\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "                     "."/codon_start=1"."\n";
-											print $out_annotation "                     "."/transl_table=11"."\n";
-											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-											$gene_number_seq{$name}++;
-											print $logfile "Warning: $name (negative two-intron PCG) lost intron 2!\n";
-										}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length < 30) and ($intron2_length > 30))) {# (loss intron1)
-											print $out_annotation "     "."gene"."            "."complement(".$end."..".$start.")\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "     "."CDS"."             "."complement(join(".$end."..".$start4_new.",".$end3_new."..".$start."))"."\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "                     "."/codon_start=1"."\n";
-											print $out_annotation "                     "."/transl_table=11"."\n";
-											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-											$gene_number_seq{$name}++;
-											print $logfile "Warning: $name (negative two-intron PCG) lost intron 1!\n";
+										if (($start3 < $end2) and ($start4 < $end3)) {
+											if ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length > 30) and ($intron2_length > 30))) {# (two introns) spliced exon,not 3x or have stop codon
+												print $out_annotation "     "."gene"."            "."complement(".$end."..".$start.")\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "     "."CDS"."             "."complement(join(".$end."..".$start4_new.",".$end3_new."..".$start3_new.",".$end2_new."..".$start."))"."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "                     "."/codon_start=1"."\n";
+												print $out_annotation "                     "."/transl_table=11"."\n";
+												print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+												#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
+												$gene_number_seq{$name}++;
+											}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length < 30) and ($intron2_length < 30))) {# (no intron) joined exon,no intron or no stop codon
+												print $out_annotation "     "."gene"."            "."complement(".$end."..".$start.")\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "     "."CDS"."             "."complement(".$end."..".$start.")\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "                     "."/codon_start=1"."\n";
+												print $out_annotation "                     "."/transl_table=11"."\n";
+												print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+												#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
+												$gene_number_seq{$name}++;
+												print $logfile "Warning: $name (negative two-intron PCG) lost two introns!\n";
+											}elsif ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length > 30) and ($intron2_length < 30))) {# (loss intron2)
+												print $out_annotation "     "."gene"."            "."complement(".$end."..".$start.")\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "     "."CDS"."             "."complement(join(".$end."..".$start3_new.",".$end2_new."..".$start."))"."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "                     "."/codon_start=1"."\n";
+												print $out_annotation "                     "."/transl_table=11"."\n";
+												print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+												#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
+												$gene_number_seq{$name}++;
+												print $logfile "Warning: $name (negative two-intron PCG) lost intron 2!\n";
+											}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length < 30) and ($intron2_length > 30))) {# (loss intron1)
+												print $out_annotation "     "."gene"."            "."complement(".$end."..".$start.")\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "     "."CDS"."             "."complement(join(".$end."..".$start4_new.",".$end3_new."..".$start."))"."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "                     "."/codon_start=1"."\n";
+												print $out_annotation "                     "."/transl_table=11"."\n";
+												print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+												#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
+												$gene_number_seq{$name}++;
+												print $logfile "Warning: $name (negative two-intron PCG) lost intron 1!\n";
+											}
+										}elsif (($start3 > $end2) or ($start4 > $end3)) {
+											print $logfile "Warning: $name (negative two-intron PCG) has not been annotated!\n";
 										}
 									#}elsif ((!defined $end2_new) or (!defined $start3_new) or (!defined $end3_new) or (!defined $start4_new)) {
 									}elsif (abs($start2-$end4) > 3000) {
@@ -12463,7 +12705,7 @@ while (@sequence_filenames) {
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (negative two-intron PCG) need to be checked!\n";
+										print $logfile "Warning: $name (negative two-intron PCG) must be checked!\n";
 									}
 								}elsif ((!defined $right_start_position) and (defined $left_star_position)){
 									my $end;
@@ -12477,16 +12719,20 @@ while (@sequence_filenames) {
 										$end=($start4)-($left_star_position * 3+3);
 									}
 									if (abs($start2-$end4) < 3000) {
-										print $out_annotation "     "."gene"."            "."complement(".$end."..".$start1.")\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."CDS"."             "."complement(join(".$end."..".$start4.",".$end3."..".$start3.",".$end2."..".$start1."))"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/codon_start=1"."\n";
-										print $out_annotation "                     "."/transl_table=11"."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										#print $out_annotation "                     "."/translation=\"$aa\""."\n";
-										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (negative two-intron PCG) has non-canonical start codon!\n";
+										if (($start3 < $end2) and ($start4 < $end3)) {
+											print $out_annotation "     "."gene"."            "."complement(".$end."..".$start1.")\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "     "."CDS"."             "."complement(join(".$end."..".$start4.",".$end3."..".$start3.",".$end2."..".$start1."))"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/codon_start=1"."\n";
+											print $out_annotation "                     "."/transl_table=11"."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											#print $out_annotation "                     "."/translation=\"$aa\""."\n";
+											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (negative two-intron PCG) has non-canonical start codon!\n";
+										}elsif (($start3 > $end2) or ($start4 > $end3)) {
+											print $logfile "Warning: $name (negative two-intron PCG) has not been annotated!\n";
+										}
 									}elsif (abs($start2-$end4) > 3000) {
 										print $out_annotation "     "."gene"."            "."complement(".$end3."..".$start3.")\n";
 										print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -12497,7 +12743,7 @@ while (@sequence_filenames) {
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 										#print $out_annotation "                     "."/translation=\"$aa\""."\n";
 										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (negative two-intron PCG) need to be checked!\n";
+										print $logfile "Warning: $name (negative two-intron PCG) must be checked!\n";
 									}
 								}
 							}else{
@@ -13169,49 +13415,53 @@ while (@sequence_filenames) {
 
 								#if ((defined $end2_new) and (defined $start3_new) and (defined $end3_new) and (defined $start4_new)) {
 								if (abs($end4-$start2) < 3000) {
-									if ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length > 30) and ($intron2_length > 30))) {# (two introns) spliced exon,not 3x or have stop codon
-										print $out_annotation "     "."gene"."            ".$start2."..".$end4."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."CDS"."             "."join(".$start2."..".$end2_new.",".$start3_new."..".$end3_new.",".$start4_new."..".$end4.")"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/codon_start=1"."\n";
-										print $out_annotation "                     "."/transl_table=11"."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-										$gene_number_seq{$name}++;
-									}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length < 30) and ($intron2_length < 30))) {# (no intron) joined exon,no intron or no stop codon
-										print $out_annotation "     "."gene"."            ".$start2."..".$end4."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."CDS"."             ".$start2."..".$end4."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/codon_start=1"."\n";
-										print $out_annotation "                     "."/transl_table=11"."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (positive two-intron PCG) lost two introns!\n";
-									}elsif ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length > 30) and ($intron2_length < 30))) {# (loss intron2)
-										print $out_annotation "     "."gene"."            ".$start2."..".$end4."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."CDS"."             "."join(".$start2."..".$end2_new.",".$start3_new."..".$end4.")"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/codon_start=1"."\n";
-										print $out_annotation "                     "."/transl_table=11"."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (positive two-intron PCG) lost intron 2!\n";
-									}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length < 30) and ($intron2_length > 30))) {# (loss intron1)
-										print $out_annotation "     "."gene"."            ".$start2."..".$end4."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."CDS"."             "."join(".$start2."..".$end3_new.",".$start4_new."..".$end4.")"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/codon_start=1"."\n";
-										print $out_annotation "                     "."/transl_table=11"."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (positive two-intron PCG) lost intron 1!\n";
+									if (($start3 > $end2) and ($start4 > $end3)) {
+										if ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length > 30) and ($intron2_length > 30))) {# (two introns) spliced exon,not 3x or have stop codon
+											print $out_annotation "     "."gene"."            ".$start2."..".$end4."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "     "."CDS"."             "."join(".$start2."..".$end2_new.",".$start3_new."..".$end3_new.",".$start4_new."..".$end4.")"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/codon_start=1"."\n";
+											print $out_annotation "                     "."/transl_table=11"."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
+											$gene_number_seq{$name}++;
+										}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length < 30) and ($intron2_length < 30))) {# (no intron) joined exon,no intron or no stop codon
+											print $out_annotation "     "."gene"."            ".$start2."..".$end4."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "     "."CDS"."             ".$start2."..".$end4."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/codon_start=1"."\n";
+											print $out_annotation "                     "."/transl_table=11"."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
+											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (positive two-intron PCG) lost two introns!\n";
+										}elsif ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length > 30) and ($intron2_length < 30))) {# (loss intron2)
+											print $out_annotation "     "."gene"."            ".$start2."..".$end4."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "     "."CDS"."             "."join(".$start2."..".$end2_new.",".$start3_new."..".$end4.")"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/codon_start=1"."\n";
+											print $out_annotation "                     "."/transl_table=11"."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
+											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (positive two-intron PCG) lost intron 2!\n";
+										}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length < 30) and ($intron2_length > 30))) {# (loss intron1)
+											print $out_annotation "     "."gene"."            ".$start2."..".$end4."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "     "."CDS"."             "."join(".$start2."..".$end3_new.",".$start4_new."..".$end4.")"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/codon_start=1"."\n";
+											print $out_annotation "                     "."/transl_table=11"."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
+											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (positive two-intron PCG) lost intron 1!\n";
+										}
+									}elsif (($start3 < $end2) or ($start4 < $end3)) {
+										print $logfile "Warning: $name (positive two-intron PCG) has not been annotated!\n";
 									}
 								#}elsif ((!defined $end2_new) or (!defined $start3_new) or (!defined $end3_new) or (!defined $start4_new)) {
 								}elsif (abs($end4-$start2) > 3000) {
@@ -13224,7 +13474,7 @@ while (@sequence_filenames) {
 									print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 									#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 									$gene_number_seq{$name}++;
-									print $logfile "Warning: $name (positive two-intron PCG) need to be checked!\n";
+									print $logfile "Warning: $name (positive two-intron PCG) must be checked!\n";
 								}
 							}elsif((grep {$_=~ /\*/} @aa_exon) or (($forward_start_codon ne "ATG") and ($forward_start_codon ne "GTG")) or (($forward_stop_codon ne "TAA") and ($forward_stop_codon ne "TAG") and ($forward_stop_codon ne "TGA"))){# non-standard start or stop codon for _gene
 								my $start_left;
@@ -13981,49 +14231,53 @@ while (@sequence_filenames) {
 	
 									#if ((defined $end2_new) and (defined $start3_new) and (defined $end3_new) and (defined $start4_new)) {
 									if (abs($end4-$start2) < 3000) {
-										if ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length > 30) and ($intron2_length > 30))) {# (two introns) spliced exon,not 3x or have stop codon
-											print $out_annotation "     "."gene"."            ".$start."..".$end."\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "     "."CDS"."             "."join(".$start."..".$end2_new.",".$start3_new."..".$end3_new.",".$start4_new."..".$end.")"."\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "                     "."/codon_start=1"."\n";
-											print $out_annotation "                     "."/transl_table=11"."\n";
-											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-											$gene_number_seq{$name}++;
-										}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length < 30) and ($intron2_length < 30))) {# (no intron) joined exon,no intron or no stop codon
-											print $out_annotation "     "."gene"."            ".$start."..".$end."\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "     "."CDS"."             ".$start."..".$end."\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "                     "."/codon_start=1"."\n";
-											print $out_annotation "                     "."/transl_table=11"."\n";
-											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-											$gene_number_seq{$name}++;
-											print $logfile "Warning: $name (positive two-intron PCG) lost two introns!\n";
-										}elsif ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length > 30) and ($intron2_length < 30))) {# (loss intron2)
-											print $out_annotation "     "."gene"."            ".$start."..".$end."\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "     "."CDS"."             "."join(".$start."..".$end2_new.",".$start3_new."..".$end.")"."\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "                     "."/codon_start=1"."\n";
-											print $out_annotation "                     "."/transl_table=11"."\n";
-											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-											$gene_number_seq{$name}++;
-											print $logfile "Warning: $name (positive two-intron PCG) lost intron 2!\n";
-										}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length < 30) and ($intron2_length > 30))) {# (loss intron1)
-											print $out_annotation "     "."gene"."            ".$start."..".$end."\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "     "."CDS"."             "."join(".$start."..".$end3_new.",".$start4_new."..".$end.")"."\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "                     "."/codon_start=1"."\n";
-											print $out_annotation "                     "."/transl_table=11"."\n";
-											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-											$gene_number_seq{$name}++;
-											print $logfile "Warning: $name (positive two-intron PCG) lost intron 1!\n";
+										if (($start3 > $end2) and ($start4 > $end3)) {
+											if ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length > 30) and ($intron2_length > 30))) {# (two introns) spliced exon,not 3x or have stop codon
+												print $out_annotation "     "."gene"."            ".$start."..".$end."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "     "."CDS"."             "."join(".$start."..".$end2_new.",".$start3_new."..".$end3_new.",".$start4_new."..".$end.")"."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "                     "."/codon_start=1"."\n";
+												print $out_annotation "                     "."/transl_table=11"."\n";
+												print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+												#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
+												$gene_number_seq{$name}++;
+											}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length < 30) and ($intron2_length < 30))) {# (no intron) joined exon,no intron or no stop codon
+												print $out_annotation "     "."gene"."            ".$start."..".$end."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "     "."CDS"."             ".$start."..".$end."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "                     "."/codon_start=1"."\n";
+												print $out_annotation "                     "."/transl_table=11"."\n";
+												print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+												#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
+												$gene_number_seq{$name}++;
+												print $logfile "Warning: $name (positive two-intron PCG) lost two introns!\n";
+											}elsif ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length > 30) and ($intron2_length < 30))) {# (loss intron2)
+												print $out_annotation "     "."gene"."            ".$start."..".$end."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "     "."CDS"."             "."join(".$start."..".$end2_new.",".$start3_new."..".$end.")"."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "                     "."/codon_start=1"."\n";
+												print $out_annotation "                     "."/transl_table=11"."\n";
+												print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+												#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
+												$gene_number_seq{$name}++;
+												print $logfile "Warning: $name (positive two-intron PCG) lost intron 2!\n";
+											}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length < 30) and ($intron2_length > 30))) {# (loss intron1)
+												print $out_annotation "     "."gene"."            ".$start."..".$end."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "     "."CDS"."             "."join(".$start."..".$end3_new.",".$start4_new."..".$end.")"."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "                     "."/codon_start=1"."\n";
+												print $out_annotation "                     "."/transl_table=11"."\n";
+												print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+												#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
+												$gene_number_seq{$name}++;
+												print $logfile "Warning: $name (positive two-intron PCG) lost intron 1!\n";
+											}
+										}elsif (($start3 < $end2) or ($start4 < $end3)) {
+											print $logfile "Warning: $name (positive two-intron PCG) has not been annotated!\n";
 										}
 									#}elsif ((!defined $end2_new) or (!defined $start3_new) or (!defined $end3_new) or (!defined $start4_new)) {
 									}elsif (abs($end4-$start2) > 3000) {
@@ -14036,7 +14290,7 @@ while (@sequence_filenames) {
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (positive two-intron PCG) need to be checked!\n";
+										print $logfile "Warning: $name (positive two-intron PCG) must be checked!\n";
 									}
 								}elsif ((!defined $left_start_position) and (defined $right_star_position)){
 									my $end;
@@ -14050,16 +14304,20 @@ while (@sequence_filenames) {
 										$end=($start4)+($left_star_position * 3+3);
 									}
 									if (abs($end4-$start2) < 3000) {
-										print $out_annotation "     "."gene"."            ".$start2."..".$end."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."CDS"."             "."join(".$start2."..".$end2.",".$start3."..".$end3.",".$start4."..".$end.")"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/codon_start=1"."\n";
-										print $out_annotation "                     "."/transl_table=11"."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										#print $out_annotation "                     "."/translation=\"$aa\""."\n";
-										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (positive two-intron PCG) has non-canonical start codon!\n";
+										if (($start3 > $end2) and ($start4 > $end3)) {
+											print $out_annotation "     "."gene"."            ".$start2."..".$end."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "     "."CDS"."             "."join(".$start2."..".$end2.",".$start3."..".$end3.",".$start4."..".$end.")"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/codon_start=1"."\n";
+											print $out_annotation "                     "."/transl_table=11"."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											#print $out_annotation "                     "."/translation=\"$aa\""."\n";
+											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (positive two-intron PCG) has non-canonical start codon!\n";
+										}elsif (($start3 < $end2) or ($start4 < $end3)) {
+											print $logfile "Warning: $name (positive two-intron PCG) has not been annotated!\n";
+										}
 									}elsif (abs($end4-$start2) > 3000) {
 										print $out_annotation "     "."gene"."            ".$start3."..".$end3."\n";
 										print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -14070,7 +14328,7 @@ while (@sequence_filenames) {
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 										#print $out_annotation "                     "."/translation=\"$aa\""."\n";
 										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (positive two-intron PCG) need to be checked!\n";
+										print $logfile "Warning: $name (positive two-intron PCG) must be checked!\n";
 									}
 								}
 							}else{
@@ -14784,49 +15042,53 @@ while (@sequence_filenames) {
 
 								#if ((defined $end2_new) and (defined $start3_new) and (defined $end3_new) and (defined $start4_new)) {
 								if (abs($start2-$end4) < 3000) {
-									if ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length > 30) and ($intron2_length > 30))) {# (two introns) spliced exon,not 3x or have stop codon
-										print $out_annotation "     "."gene"."            "."complement(".$end4."..".$start2.")\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."CDS"."             "."complement(join(".$end4."..".$start4_new.",".$end3_new."..".$start3_new.",".$end2_new."..".$start2."))"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/codon_start=1"."\n";
-										print $out_annotation "                     "."/transl_table=11"."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-										$gene_number_seq{$name}++;
-									}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length < 30) and ($intron2_length < 30))) {# (no intron) joined exon,no intron or no stop codon
-										print $out_annotation "     "."gene"."            "."complement(".$end4."..".$start2.")\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."CDS"."             "."complement(".$end4."..".$start2.")\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/codon_start=1"."\n";
-										print $out_annotation "                     "."/transl_table=11"."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (negative two-intron PCG) lost two introns!\n";
-									}elsif ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length > 30) and ($intron2_length < 30))) {# (loss intron2)
-										print $out_annotation "     "."gene"."            "."complement(".$end4."..".$start2.")\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."CDS"."             "."complement(join(".$end4."..".$start3_new.",".$end2_new."..".$start2."))"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/codon_start=1"."\n";
-										print $out_annotation "                     "."/transl_table=11"."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (negative two-intron PCG) lost intron 2!\n";
-									}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length < 30) and ($intron2_length > 30))) {# (loss intron1)
-										print $out_annotation "     "."gene"."            "."complement(".$end4."..".$start2.")\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."CDS"."             "."complement(join(".$end4."..".$start4_new.",".$end3_new."..".$start2."))"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/codon_start=1"."\n";
-										print $out_annotation "                     "."/transl_table=11"."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (negative two-intron PCG) lost intron 1!\n";
+									if (($start3 < $end2) and ($start4 < $end3)) {
+										if ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length > 30) and ($intron2_length > 30))) {# (two introns) spliced exon,not 3x or have stop codon
+											print $out_annotation "     "."gene"."            "."complement(".$end4."..".$start2.")\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "     "."CDS"."             "."complement(join(".$end4."..".$start4_new.",".$end3_new."..".$start3_new.",".$end2_new."..".$start2."))"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/codon_start=1"."\n";
+											print $out_annotation "                     "."/transl_table=11"."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
+											$gene_number_seq{$name}++;
+										}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length < 30) and ($intron2_length < 30))) {# (no intron) joined exon,no intron or no stop codon
+											print $out_annotation "     "."gene"."            "."complement(".$end4."..".$start2.")\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "     "."CDS"."             "."complement(".$end4."..".$start2.")\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/codon_start=1"."\n";
+											print $out_annotation "                     "."/transl_table=11"."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
+											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (negative two-intron PCG) lost two introns!\n";
+										}elsif ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length > 30) and ($intron2_length < 30))) {# (loss intron2)
+											print $out_annotation "     "."gene"."            "."complement(".$end4."..".$start2.")\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "     "."CDS"."             "."complement(join(".$end4."..".$start3_new.",".$end2_new."..".$start2."))"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/codon_start=1"."\n";
+											print $out_annotation "                     "."/transl_table=11"."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
+											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (negative two-intron PCG) lost intron 2!\n";
+										}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length < 30) and ($intron2_length > 30))) {# (loss intron1)
+											print $out_annotation "     "."gene"."            "."complement(".$end4."..".$start2.")\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "     "."CDS"."             "."complement(join(".$end4."..".$start4_new.",".$end3_new."..".$start2."))"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/codon_start=1"."\n";
+											print $out_annotation "                     "."/transl_table=11"."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
+											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (negative two-intron PCG) lost intron 1!\n";
+										}
+									}elsif (($start3 > $end2) or ($start4 > $end3)) {
+										print $logfile "Warning: $name (negative two-intron PCG) has not been annotated!\n";
 									}
 								#}elsif ((!defined $end2_new) or (!defined $start3_new) or (!defined $end3_new) or (!defined $start4_new)) {
 								}elsif (abs($start2-$end4) > 3000) {
@@ -14839,7 +15101,7 @@ while (@sequence_filenames) {
 									print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 									#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 									$gene_number_seq{$name}++;
-									print $logfile "Warning: $name (negative two-intron PCG) need to be checked!\n";
+									print $logfile "Warning: $name (negative two-intron PCG) must be checked!\n";
 								}
 							}elsif((grep {$_=~ /\*/} @aa_exon) or (($reverse_start_codon ne "ATG") and ($reverse_start_codon ne "GTG")) or (($reverse_stop_codon ne "TAA") and ($reverse_stop_codon ne "TAG") and ($reverse_stop_codon ne "TGA"))){# non-standard start or stop codon for _gene
 								my $start_left=$start2-60;
@@ -15633,49 +15895,53 @@ while (@sequence_filenames) {
 
 									#if ((defined $end2_new) and (defined $start3_new) and (defined $end3_new) and (defined $start4_new)) {
 									if (abs($start2-$end4) < 3000) {
-										if ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length > 30) and ($intron2_length > 30))) {# (two introns) spliced exon,not 3x or have stop codon
-											print $out_annotation "     "."gene"."            "."complement(".$end."..".$start.")\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "     "."CDS"."             "."complement(join(".$end."..".$start4_new.",".$end3_new."..".$start3_new.",".$end2_new."..".$start."))"."\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "                     "."/codon_start=1"."\n";
-											print $out_annotation "                     "."/transl_table=11"."\n";
-											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-											$gene_number_seq{$name}++;
-										}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length < 30) and ($intron2_length < 30))) {# (no intron) joined exon,no intron or no stop codon
-											print $out_annotation "     "."gene"."            "."complement(".$end."..".$start.")\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "     "."CDS"."             "."complement(".$end."..".$start.")\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "                     "."/codon_start=1"."\n";
-											print $out_annotation "                     "."/transl_table=11"."\n";
-											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-											$gene_number_seq{$name}++;
-											print $logfile "Warning: $name (negative two-intron PCG) lost two introns!\n";
-										}elsif ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length > 30) and ($intron2_length < 30))) {# (loss intron2)
-											print $out_annotation "     "."gene"."            "."complement(".$end."..".$start.")\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "     "."CDS"."             "."complement(join(".$end."..".$start3_new.",".$end2_new."..".$start."))"."\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "                     "."/codon_start=1"."\n";
-											print $out_annotation "                     "."/transl_table=11"."\n";
-											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-											$gene_number_seq{$name}++;
-											print $logfile "Warning: $name (negative two-intron PCG) lost intron 2!\n";
-										}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length < 30) and ($intron2_length > 30))) {# (loss intron1)
-											print $out_annotation "     "."gene"."            "."complement(".$end."..".$start.")\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "     "."CDS"."             "."complement(join(".$end."..".$start4_new.",".$end3_new."..".$start."))"."\n";
-											print $out_annotation "                     "."/gene=\"$name\""."\n";
-											print $out_annotation "                     "."/codon_start=1"."\n";
-											print $out_annotation "                     "."/transl_table=11"."\n";
-											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-											#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
-											$gene_number_seq{$name}++;
-											print $logfile "Warning: $name (negative two-intron PCG) lost intron 1!\n";
+										if (($start3 < $end2) and ($start4 < $end3)) {
+											if ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length > 30) and ($intron2_length > 30))) {# (two introns) spliced exon,not 3x or have stop codon
+												print $out_annotation "     "."gene"."            "."complement(".$end."..".$start.")\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "     "."CDS"."             "."complement(join(".$end."..".$start4_new.",".$end3_new."..".$start3_new.",".$end2_new."..".$start."))"."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "                     "."/codon_start=1"."\n";
+												print $out_annotation "                     "."/transl_table=11"."\n";
+												print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+												#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
+												$gene_number_seq{$name}++;
+											}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length < 30) and ($intron2_length < 30))) {# (no intron) joined exon,no intron or no stop codon
+												print $out_annotation "     "."gene"."            "."complement(".$end."..".$start.")\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "     "."CDS"."             "."complement(".$end."..".$start.")\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "                     "."/codon_start=1"."\n";
+												print $out_annotation "                     "."/transl_table=11"."\n";
+												print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+												#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
+												$gene_number_seq{$name}++;
+												print $logfile "Warning: $name (negative two-intron PCG) lost two introns!\n";
+											}elsif ((($mark1==0) or ((defined $intron1_aa) and ($intron1_aa=~ /\*/))) and (($mark2==1) or ((defined $intron2_aa) and ($intron2_aa!~ /\*/))) and (($intron1_length > 30) and ($intron2_length < 30))) {# (loss intron2)
+												print $out_annotation "     "."gene"."            "."complement(".$end."..".$start.")\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "     "."CDS"."             "."complement(join(".$end."..".$start3_new.",".$end2_new."..".$start."))"."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "                     "."/codon_start=1"."\n";
+												print $out_annotation "                     "."/transl_table=11"."\n";
+												print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+												#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
+												$gene_number_seq{$name}++;
+												print $logfile "Warning: $name (negative two-intron PCG) lost intron 2!\n";
+											}elsif ((($mark1==1) or ((defined $intron1_aa) and ($intron1_aa!~ /\*/))) and (($mark2==0) or ((defined $intron2_aa) and ($intron2_aa=~ /\*/))) and (($intron1_length < 30) and ($intron2_length > 30))) {# (loss intron1)
+												print $out_annotation "     "."gene"."            "."complement(".$end."..".$start.")\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "     "."CDS"."             "."complement(join(".$end."..".$start4_new.",".$end3_new."..".$start."))"."\n";
+												print $out_annotation "                     "."/gene=\"$name\""."\n";
+												print $out_annotation "                     "."/codon_start=1"."\n";
+												print $out_annotation "                     "."/transl_table=11"."\n";
+												print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+												#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
+												$gene_number_seq{$name}++;
+												print $logfile "Warning: $name (negative two-intron PCG) lost intron 1!\n";
+											}
+										}elsif (($start3 > $end2) or ($start4 > $end3)) {
+											print $logfile "Warning: $name (negative two-intron PCG) has not been annotated!\n";
 										}
 									#}elsif ((!defined $end2_new) or (!defined $start3_new) or (!defined $end3_new) or (!defined $start4_new)) {
 									}elsif (abs($start2-$end4) > 3000) {
@@ -15688,7 +15954,7 @@ while (@sequence_filenames) {
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 										#print $out_annotation "                     "."/translation=\"$aa_exon\""."\n";
 										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (negative two-intron PCG) need to be checked!\n";
+										print $logfile "Warning: $name (negative two-intron PCG) must be checked!\n";
 									}
 								}elsif ((!defined $right_start_position) and (defined $left_star_position)){
 									my $end;
@@ -15702,16 +15968,20 @@ while (@sequence_filenames) {
 										$end=($start4)-($left_star_position * 3+3);
 									}
 									if (abs($start2-$end4) < 3000) {
-										print $out_annotation "     "."gene"."            "."complement(".$end."..".$start2.")\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "     "."CDS"."             "."complement(join(".$end."..".$start4.",".$end3."..".$start3.",".$end2."..".$start2."))"."\n";
-										print $out_annotation "                     "."/gene=\"$name\""."\n";
-										print $out_annotation "                     "."/codon_start=1"."\n";
-										print $out_annotation "                     "."/transl_table=11"."\n";
-										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
-										#print $out_annotation "                     "."/translation=\"$aa\""."\n";
-										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (negative two-intron PCG) has non-canonical start codon!\n";
+										if (($start3 < $end2) and ($start4 < $end3)) {
+											print $out_annotation "     "."gene"."            "."complement(".$end."..".$start2.")\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "     "."CDS"."             "."complement(join(".$end."..".$start4.",".$end3."..".$start3.",".$end2."..".$start2."))"."\n";
+											print $out_annotation "                     "."/gene=\"$name\""."\n";
+											print $out_annotation "                     "."/codon_start=1"."\n";
+											print $out_annotation "                     "."/transl_table=11"."\n";
+											print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
+											#print $out_annotation "                     "."/translation=\"$aa\""."\n";
+											$gene_number_seq{$name}++;
+											print $logfile "Warning: $name (negative two-intron PCG) has non-canonical start codon!\n";
+										}elsif (($start3 > $end2) or ($start4 > $end3)) {
+											print $logfile "Warning: $name (negative two-intron PCG) has not been annotated!\n";
+										}
 									}elsif (abs($start2-$end4) > 3000) {
 										print $out_annotation "     "."gene"."            "."complement(".$end3."..".$start3.")\n";
 										print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -15722,7 +15992,7 @@ while (@sequence_filenames) {
 										print $out_annotation "                     "."/product=\"".$hash_product{$name}."\""."\n";
 										#print $out_annotation "                     "."/translation=\"$aa\""."\n";
 										$gene_number_seq{$name}++;
-										print $logfile "Warning: $name (negative two-intron PCG) need to be checked!\n";
+										print $logfile "Warning: $name (negative two-intron PCG) must be checked!\n";
 									}
 								}
 							}else{
@@ -15868,6 +16138,11 @@ sub default{
 	return $default_value;
 }
 
+sub consecutive {
+	local $_=join " ",sort{$a <=> $b} grep !/\D/,@_;
+	s/(\d+\s*)((??{$++1})\s*)*/$1=>${\($+-$1)},/gx;
+	return eval "{$_}";
+}
 
 __DATA__
 
