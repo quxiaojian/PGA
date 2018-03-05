@@ -11,7 +11,6 @@ my $global_options=&argument();
 my $reference_directory=&default("reference","reference");
 my $sequence_directory=&default("target","target");
 my $inverted_repeat=&default("1000","ir");
-my $cnt=&default("1","degree");
 my $similarity_value=&default("40","percent");
 my $qcoverage=&default("0.5,2","qcoverage");
 my ($short,$long)=split /,/,$qcoverage;
@@ -1350,10 +1349,10 @@ my $pattern3=".fa";
 my @sequence_filenames;
 find(\&target2,$sequence_directory);
 sub target2{
-    if (/$pattern1/ or /$pattern2/ or /$pattern3/){
-        push @sequence_filenames,"$File::Find::name";
-    }
-    return;
+	if (/$pattern1/ or /$pattern2/ or /$pattern3/){
+		push @sequence_filenames,"$File::Find::name";
+	}
+	return;
 }
 
 my $j=0;
@@ -1406,6 +1405,15 @@ while (@sequence_filenames) {
 		$head=~ s/(\s)+/_/g;
 		$head=~ s/_$//g;
 		$header=$1 if ($head=~ /^>(.+)$/);
+		$header=~ s/\\/_/g;
+		$header=~ s/\//_/g;
+		$header=~ s/\:/_/g;
+		$header=~ s/\*/_/g;
+		$header=~ s/\?/_/g;
+		$header=~ s/\"/_/g;
+		$header=~ s/\</_/g;
+		$header=~ s/\>/_/g;
+		$header=~ s/\|/_/g;
 		$sequence=shift @fasta;
 		$sequence= uc $sequence;
 		$length_cp=length $sequence;
@@ -1996,7 +2004,7 @@ while (@sequence_filenames) {
 				my $y=9;#tRNA
 				my $z=9;#rRNA
 
-				if (($gene_coding_CDS=~ /(((.+)-(\D+))_gene)/) or ($gene_coding_CDS=~ /trnR_gene/) or ($gene_coding_CDS=~ /trnA_gene/)){# tRNA
+				if ((($gene_coding_CDS=~ /(((.+)-(\D+))_gene)/) or ($gene_coding_CDS=~ /trnR_gene/) or ($gene_coding_CDS=~ /trnA_gene/)) and (defined $length_ref_rna and defined $sequence_ref_rna)){# tRNA
 					if ($start < $end) {
 						my $seq_string1;
 						if ($start >= 31) {
@@ -2252,7 +2260,7 @@ while (@sequence_filenames) {
 				}
 
 
-				if($gene_coding_CDS=~ /((rrn(\d+\.?\d*))_gene)/){# rRNA
+				if(($gene_coding_CDS=~ /((rrn(\d+\.?\d*))_gene)/) and (defined $length_ref_rna and defined $sequence_ref_rna)){# rRNA
 					if ($start < $end) {
 						my $seq_string1;
 						if ($start >= 801) {
@@ -2423,7 +2431,7 @@ while (@sequence_filenames) {
 				}
 
 
-				if(($gene_coding_CDS=~ /((.+)_gene)/) and $name!~ /rrn/ and $name!~ /trn/ and $name!~ /rps12/){# psaM(CDS_aa without alignment result),pseudogene (e.g., ycf15,ycf68 etal.)
+				if((($gene_coding_CDS=~ /((.+)_gene)/) and $name!~ /rrn/ and $name!~ /trn/ and $name!~ /rps12/) and (defined $length_ref_rna and defined $sequence_ref_rna)){# psaM(CDS_aa without alignment result),pseudogene (e.g., ycf15,ycf68 etal.)
 					if ($start < $end){
 						#print $out_annotation "     "."gene"."             ".$start."..".$end."\n";
 						#print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -2464,18 +2472,20 @@ while (@sequence_filenames) {
 			my $yy=4;
 			my $aa_ref_pcg;
 			my @aa_ref_pcg;
-			for (my $i=0;$i<$length_ref_pcg;$i+=3){
-				my $codon=substr ($sequence_ref_pcg,$i,3);
-				$codon=uc $codon;
-				if (exists $hash_codon{$codon}){
-					$aa_ref_pcg.=$hash_codon{$codon};
-				}else{
-					$aa_ref_pcg.="X";
-					my $j=$i+1;
-					#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+			if ((defined $length_ref_pcg) and (defined $sequence_ref_pcg)) {
+				for (my $i=0;$i<$length_ref_pcg;$i+=3){
+					my $codon=substr ($sequence_ref_pcg,$i,3);
+					$codon=uc $codon;
+					if (exists $hash_codon{$codon}){
+						$aa_ref_pcg.=$hash_codon{$codon};
+					}else{
+						$aa_ref_pcg.="X";
+						my $j=$i+1;
+						#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+					}
 				}
+				@aa_ref_pcg=split //,$aa_ref_pcg;
 			}
-			@aa_ref_pcg=split //,$aa_ref_pcg;
 
 			while (@position1 and @position2){
 				my $position1=shift @position1;
@@ -2548,9 +2558,9 @@ while (@sequence_filenames) {
 							}
 
 							my $length_pcg=$end1-$start1;
-							if (($length_pcg/$length_ref_pcg) < $short) {
+							if ((defined $length_ref_pcg) and ($length_pcg/$length_ref_pcg < $short)) {
 								print $logfile "Warning: $name (positive no-intron PCG) need to be checked due to query coverage per annotated PCG less than $short!\n";
-							}elsif (($length_pcg/$length_ref_pcg) > $long) {
+							}elsif ((defined $length_ref_pcg) and ($length_pcg/$length_ref_pcg > $long)) {
 								print $logfile "Warning: $name (positive no-intron PCG) need to be checked due to query coverage per annotated PCG more than $long!\n";
 							}
 						}elsif((grep {$_=~ /\*/} @aa) or (($forward_start_codon ne "ATG") and ($forward_start_codon ne "GTG")) or ((($forward_stop_codon ne "TAA") and ($forward_stop_codon ne "TAG") and ($forward_stop_codon ne "TGA")) and ($name ne "rps12+1"))){# non-standard start or stop codon
@@ -2706,9 +2716,9 @@ while (@sequence_filenames) {
 										}
 									}
 
-									if (($length_pcg/$length_ref_pcg) < $short) {
+									if ((defined $length_ref_pcg) and ($length_pcg/$length_ref_pcg < $short)) {
 										print $logfile "Warning: $name (positive no-intron PCG) need to be checked due to query coverage per annotated PCG less than $short!\n";
-									}elsif (($length_pcg/$length_ref_pcg) > $long) {
+									}elsif ((defined $length_ref_pcg) and ($length_pcg/$length_ref_pcg > $long)) {
 										print $logfile "Warning: $name (positive no-intron PCG) need to be checked due to query coverage per annotated PCG more than $long!\n";
 									}
 								}elsif ($length_pcg < 60) {
@@ -2775,9 +2785,9 @@ while (@sequence_filenames) {
 										$gene_number_seq{$name}++;
 										print $logfile "Warning: $name (positive no-intron PCG) has non-canonical start codon!\n";
 
-										if (($length_pcg/$length_ref_pcg) < $short) {
+										if ((defined $length_ref_pcg) and ($length_pcg/$length_ref_pcg < $short)) {
 											print $logfile "Warning: $name (positive no-intron PCG) need to be checked due to query coverage per annotated PCG less than $short!\n";
-										}elsif (($length_pcg/$length_ref_pcg) > $long) {
+										}elsif ((defined $length_ref_pcg) and ($length_pcg/$length_ref_pcg > $long)) {
 											print $logfile "Warning: $name (positive no-intron PCG) need to be checked due to query coverage per annotated PCG more than $long!\n";
 										}
 									}elsif ($length_pcg < 60) {
@@ -2855,9 +2865,9 @@ while (@sequence_filenames) {
 							}
 
 							my $length_pcg=$start1-$end1;
-							if (($length_pcg/$length_ref_pcg) < $short) {
+							if ((defined $length_ref_pcg) and ($length_pcg/$length_ref_pcg < $short)) {
 								print $logfile "Warning: $name (negative no-intron PCG) need to be checked due to query coverage per annotated PCG less than $short!\n";
-							}elsif (($length_pcg/$length_ref_pcg) > $long) {
+							}elsif ((defined $length_ref_pcg) and ($length_pcg/$length_ref_pcg > $long)) {
 								print $logfile "Warning: $name (negative no-intron PCG) need to be checked due to query coverage per annotated PCG more than $long!\n";
 							}
 						}elsif((grep {$_=~ /\*/} @aa) or (($reverse_start_codon ne "ATG") and ($reverse_start_codon ne "GTG")) or ((($reverse_stop_codon ne "TAA") and ($reverse_stop_codon ne "TAG") and ($reverse_stop_codon ne "TGA")) and ($name ne "rps12+1"))){# non-standard start or stop codon
@@ -3020,9 +3030,9 @@ while (@sequence_filenames) {
 										}
 									}
 
-									if (($length_pcg/$length_ref_pcg) < $short) {
+									if ((defined $length_ref_pcg) and ($length_pcg/$length_ref_pcg < $short)) {
 										print $logfile "Warning: $name (negative no-intron PCG) need to be checked due to query coverage per annotated PCG less than $short!\n";
-									}elsif (($length_pcg/$length_ref_pcg) > $long) {
+									}elsif ((defined $length_ref_pcg) and ($length_pcg/$length_ref_pcg > $long)) {
 										print $logfile "Warning: $name (negative no-intron PCG) need to be checked due to query coverage per annotated PCG more than $long!\n";
 									}
 								}elsif ($length_pcg < 60) {
@@ -3085,9 +3095,9 @@ while (@sequence_filenames) {
 										$gene_number_seq{$name}++;
 										print $logfile "Warning: $name (negative no-intron PCG) has non-canonical start codon!\n";
 
-										if (($length_pcg/$length_ref_pcg) < $short) {
+										if ((defined $length_ref_pcg) and ($length_pcg/$length_ref_pcg < $short)) {
 											print $logfile "Warning: $name (negative no-intron PCG) need to be checked due to query coverage per annotated PCG less than $short!\n";
-										}elsif (($length_pcg/$length_ref_pcg) > $long) {
+										}elsif ((defined $length_ref_pcg) and ($length_pcg/$length_ref_pcg > $long)) {
 											print $logfile "Warning: $name (negative no-intron PCG) need to be checked due to query coverage per annotated PCG more than $long!\n";
 										}
 									}elsif ($length_pcg < 60) {
@@ -3183,9 +3193,9 @@ while (@sequence_filenames) {
 							}
 
 							my $length_pcg=$end2-$start2;
-							if (($length_pcg/$length_ref_pcg) < $short) {
+							if ((defined $length_ref_pcg) and ($length_pcg/$length_ref_pcg < $short)) {
 								print $logfile "Warning: $name (positive no-intron PCG) need to be checked due to query coverage per annotated PCG less than $short!\n";
-							}elsif (($length_pcg/$length_ref_pcg) > $long) {
+							}elsif ((defined $length_ref_pcg) and ($length_pcg/$length_ref_pcg > $long)) {
 								print $logfile "Warning: $name (positive no-intron PCG) need to be checked due to query coverage per annotated PCG more than $long!\n";
 							}
 
@@ -3388,9 +3398,9 @@ while (@sequence_filenames) {
 										}
 									}
 
-									if (($length_pcg/$length_ref_pcg) < $short) {
+									if ((defined $length_ref_pcg) and ($length_pcg/$length_ref_pcg < $short)) {
 										print $logfile "Warning: $name (positive no-intron PCG) need to be checked due to query coverage per annotated PCG less than $short!\n";
-									}elsif (($length_pcg/$length_ref_pcg) > $long) {
+									}elsif ((defined $length_ref_pcg) and ($length_pcg/$length_ref_pcg > $long)) {
 										print $logfile "Warning: $name (positive no-intron PCG) need to be checked due to query coverage per annotated PCG more than $long!\n";
 									}
 								}elsif ($length_pcg < 60) {
@@ -3457,9 +3467,9 @@ while (@sequence_filenames) {
 										$gene_number_seq{$name}++;
 										print $logfile "Warning: $name (positive no-intron PCG) has non-canonical start codon!\n";
 
-										if (($length_pcg/$length_ref_pcg) < $short) {
+										if ((defined $length_ref_pcg) and ($length_pcg/$length_ref_pcg < $short)) {
 											print $logfile "Warning: $name (positive no-intron PCG) need to be checked due to query coverage per annotated PCG less than $short!\n";
-										}elsif (($length_pcg/$length_ref_pcg) > $long) {
+										}elsif ((defined $length_ref_pcg) and ($length_pcg/$length_ref_pcg > $long)) {
 											print $logfile "Warning: $name (positive no-intron PCG) need to be checked due to query coverage per annotated PCG more than $long!\n";
 										}
 									}elsif ($length_pcg < 60) {
@@ -3556,9 +3566,9 @@ while (@sequence_filenames) {
 							}
 
 							my $length_pcg=$start2-$end2;
-							if (($length_pcg/$length_ref_pcg) < $short) {
+							if ((defined $length_ref_pcg) and ($length_pcg/$length_ref_pcg < $short)) {
 								print $logfile "Warning: $name (negative no-intron PCG) need to be checked due to query coverage per annotated PCG less than $short!\n";
-							}elsif (($length_pcg/$length_ref_pcg) > $long) {
+							}elsif ((defined $length_ref_pcg) and ($length_pcg/$length_ref_pcg > $long)) {
 								print $logfile "Warning: $name (negative no-intron PCG) need to be checked due to query coverage per annotated PCG more than $long!\n";
 							}
 
@@ -3767,9 +3777,9 @@ while (@sequence_filenames) {
 										}
 									}
 
-									if (($length_pcg/$length_ref_pcg) < $short) {
+									if ((defined $length_ref_pcg) and ($length_pcg/$length_ref_pcg < $short)) {
 										print $logfile "Warning: $name (negative no-intron PCG) need to be checked due to query coverage per annotated PCG less than $short!\n";
-									}elsif (($length_pcg/$length_ref_pcg) > $long) {
+									}elsif ((defined $length_ref_pcg) and ($length_pcg/$length_ref_pcg > $long)) {
 										print $logfile "Warning: $name (negative no-intron PCG) need to be checked due to query coverage per annotated PCG more than $long!\n";
 									}
 								}elsif ($length_pcg < 60) {
@@ -3832,9 +3842,9 @@ while (@sequence_filenames) {
 										$gene_number_seq{$name}++;
 										print $logfile "Warning: $name (negative no-intron PCG) has non-canonical start codon!\n";
 
-										if (($length_pcg/$length_ref_pcg) < $short) {
+										if ((defined $length_ref_pcg) and ($length_pcg/$length_ref_pcg < $short)) {
 											print $logfile "Warning: $name (negative no-intron PCG) need to be checked due to query coverage per annotated PCG less than $short!\n";
-										}elsif (($length_pcg/$length_ref_pcg) > $long) {
+										}elsif ((defined $length_ref_pcg) and ($length_pcg/$length_ref_pcg > $long)) {
 											print $logfile "Warning: $name (negative no-intron PCG) need to be checked due to query coverage per annotated PCG more than $long!\n";
 										}
 									}elsif ($length_pcg < 60) {
@@ -3936,19 +3946,19 @@ while (@sequence_filenames) {
 					$sequence_ref_exon1=uc $sequence_ref_exon1;
 					$sequence_ref_exon2=uc $sequence_ref_exon2;
 					my ($x,$y);
-					if ($length_ref_exon1 >= 32) {
+					if (defined ($length_ref_exon1 >= 32)) {
 						$x=31;
-					}elsif ($length_ref_exon1 < 32) {
+					}elsif (defined ($length_ref_exon1 < 32)) {
 						$x=$length_ref_exon1;
 					}
-					if ($length_ref_exon2 >= 32) {
+					if (defined ($length_ref_exon2 >= 32)) {
 						$y=31;
-					}elsif ($length_ref_exon2 < 32) {
+					}elsif (defined ($length_ref_exon2 < 32)) {
 						$y=$length_ref_exon2;
 					}
 					my $z=9;
 
-					if (($start1 == $start2) and ($end1 == $end3)){# identical tRNA boundary for _gene and -1_coding, -2_coding
+					if ((($start1 == $start2) and ($end1 == $end3)) and ((defined $length_ref_exon1) and (defined $length_ref_exon2) and (defined $sequence_ref_exon1) and (defined $sequence_ref_exon2))){# identical tRNA boundary for _gene and -1_coding, -2_coding
 						if ($start1 < $end1){
 							my $seq_string1=substr($sequence,($start1-31),60);
 							my $seq_string2=substr($sequence,($end2-30),60);
@@ -4222,7 +4232,7 @@ while (@sequence_filenames) {
 								}
 							}
 						}
-					}elsif(($start1 != $start2) or ($end1 != $end3)){# non-identical tRNA boundary for _gene and -1_coding, -2_coding
+					}elsif((($start1 != $start2) or ($end1 != $end3)) and ((defined $length_ref_exon1) and (defined $length_ref_exon2) and (defined $sequence_ref_exon1) and (defined $sequence_ref_exon2))){# non-identical tRNA boundary for _gene and -1_coding, -2_coding
 						if ($start1 < $end1){
 							my ($seq_string1,$seq_string2);
 							if ($length_ref_exon1 > 30) {
@@ -4526,19 +4536,19 @@ while (@sequence_filenames) {
 					my $sequence_ref_exon3=$hash_exon_sequence{"$name-3_coding"};
 
 					my ($a,$b,$c);
-					if ($length_ref_exon1/3 >= 22) {
+					if ((defined $length_ref_exon1) and ($length_ref_exon1/3 >= 22)) {
 						$a=21;
-					}elsif ($length_ref_exon1/3 < 22) {
+					}elsif ((defined $length_ref_exon1) and ($length_ref_exon1/3 < 22)) {
 						$a=int($length_ref_exon1/3);
 					}
-					if ($length_ref_exon2/3 >= 22) {
+					if ((defined $length_ref_exon2) and ($length_ref_exon2/3 >= 22)) {
 						$b=21;
-					}elsif ($length_ref_exon2/3 < 22) {
+					}elsif ((defined $length_ref_exon2) and ($length_ref_exon2/3 < 22)) {
 						$b=int($length_ref_exon2/3);
 					}
-					if ($length_ref_exon3/3 >= 22) {
+					if ((defined $length_ref_exon3) and ($length_ref_exon3/3 >= 22)) {
 						$c=21;
-					}elsif ($length_ref_exon3/3 < 22) {
+					}elsif ((defined $length_ref_exon3) and ($length_ref_exon3/3 < 22)) {
 						$c=int($length_ref_exon3/3);
 					}
 					my $match=4;
@@ -4549,89 +4559,35 @@ while (@sequence_filenames) {
 					my @aa_ref_exon1;
 					my @aa_ref_exon2;
 					my @aa_ref_exon3;
-					if ($length_ref_exon1 % 3==0) {
-						for (my $i=0;$i<$length_ref_exon1;$i+=3){
-							my $codon=substr ($sequence_ref_exon1,$i,3);
-							$codon=uc $codon;
-							if (exists $hash_codon{$codon}){
-								$aa_ref_exon1.=$hash_codon{$codon};
-							}else{
-								$aa_ref_exon1.="X";
-								my $j=$i+1;
-								#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+					if ((defined $length_ref_exon1) and (defined $length_ref_exon2) and (defined $length_ref_exon3) and (defined $sequence_ref_exon1) and (defined $sequence_ref_exon2) and (defined $sequence_ref_exon3)) {
+						if ($length_ref_exon1 % 3==0) {
+							for (my $i=0;$i<$length_ref_exon1;$i+=3){
+								my $codon=substr ($sequence_ref_exon1,$i,3);
+								$codon=uc $codon;
+								if (exists $hash_codon{$codon}){
+									$aa_ref_exon1.=$hash_codon{$codon};
+								}else{
+									$aa_ref_exon1.="X";
+									my $j=$i+1;
+									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+								}
 							}
-						}
-						@aa_ref_exon1=split //,$aa_ref_exon1;
+							@aa_ref_exon1=split //,$aa_ref_exon1;
 
-						if (!defined $start4) {
-							for (my $i=0;$i<($length_ref_exon2-3);$i+=3){# delete stop codon
-								my $codon=substr ($sequence_ref_exon2,$i,3);
-								$codon=uc $codon;
-								if (exists $hash_codon{$codon}){
-									$aa_ref_exon2.=$hash_codon{$codon};
-								}else{
-									$aa_ref_exon2.="X";
-									my $j=$i+1;
-									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+							if (!defined $start4) {
+								for (my $i=0;$i<($length_ref_exon2-3);$i+=3){# delete stop codon
+									my $codon=substr ($sequence_ref_exon2,$i,3);
+									$codon=uc $codon;
+									if (exists $hash_codon{$codon}){
+										$aa_ref_exon2.=$hash_codon{$codon};
+									}else{
+										$aa_ref_exon2.="X";
+										my $j=$i+1;
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+									}
 								}
-							}
-							@aa_ref_exon2=split //,$aa_ref_exon2;
-						}elsif (defined $start4) {
-							for (my $i=0;$i<$length_ref_exon2;$i+=3){
-								my $codon=substr ($sequence_ref_exon2,$i,3);
-								$codon=uc $codon;
-								if (exists $hash_codon{$codon}){
-									$aa_ref_exon2.=$hash_codon{$codon};
-								}else{
-									$aa_ref_exon2.="X";
-									my $j=$i+1;
-									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
-								}
-							}
-							@aa_ref_exon2=split //,$aa_ref_exon2;
-
-							for (my $i=0;$i<($length_ref_exon3-3);$i+=3){# delete stop codon
-								my $codon=substr ($sequence_ref_exon3,$i,3);
-								$codon=uc $codon;
-								if (exists $hash_codon{$codon}){
-									$aa_ref_exon3.=$hash_codon{$codon};
-								}else{
-									$aa_ref_exon3.="X";
-									my $j=$i+1;
-									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
-								}
-							}
-							@aa_ref_exon3=split //,$aa_ref_exon3;
-						}
-					}elsif ($length_ref_exon1 % 3==1) {
-						for (my $i=0;$i<($length_ref_exon1-1);$i+=3){# delete stop codon
-							my $codon=substr ($sequence_ref_exon1,$i,3);
-							$codon=uc $codon;
-							if (exists $hash_codon{$codon}){
-								$aa_ref_exon1.=$hash_codon{$codon};
-							}else{
-								$aa_ref_exon1.="X";
-								my $j=$i+1;
-								#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
-							}
-						}
-						@aa_ref_exon1=split //,$aa_ref_exon1;
-
-						if (!defined $start4) {
-							for (my $i=2;$i<($length_ref_exon2-3);$i+=3){# delete stop codon
-								my $codon=substr ($sequence_ref_exon2,$i,3);
-								$codon=uc $codon;
-								if (exists $hash_codon{$codon}){
-									$aa_ref_exon2.=$hash_codon{$codon};
-								}else{
-									$aa_ref_exon2.="X";
-									my $j=$i+1;
-									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
-								}
-							}
-							@aa_ref_exon2=split //,$aa_ref_exon2;
-						}elsif (defined $start4) {
-							if ($length_ref_exon2 % 3==0) {
+								@aa_ref_exon2=split //,$aa_ref_exon2;
+							}elsif (defined $start4) {
 								for (my $i=0;$i<$length_ref_exon2;$i+=3){
 									my $codon=substr ($sequence_ref_exon2,$i,3);
 									$codon=uc $codon;
@@ -4645,7 +4601,7 @@ while (@sequence_filenames) {
 								}
 								@aa_ref_exon2=split //,$aa_ref_exon2;
 
-								for (my $i=2;$i<($length_ref_exon3-3);$i+=3){# delete stop codon
+								for (my $i=0;$i<($length_ref_exon3-3);$i+=3){# delete stop codon
 									my $codon=substr ($sequence_ref_exon3,$i,3);
 									$codon=uc $codon;
 									if (exists $hash_codon{$codon}){
@@ -4657,8 +4613,131 @@ while (@sequence_filenames) {
 									}
 								}
 								@aa_ref_exon3=split //,$aa_ref_exon3;
-							}elsif ($length_ref_exon2 % 3==1) {
-								for (my $i=1;$i<$length_ref_exon2;$i+=3){
+							}
+						}elsif ($length_ref_exon1 % 3==1) {
+							for (my $i=0;$i<($length_ref_exon1-1);$i+=3){# delete stop codon
+								my $codon=substr ($sequence_ref_exon1,$i,3);
+								$codon=uc $codon;
+								if (exists $hash_codon{$codon}){
+									$aa_ref_exon1.=$hash_codon{$codon};
+								}else{
+									$aa_ref_exon1.="X";
+									my $j=$i+1;
+									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+								}
+							}
+							@aa_ref_exon1=split //,$aa_ref_exon1;
+
+							if (!defined $start4) {
+								for (my $i=2;$i<($length_ref_exon2-3);$i+=3){# delete stop codon
+									my $codon=substr ($sequence_ref_exon2,$i,3);
+									$codon=uc $codon;
+									if (exists $hash_codon{$codon}){
+										$aa_ref_exon2.=$hash_codon{$codon};
+									}else{
+										$aa_ref_exon2.="X";
+										my $j=$i+1;
+										#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+									}
+								}
+								@aa_ref_exon2=split //,$aa_ref_exon2;
+							}elsif (defined $start4) {
+								if ($length_ref_exon2 % 3==0) {
+									for (my $i=0;$i<$length_ref_exon2;$i+=3){
+										my $codon=substr ($sequence_ref_exon2,$i,3);
+										$codon=uc $codon;
+										if (exists $hash_codon{$codon}){
+											$aa_ref_exon2.=$hash_codon{$codon};
+										}else{
+											$aa_ref_exon2.="X";
+											my $j=$i+1;
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										}
+									}
+									@aa_ref_exon2=split //,$aa_ref_exon2;
+
+									for (my $i=2;$i<($length_ref_exon3-3);$i+=3){# delete stop codon
+										my $codon=substr ($sequence_ref_exon3,$i,3);
+										$codon=uc $codon;
+										if (exists $hash_codon{$codon}){
+											$aa_ref_exon3.=$hash_codon{$codon};
+										}else{
+											$aa_ref_exon3.="X";
+											my $j=$i+1;
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										}
+									}
+									@aa_ref_exon3=split //,$aa_ref_exon3;
+								}elsif ($length_ref_exon2 % 3==1) {
+									for (my $i=1;$i<$length_ref_exon2;$i+=3){
+										my $codon=substr ($sequence_ref_exon2,$i,3);
+										$codon=uc $codon;
+										if (exists $hash_codon{$codon}){
+											$aa_ref_exon2.=$hash_codon{$codon};
+										}else{
+											$aa_ref_exon2.="X";
+											my $j=$i+1;
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										}
+									}
+									@aa_ref_exon2=split //,$aa_ref_exon2;
+
+									for (my $i=1;$i<($length_ref_exon3-3);$i+=3){# delete stop codon
+										my $codon=substr ($sequence_ref_exon3,$i,3);
+										$codon=uc $codon;
+										if (exists $hash_codon{$codon}){
+											$aa_ref_exon3.=$hash_codon{$codon};
+										}else{
+											$aa_ref_exon3.="X";
+											my $j=$i+1;
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										}
+									}
+									@aa_ref_exon3=split //,$aa_ref_exon3;
+								}elsif ($length_ref_exon2 % 3==2) {
+									for (my $i=2;$i<$length_ref_exon2;$i+=3){
+										my $codon=substr ($sequence_ref_exon2,$i,3);
+										$codon=uc $codon;
+										if (exists $hash_codon{$codon}){
+											$aa_ref_exon2.=$hash_codon{$codon};
+										}else{
+											$aa_ref_exon2.="X";
+											my $j=$i+1;
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										}
+									}
+									@aa_ref_exon2=split //,$aa_ref_exon2;
+
+									for (my $i=0;$i<($length_ref_exon3-3);$i+=3){# delete stop codon
+										my $codon=substr ($sequence_ref_exon3,$i,3);
+										$codon=uc $codon;
+										if (exists $hash_codon{$codon}){
+											$aa_ref_exon3.=$hash_codon{$codon};
+										}else{
+											$aa_ref_exon3.="X";
+											my $j=$i+1;
+											#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+										}
+									}
+									@aa_ref_exon3=split //,$aa_ref_exon3;
+								}
+							}
+						}elsif ($length_ref_exon1 % 3==2) {
+							for (my $i=0;$i<($length_ref_exon1-2);$i+=3){# delete stop codon
+								my $codon=substr ($sequence_ref_exon1,$i,3);
+								$codon=uc $codon;
+								if (exists $hash_codon{$codon}){
+									$aa_ref_exon1.=$hash_codon{$codon};
+								}else{
+									$aa_ref_exon1.="X";
+									my $j=$i+1;
+									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
+								}
+							}
+							@aa_ref_exon1=split //,$aa_ref_exon1;
+
+							if ($length_ref_exon2 % 3==0) {
+								for (my $i=0;$i<$length_ref_exon2;$i+=3){
 									my $codon=substr ($sequence_ref_exon2,$i,3);
 									$codon=uc $codon;
 									if (exists $hash_codon{$codon}){
@@ -4683,8 +4762,8 @@ while (@sequence_filenames) {
 									}
 								}
 								@aa_ref_exon3=split //,$aa_ref_exon3;
-							}elsif ($length_ref_exon2 % 3==2) {
-								for (my $i=2;$i<$length_ref_exon2;$i+=3){
+							}elsif ($length_ref_exon2 % 3==1) {
+								for (my $i=1;$i<$length_ref_exon2;$i+=3){
 									my $codon=substr ($sequence_ref_exon2,$i,3);
 									$codon=uc $codon;
 									if (exists $hash_codon{$codon}){
@@ -4711,79 +4790,12 @@ while (@sequence_filenames) {
 								@aa_ref_exon3=split //,$aa_ref_exon3;
 							}
 						}
-					}elsif ($length_ref_exon1 % 3==2) {
-						for (my $i=0;$i<($length_ref_exon1-2);$i+=3){# delete stop codon
-							my $codon=substr ($sequence_ref_exon1,$i,3);
-							$codon=uc $codon;
-							if (exists $hash_codon{$codon}){
-								$aa_ref_exon1.=$hash_codon{$codon};
-							}else{
-								$aa_ref_exon1.="X";
-								my $j=$i+1;
-								#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
-							}
-						}
-						@aa_ref_exon1=split //,$aa_ref_exon1;
-
-						if ($length_ref_exon2 % 3==0) {
-							for (my $i=0;$i<$length_ref_exon2;$i+=3){
-								my $codon=substr ($sequence_ref_exon2,$i,3);
-								$codon=uc $codon;
-								if (exists $hash_codon{$codon}){
-									$aa_ref_exon2.=$hash_codon{$codon};
-								}else{
-									$aa_ref_exon2.="X";
-									my $j=$i+1;
-									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
-								}
-							}
-							@aa_ref_exon2=split //,$aa_ref_exon2;
-
-							for (my $i=1;$i<($length_ref_exon3-3);$i+=3){# delete stop codon
-								my $codon=substr ($sequence_ref_exon3,$i,3);
-								$codon=uc $codon;
-								if (exists $hash_codon{$codon}){
-									$aa_ref_exon3.=$hash_codon{$codon};
-								}else{
-									$aa_ref_exon3.="X";
-									my $j=$i+1;
-									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
-								}
-							}
-							@aa_ref_exon3=split //,$aa_ref_exon3;
-						}elsif ($length_ref_exon2 % 3==1) {
-							for (my $i=1;$i<$length_ref_exon2;$i+=3){
-								my $codon=substr ($sequence_ref_exon2,$i,3);
-								$codon=uc $codon;
-								if (exists $hash_codon{$codon}){
-									$aa_ref_exon2.=$hash_codon{$codon};
-								}else{
-									$aa_ref_exon2.="X";
-									my $j=$i+1;
-									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
-								}
-							}
-							@aa_ref_exon2=split //,$aa_ref_exon2;
-
-							for (my $i=0;$i<($length_ref_exon3-3);$i+=3){# delete stop codon
-								my $codon=substr ($sequence_ref_exon3,$i,3);
-								$codon=uc $codon;
-								if (exists $hash_codon{$codon}){
-									$aa_ref_exon3.=$hash_codon{$codon};
-								}else{
-									$aa_ref_exon3.="X";
-									my $j=$i+1;
-									#print "Bad codon $codon in position $j of gene $name in species $contig!\n";
-								}
-							}
-							@aa_ref_exon3=split //,$aa_ref_exon3;
-						}
 					}
 
 					############################################################
 					## one-intron protein-coding-gene
 					############################################################
-					if (($start1 == $start2) and ($end1 == $end3)){# identical PCG boundary for _gene and -1_coding_aa, -2_coding_aa
+					if ((($start1 == $start2) and ($end1 == $end3)) and ((defined $length_ref_exon1) and (defined $length_ref_exon2) and (defined $length_ref_exon3) and (defined $sequence_ref_exon1) and (defined $sequence_ref_exon2) and (defined $sequence_ref_exon3))){# identical PCG boundary for _gene and -1_coding_aa, -2_coding_aa
 						if ($start1 < $end1){# positive
 							my $str=substr($sequence,($start1-1),($end1-$start1+1));
 							my $length=length $str;
@@ -7142,7 +7154,7 @@ while (@sequence_filenames) {
 								}
 							}
 						}
-					}elsif ((($start1 != $start2) and (!defined $start4)) or ((!defined $start4) and ($end1 != $end3))){# non-identical PCG boundary for _gene and -1_coding_aa, -2_coding_aa
+					}elsif (((($start1 != $start2) and (!defined $start4)) or ((!defined $start4) and ($end1 != $end3))) and ((defined $length_ref_exon1) and (defined $length_ref_exon2) and (defined $length_ref_exon3) and (defined $sequence_ref_exon1) and (defined $sequence_ref_exon2) and (defined $sequence_ref_exon3))){# non-identical PCG boundary for _gene and -1_coding_aa, -2_coding_aa
 						if ($start1 < $end1){# positive
 							my ($str1,$str2);
 							$str1=substr($sequence,($start2-1),($end2-$start2+1)) if ($end2 > $start2);
@@ -9498,7 +9510,7 @@ while (@sequence_filenames) {
 					############################################################
 					## two-intron protein-coding-gene
 					############################################################
-					if(($start1 == $start2) and (defined $end4) and ($end1 == $end4)){# identical PCG boundary for _gene and -1_coding, -3_coding
+					if((($start1 == $start2) and (defined $end4) and ($end1 == $end4)) and ((defined $length_ref_exon1) and (defined $length_ref_exon2) and (defined $length_ref_exon3) and (defined $sequence_ref_exon1) and (defined $sequence_ref_exon2) and (defined $sequence_ref_exon3))){# identical PCG boundary for _gene and -1_coding, -3_coding
 						if ($start3 < $end3){# positive
 							my $str=substr($sequence,($start1-1),($end1-$start1+1));
 							my $length_3=length $str;
@@ -12750,7 +12762,7 @@ while (@sequence_filenames) {
 								print "The exon length of $name (negative two-intron PCG) is not an intergral multiple of 3!\n";
 							}
 						}
-					}elsif((($start1 != $start2) and (defined $end4)) or ((defined $end4) and ($end1 != $end4))){# non-identical PCG boundary for _gene and -1_coding, -3_coding
+					}elsif(((($start1 != $start2) and (defined $end4)) or ((defined $end4) and ($end1 != $end4))) and ((defined $length_ref_exon1) and (defined $length_ref_exon2) and (defined $length_ref_exon3) and (defined $sequence_ref_exon1) and (defined $sequence_ref_exon2) and (defined $sequence_ref_exon3))){# non-identical PCG boundary for _gene and -1_coding, -3_coding
 						if ($start3 < $end3){# positive
 							my $str1=substr($sequence,($start2-1),($end2-$start2+1));
 							my $str2=substr($sequence,($start3-1),($end3-$start3+1));
@@ -16116,7 +16128,7 @@ sub gettime {
 }
 
 sub argument{
-	my @options=("help|h","reference|r:s","target|t:s","ir|i:i","degree|d:i","pidentity|p:i","qcoverage|q:s","out|o:s","form|f:s","log|l:s");
+	my @options=("help|h","reference|r:s","target|t:s","ir|i:i","pidentity|p:i","qcoverage|q:s","out|o:s","form|f:s","log|l:s");
 	my %options;
 	GetOptions(\%options,@options);
 	exec ("pod2usage $0") if ((keys %options)==0 or $options{'h'} or $options{'help'});
@@ -16173,7 +16185,7 @@ __DATA__
 
 =head1 SYNOPSIS
 
-    PGA.pl -r -t [-i -d -p -q -o -f -l]
+    PGA.pl -r -t [-i -p -q -o -f -l]
     Copyright (C) 2018 Xiao-Jian Qu
     Please contact <quxiaojian@mail.kib.ac.cn>, if you have any bugs or questions.
 
@@ -16181,7 +16193,6 @@ __DATA__
     [-r -reference]    required: (default: reference) input directory name containing GenBank-formatted file(s) that from the same or close families.
     [-t -target]       required: (default: target) input directory name containing FASTA-formatted file(s) that will be annotated.
     [-i -ir]           optional: (default: 1000) minimum allowed inverted-repeat (IR) length.
-    [-d -degree]       optional: (default: 1) the first (second, third, and so on) longest inverted repeat that will be annotated as the IR.
     [-p -pidentity]    optional: (default: 40) any PCGs with a TBLASTN percent identity less than this value will be listed in the log file and
                        will not be annotated.
     [-q -qcoverage]    optional: (default: 0.5,2) any PCGs with a query coverage per annotated PCG less or greater than each of these two values (<1,>1)
