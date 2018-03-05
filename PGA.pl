@@ -2004,7 +2004,7 @@ while (@sequence_filenames) {
 				my $y=9;#tRNA
 				my $z=9;#rRNA
 
-				if ((($gene_coding_CDS=~ /(((.+)-(\D+))_gene)/) or ($gene_coding_CDS=~ /trnR_gene/) or ($gene_coding_CDS=~ /trnA_gene/)) and (defined $length_ref_rna and defined $sequence_ref_rna)){# tRNA
+				if ((($gene_coding_CDS=~ /(((.+)-(\D+))_gene)/) or ($gene_coding_CDS=~ /trnR_gene/) or ($gene_coding_CDS=~ /trnA_gene/)) and ((defined $length_ref_rna) and (defined $sequence_ref_rna))){# tRNA
 					if ($start < $end) {
 						my $seq_string1;
 						if ($start >= 31) {
@@ -2260,7 +2260,7 @@ while (@sequence_filenames) {
 				}
 
 
-				if(($gene_coding_CDS=~ /((rrn(\d+\.?\d*))_gene)/) and (defined $length_ref_rna and defined $sequence_ref_rna)){# rRNA
+				if(($gene_coding_CDS=~ /((rrn(\d+\.?\d*))_gene)/) and ((defined $length_ref_rna) and (defined $sequence_ref_rna))){# rRNA
 					if ($start < $end) {
 						my $seq_string1;
 						if ($start >= 801) {
@@ -2431,7 +2431,7 @@ while (@sequence_filenames) {
 				}
 
 
-				if((($gene_coding_CDS=~ /((.+)_gene)/) and $name!~ /rrn/ and $name!~ /trn/ and $name!~ /rps12/) and (defined $length_ref_rna and defined $sequence_ref_rna)){# psaM(CDS_aa without alignment result),pseudogene (e.g., ycf15,ycf68 etal.)
+				if((($gene_coding_CDS=~ /((.+)_gene)/) and $name!~ /rrn/ and $name!~ /trn/ and $name!~ /rps12/) and ((defined $length_ref_rna) and (defined $sequence_ref_rna))){# psaM(CDS_aa without alignment result),pseudogene (e.g., ycf15,ycf68 etal.)
 					if ($start < $end){
 						#print $out_annotation "     "."gene"."             ".$start."..".$end."\n";
 						#print $out_annotation "                     "."/gene=\"$name\""."\n";
@@ -3897,12 +3897,12 @@ while (@sequence_filenames) {
 				my $position3=shift @position3;
 				my ($start3,$end3,$number3);# -2_coding or -2_coding_aa
 				my $position4=shift @position4;
-				my ($start4,$end4,$number4)=(split /\t/,$position4)[0,1,2] if (defined $position4 ne "");# -3_coding or -3_coding_aa
+				my ($start4,$end4,$number4)=(split /\t/,$position4)[0,1,2] if ((defined $position4) and ($position4 ne ""));# -3_coding or -3_coding_aa
 
 				my (@coding1,@coding2);
-				if (defined $position2 ne ""){
+				if ((defined $position2) and ($position2 ne "")){
 	    			($start2,$end2,$number2)=(split /\t/,$position2)[0,1,2];
-				}elsif(defined $position2 eq ""){# very short exon (-1_coding)
+				}elsif((defined $position2) and ($position2 eq "")){# very short exon (-1_coding)
 					foreach (keys %hash_exon){
 						if ($_ eq $coding1){
 							foreach (sort {$hash_exon{$_}{$b} <=> $hash_exon{$_}{$a}} keys %{$hash_exon{$_}}){
@@ -3917,9 +3917,9 @@ while (@sequence_filenames) {
 						}
 					}
 				}
-				if (defined $position3 ne ""){
+				if ((defined $position3) and ($position3 ne "")){
 					($start3,$end3,$number3)=(split /\t/,$position3)[0,1,2];
-				}elsif(defined $position3 eq ""){# very short exon (-2_coding)
+				}elsif((defined $position3) and ($position3 eq "")){# very short exon (-2_coding)
 					foreach (keys %hash_exon){
 						if ($_ eq $coding2){
 							foreach (sort {$hash_exon{$_}{$b} <=> $hash_exon{$_}{$a}} keys %{$hash_exon{$_}}){
@@ -3946,14 +3946,14 @@ while (@sequence_filenames) {
 					$sequence_ref_exon1=uc $sequence_ref_exon1;
 					$sequence_ref_exon2=uc $sequence_ref_exon2;
 					my ($x,$y);
-					if (defined ($length_ref_exon1 >= 32)) {
+					if ((defined $length_ref_exon1) and ($length_ref_exon1 >= 32)) {
 						$x=31;
-					}elsif (defined ($length_ref_exon1 < 32)) {
+					}elsif ((defined $length_ref_exon1) and ($length_ref_exon1 < 32)) {
 						$x=$length_ref_exon1;
 					}
-					if (defined ($length_ref_exon2 >= 32)) {
+					if ((defined $length_ref_exon2) and ($length_ref_exon2 >= 32)) {
 						$y=31;
-					}elsif (defined ($length_ref_exon2 < 32)) {
+					}elsif ((defined $length_ref_exon2) and ($length_ref_exon2 < 32)) {
 						$y=$length_ref_exon2;
 					}
 					my $z=9;
