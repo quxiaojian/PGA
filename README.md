@@ -56,11 +56,11 @@ Usage:
 
 **Run Test**<br />
 ```
-PGA.pl -r test/1/reference -t test/1/target
+PGA.pl -r test/angiosperms/reference -t test/angiosperms/target
 ```
-or
+equal to
 ```
-PGA.pl -r test/1/reference -t test/1/target -i 1000 -p 40 -q 0.5,2 -o gb -f circular -l warning
+PGA.pl -r test/angiosperms/reference -t test/angiosperms/target -i 1000 -p 40 -q 0.5,2 -o gb -f circular -l warning
 ```
 
 **Input and Output**<br />
