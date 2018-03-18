@@ -3897,12 +3897,12 @@ while (@sequence_filenames) {
 				my $position3=shift @position3;
 				my ($start3,$end3,$number3);# -2_coding or -2_coding_aa
 				my $position4=shift @position4;
-				my ($start4,$end4,$number4)=(split /\t/,$position4)[0,1,2] if ((defined $position4) and ($position4 ne ""));# -3_coding or -3_coding_aa
+				my ($start4,$end4,$number4)=(split /\t/,$position4)[0,1,2] if (defined $position4 ne "");# -3_coding or -3_coding_aa
 
 				my (@coding1,@coding2);
-				if ((defined $position2) and ($position2 ne "")){
+				if (defined $position2 ne ""){
 	    			($start2,$end2,$number2)=(split /\t/,$position2)[0,1,2];
-				}elsif((defined $position2) and ($position2 eq "")){# very short exon (-1_coding)
+				}elsif(defined $position2 eq ""){# very short exon (-1_coding)
 					foreach (keys %hash_exon){
 						if ($_ eq $coding1){
 							foreach (sort {$hash_exon{$_}{$b} <=> $hash_exon{$_}{$a}} keys %{$hash_exon{$_}}){
@@ -3917,9 +3917,9 @@ while (@sequence_filenames) {
 						}
 					}
 				}
-				if ((defined $position3) and ($position3 ne "")){
+				if (defined $position3 ne ""){
 					($start3,$end3,$number3)=(split /\t/,$position3)[0,1,2];
-				}elsif((defined $position3) and ($position3 eq "")){# very short exon (-2_coding)
+				}elsif(defined $position3 eq ""){# very short exon (-2_coding)
 					foreach (keys %hash_exon){
 						if ($_ eq $coding2){
 							foreach (sort {$hash_exon{$_}{$b} <=> $hash_exon{$_}{$a}} keys %{$hash_exon{$_}}){
@@ -3946,14 +3946,14 @@ while (@sequence_filenames) {
 					$sequence_ref_exon1=uc $sequence_ref_exon1;
 					$sequence_ref_exon2=uc $sequence_ref_exon2;
 					my ($x,$y);
-					if ((defined $length_ref_exon1) and ($length_ref_exon1 >= 32)) {
+					if (defined $length_ref_exon1 >= 32) {
 						$x=31;
-					}elsif ((defined $length_ref_exon1) and ($length_ref_exon1 < 32)) {
+					}elsif (defined $length_ref_exon1 < 32) {
 						$x=$length_ref_exon1;
 					}
-					if ((defined $length_ref_exon2) and ($length_ref_exon2 >= 32)) {
+					if (defined $length_ref_exon2 >= 32) {
 						$y=31;
-					}elsif ((defined $length_ref_exon2) and ($length_ref_exon2 < 32)) {
+					}elsif (defined $length_ref_exon2 < 32) {
 						$y=$length_ref_exon2;
 					}
 					my $z=9;
@@ -4559,7 +4559,7 @@ while (@sequence_filenames) {
 					my @aa_ref_exon1;
 					my @aa_ref_exon2;
 					my @aa_ref_exon3;
-					if ((defined $length_ref_exon1) and (defined $length_ref_exon2) and (defined $length_ref_exon3) and (defined $sequence_ref_exon1) and (defined $sequence_ref_exon2) and (defined $sequence_ref_exon3)) {
+					if (((defined $length_ref_exon1) and (defined $length_ref_exon2) or (defined $length_ref_exon3)) and ((defined $sequence_ref_exon1) and (defined $sequence_ref_exon2) or (defined $sequence_ref_exon3))) {
 						if ($length_ref_exon1 % 3==0) {
 							for (my $i=0;$i<$length_ref_exon1;$i+=3){
 								my $codon=substr ($sequence_ref_exon1,$i,3);
@@ -4795,7 +4795,7 @@ while (@sequence_filenames) {
 					############################################################
 					## one-intron protein-coding-gene
 					############################################################
-					if ((($start1 == $start2) and ($end1 == $end3)) and ((defined $length_ref_exon1) and (defined $length_ref_exon2) and (defined $length_ref_exon3) and (defined $sequence_ref_exon1) and (defined $sequence_ref_exon2) and (defined $sequence_ref_exon3))){# identical PCG boundary for _gene and -1_coding_aa, -2_coding_aa
+					if ((($start1 == $start2) and ($end1 == $end3)) and ((defined $length_ref_exon1) and (defined $length_ref_exon2) and (defined $sequence_ref_exon1) and (defined $sequence_ref_exon2))){# identical PCG boundary for _gene and -1_coding_aa, -2_coding_aa
 						if ($start1 < $end1){# positive
 							my $str=substr($sequence,($start1-1),($end1-$start1+1));
 							my $length=length $str;
@@ -7154,7 +7154,7 @@ while (@sequence_filenames) {
 								}
 							}
 						}
-					}elsif (((($start1 != $start2) and (!defined $start4)) or ((!defined $start4) and ($end1 != $end3))) and ((defined $length_ref_exon1) and (defined $length_ref_exon2) and (defined $length_ref_exon3) and (defined $sequence_ref_exon1) and (defined $sequence_ref_exon2) and (defined $sequence_ref_exon3))){# non-identical PCG boundary for _gene and -1_coding_aa, -2_coding_aa
+					}elsif (((($start1 != $start2) and (!defined $start4)) or ((!defined $start4) and ($end1 != $end3))) and ((defined $length_ref_exon1) and (defined $length_ref_exon2) and (defined $sequence_ref_exon1) and (defined $sequence_ref_exon2))){# non-identical PCG boundary for _gene and -1_coding_aa, -2_coding_aa
 						if ($start1 < $end1){# positive
 							my ($str1,$str2);
 							$str1=substr($sequence,($start2-1),($end2-$start2+1)) if ($end2 > $start2);
