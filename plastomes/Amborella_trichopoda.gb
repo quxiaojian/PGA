@@ -1744,32 +1744,6 @@ FEATURES             Location/Qualifiers
                      /translation="MAVPKKRTSMSKKHIRRNYWKRKGYKAAVKAFSLGKSVSTGHSK
                      SFFVQQTTTKTNK"
                      /note="Geneious name: rpl32 CDS"
-     CDS             complement(153385..153531)
-                     /gene="ycf15"
-                     /codon_start=1
-                     /transl_table=11
-                     /protein_id="CAD45167.1"
-                     /db_xref="GI:34481691"
-                     /db_xref="GOA:Q70XV4"
-                     /db_xref="InterPro:IPR019645"
-                     /db_xref="UniProtKB/Swiss-Prot:Q70XV4"
-                     /translation="MLLLKHGTIEILDQKTMYGWYELPKQEFLNGEQPEPITHYIKQF
-                     PLMK"
-                     /note="Geneious name: ycf15 CDS"
-     CDS             100106..100252
-                     /gene="ycf15"
-                     /note="GTG start codon"
-                     /codon_start=1
-                     /transl_table=11
-                     /product="Ycf15 protein"
-                     /protein_id="CAD45150.1"
-                     /db_xref="GI:34481673"
-                     /db_xref="GOA:Q70XV4"
-                     /db_xref="InterPro:IPR019645"
-                     /db_xref="UniProtKB/Swiss-Prot:Q70XV4"
-                     /translation="MLLLKHGTIEILDQKTMYGWYELPKQEFLNGEQPEPITHYIKQF
-                     PLMK"
-                     /note="Geneious name: ycf15 CDS"
      CDS             complement(80889..81020)
                      /gene="psbN"
                      /codon_start=1
@@ -2228,12 +2202,6 @@ FEATURES             Location/Qualifiers
      gene            120366..120539
                      /gene="rpl32"
                      /note="Geneious name: rpl32 gene"
-     gene            100106..100252
-                     /gene="ycf15"
-                     /note="Geneious name: ycf15 gene"
-     gene            complement(153385..153531)
-                     /gene="ycf15"
-                     /note="Geneious name: ycf15 gene"
      gene            complement(80889..81020)
                      /gene="psbN"
                      /note="Geneious name: psbN gene"
