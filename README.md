@@ -138,8 +138,8 @@ FEATURES             Location/Qualifiers
 (d) warning.log
 Rosa_roxburghii
 Warning: atpF (negative one-intron PCG) lost intron!
-Total number of genes in the reference plastome(s): 114.
-Total number of genes annotated in the target plastome: 114.
+Total number of genes in the reference plastome(s): 113.
+Total number of genes annotated in the target plastome: 113.
 All gene names from the reference plastome(s) that were not annotated in the target plastome:
 ```
 
