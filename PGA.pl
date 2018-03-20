@@ -16150,11 +16150,6 @@ sub default{
 	return $default_value;
 }
 
-sub consecutive {
-	local $_=join " ",sort{$a <=> $b} grep !/\D/,@_;
-	s/(\d+\s*)((??{$++1})\s*)*/$1=>${\($+-$1)},/gx;
-	return eval "{$_}";
-}
 
 __DATA__
 
