@@ -1,4 +1,4 @@
-**Plastid Genome Annotation**<br />
+**Plastid Genome Annotator**<br />
 Copyright (C) 2018 Xiao-Jian Qu<br />
 
 **Contact**<br />
@@ -10,7 +10,7 @@ Perl<br />
 Windows, Linux or Mac<br />
 
 **General Introduction to PGA**<br />
-PGA (Plastid Genome Annotation), a standalone command line tool, can perform rapid, accurate, and flexible batch annotation of newly generated target plastomes based on well-annotated reference plastomes. In contrast to current existing tools, PGA uses reference plastomes as the query and unannotated target plastomes as the subject to locate genes, which we refer to as the reverse query-subject BLAST search approach. PGA accurately identifies gene and intron boundaries as well as intron loss. The program outputs GenBank-formatted files as well as a log file to assist users in verifying annotations.<br />
+PGA (Plastid Genome Annotator), a standalone command line tool, can perform rapid, accurate, and flexible batch annotation of newly generated target plastomes based on well-annotated reference plastomes. In contrast to current existing tools, PGA uses reference plastomes as the query and unannotated target plastomes as the subject to locate genes, which we refer to as the reverse query-subject BLAST search approach. PGA accurately identifies gene and intron boundaries as well as intron loss. The program outputs GenBank-formatted files as well as a log file to assist users in verifying annotations.<br />
 We thank Rong Zhang, Ying-Ying Yang and Jian-Jun Jin from Kunming Institute of Botany Chinese Academy of Sciences, and Pin Gong from Institute of Botany Chinese Academy of Sciences for improving this tool.<br />
 
 Following six steps will be conducted to annotate plastomes: (1) Preparation of GenBank-formatted reference plastomes; (2) Preparation of FASTA-formatted target plastomes; (3) Reference database generation; (4) BLAST search; (5) Determining feature boundaries; (6) Generating GenBank and log files.<br />
