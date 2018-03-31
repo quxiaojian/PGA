@@ -20,7 +20,7 @@ my $output_directory=&default("gb","out");
 my $type=&default("circular","form");
 my $log=&default("warning","log");
 
-print "\nPGA.pl Plastid Genome Annotation
+print "\nPGA.pl Plastid Genome Annotator
 Copyright (C) 2017 Xiao-Jian Qu
 Email: quxiaojian\@mail.kib.ac.cn\n\n";
 
@@ -16155,7 +16155,7 @@ __DATA__
 
 =head1 NAME
 
-    PGA.pl Plastid Genome Annotation
+    PGA.pl Plastid Genome Annotator
 
 =head1 COPYRIGHT
 
@@ -16176,7 +16176,7 @@ __DATA__
 
 =head1 DESCRIPTION
 
-    Plastid Genome Annotation
+    Plastid Genome Annotator
 
 =head1 SYNOPSIS
 
