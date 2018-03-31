@@ -8,6 +8,12 @@ SOURCE      chloroplast Zamia furfuracea
             Eukaryota; Viridiplantae; Streptophyta; Embryophyta; Tracheophyta;
             Spermatophyta; Cycadidae; Cycadales; Zamiaceae; Zamia.
 FEATURES             Location/Qualifiers
+     source          1..164953
+                     /organism="Zamia furfuracea"
+                     /organelle="plastid:chloroplast"
+                     /mol_type="genomic DNA"
+                     /db_xref="taxon:42329"
+                     /note="Geneious name: source Zamia furfuracea"
      misc_feature    1..90441
                      /note="large single copy region; LSC"
                      /note="Geneious name: large single copy region; LSC"
@@ -24,18 +30,6 @@ FEATURES             Location/Qualifiers
                      /rpt_type="inverted"
                      /note="Geneious name: inverted repeat region B; IRB repeat
                      region"
-     source          251..>164953
-                     /organism="Zamia furfuracea"
-                     /organelle="plastid:chloroplast"
-                     /mol_type="genomic DNA"
-                     /db_xref="taxon:42329"
-                     /note="Geneious name: source Zamia furfuracea"
-     source          <1..250
-                     /organism="Zamia furfuracea"
-                     /organelle="plastid:chloroplast"
-                     /mol_type="genomic DNA"
-                     /db_xref="taxon:42329"
-                     /note="Geneious name: source Zamia furfuracea"
      rRNA            110831..113643
                      /gene="rrn23"
                      /product="23S ribosomal RNA"
