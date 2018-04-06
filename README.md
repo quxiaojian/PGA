@@ -15,7 +15,7 @@ We thank Rong Zhang, Ying-Ying Yang and Jian-Jun Jin from Kunming Institute of B
 
 Following six steps will be conducted to annotate plastomes: (1) Preparation of GenBank-formatted reference plastomes; (2) Preparation of FASTA-formatted target plastomes; (3) Reference database generation; (4) BLAST search; (5) Determining feature boundaries; (6) Generating GenBank and log files.<br />
 
-![PGA flowchart](https://github.com/quxiaojian/PGA/blob/master/PGA.png)
+![PGA flowchart](https://github.com/quxiaojian/PGA/blob/master/flowchart.png)
 
 **Preparations**<br />
 
