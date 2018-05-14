@@ -55,10 +55,12 @@ sub target1{
 }
 
 my $filename_base;
+my @reference_filename;
 while (@filenames) {
 	my $filename_gb=shift @filenames;
 	$filename_base=$filename_gb;
 	$filename_base=~ s/(.*).gb/$1/g;
+	push @reference_filename,$filename_base;
 	my $latin_name=substr ($filename_base,rindex($filename_base,"\/")+1);
 	open(my $in_gb,"<",$filename_gb);
 	open(my $out_gb,">","$filename_base\_temp1");
@@ -1120,12 +1122,14 @@ foreach my $file (@input_directory){
 		close $output_CDS;
 	}
 }
-unlink("$filename_base\_CDS.bed");
-unlink("$filename_base\_CDS.fasta");
-unlink("$filename_base\_coding.bed");
-unlink("$filename_base\_coding.fasta");
-unlink("$filename_base\_gene.bed");
-unlink("$filename_base\_gene.fasta");
+foreach my $reference_filename (@reference_filename) {
+	unlink("$reference_filename\_CDS.bed");
+	unlink("$reference_filename\_CDS.fasta");
+	unlink("$reference_filename\_coding.bed");
+	unlink("$reference_filename\_coding.fasta");
+	unlink("$reference_filename\_gene.bed");
+	unlink("$reference_filename\_gene.fasta");
+}
 
 
 open (my $in_gene,"<","gene.fasta");
