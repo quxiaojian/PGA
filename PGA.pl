@@ -21,8 +21,8 @@ my $type=&default("circular","form");
 my $log=&default("warning","log");
 
 print "\nPGA.pl Plastid Genome Annotator
-Copyright (C) 2017 Xiao-Jian Qu
-Email: quxiaojian\@mail.kib.ac.cn\n\n";
+Copyright (C) 2019 Xiao-Jian Qu
+Email: quxiaojian\@sdnu.edu.cn\n\n";
 
 my $now1=time;
 my $now2=&gettime;
