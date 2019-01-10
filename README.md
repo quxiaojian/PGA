@@ -1,8 +1,8 @@
 **Plastid Genome Annotator**<br />
-Copyright (C) 2018 Xiao-Jian Qu<br />
+Copyright (C) 2019 Xiao-Jian Qu<br />
 
 **Contact**<br />
-quxiaojian@mail.kib.ac.cn<br />
+quxiaojian@sdnu.edu.cn<br />
 
 **Prerequisites**<br />
 BLAST+<br />
@@ -38,8 +38,8 @@ You can test PGA.pl by type PGA.pl, which will show the usage information.<br />
 ```
 Usage:
     PGA.pl -r -t [-i -p -q -o -f -l]
-    Copyright (C) 2018 Xiao-Jian Qu
-    Please contact <quxiaojian@mail.kib.ac.cn>, if you have any bugs or questions.
+    Copyright (C) 2019 Xiao-Jian Qu
+    Please contact <quxiaojian@sdnu.edu.cn>, if you have any bugs or questions.
 
     [-h -help]         help information.
     [-r -reference]    required: (default: reference) input directory name containing GenBank-formatted file(s) that from the same or close families.
