@@ -1618,6 +1618,7 @@ FEATURES             Location/Qualifiers
                      /trans_splicing
                      /note="Geneious name: rps12 gene"
      gene            complement(104011..104824)
+                     /gene="rps12"
                      /note="Geneious name: rps12 gene"
      gene            complement(51496..52308)
                      /gene="ndhK"
