@@ -2,7 +2,7 @@
 use strict;
 use Getopt::Long;
 use File::Find;
-use Time::HiRes qw(time);
+#use Time::HiRes qw(time);
 use FindBin qw($Bin);
 use Data::Dumper;
 no warnings "uninitialized";
