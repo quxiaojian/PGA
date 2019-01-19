@@ -5,8 +5,8 @@ Copyright (C) 2019 Xiao-Jian Qu<br />
 quxiaojian@sdnu.edu.cn<br />
 
 **Prerequisites**<br />
-BLAST+<br />
-Perl<br />
+BLAST 2.5.0 or higher<br />
+Perl 5<br />
 Windows, Linux or Mac<br />
 
 **General Introduction to PGA**<br />
@@ -19,13 +19,23 @@ Following six steps will be conducted to annotate plastomes: (1) Preparation of 
 
 **Preparations**<br />
 
-(1) download BLAST+ software [BLAST+](https://blast.ncbi.nlm.nih.gov/Blast.cgi?CMD=Web&PAGE_TYPE=BlastDocs&DOC_TYPE=Download), and put it in PATH.<br />
+(1) download the latest BLAST+ software [BLAST+](https://blast.ncbi.nlm.nih.gov/Blast.cgi?CMD=Web&PAGE_TYPE=BlastDocs&DOC_TYPE=Download).<br />
+The latest version (2018/11/27) is ncbi-blast-2.8.1+-win64.exe for Windows, ncbi-blast-2.8.1+-x64-linux.tar.gz for Linux, ncbi-blast-2.8.1+-x64-macosx.tar.gz for Mac.<br />
+For Windows, just install it following instructions. It will be in PATH automatically.<br />
+For Linux or Mac, we suggest to put it in PATH following below steps.<br />
 ```
 vim ~/.bashrc
-export PATH=/home/xxx/blast-2.7.0+/bin:$PATH
+export PATH=/home/xxx/blast-2.8.1+/bin:$PATH
 source ~/.bashrc
 ```
-(2) download this repository to your local computer, and put it in PATH. Make it read, write and executable.<br />
+
+Please check if the latest blast version is successfully installed by inputing "blastn -version" in cmd.
+```
+blastn -version
+```
+(2) download this repository to your local computer.<br />
+For Windows, just download, unzip and use it.<br />
+For Linux or Mac, we suggest to put it in PATH and make it read, write and executable folowing below steps.<br />
 ```
 git clone https://github.com/quxiaojian/PGA.git
 vim ~/.bashrc
@@ -34,7 +44,7 @@ source ~/.bashrc
 chmod a+rwx PGA.pl
 ```
 
-You can test PGA.pl by type PGA.pl, which will show the usage information.<br />
+Then, you can test PGA.pl by type "perl PGA.pl", which will show the usage information.<br />
 ```
 Usage:
     PGA.pl -r -t [-i -p -q -o -f -l]
@@ -56,15 +66,15 @@ Usage:
 
 **Run Test**<br />
 ```
-PGA.pl -r test/angiosperms/reference -t test/angiosperms/target
+perl PGA.pl -r test/angiosperms/reference -t test/angiosperms/target
 ```
 equal to
 ```
-PGA.pl -r test/angiosperms/reference -t test/angiosperms/target -i 1000 -p 40 -q 0.5,2 -o gb -f circular -l warning
+perl PGA.pl -r test/angiosperms/reference -t test/angiosperms/target -i 1000 -p 40 -q 0.5,2 -o gb -f circular -l warning
 ```
 
 **Input and Output**<br />
-Annotation of the plastome of Rosa roxburghii with the plastome of Amborella trichopoda as reference. (a) "Amborella_trichopoda.gb" shows the partial GenBank-formatted reference plastome of Amborella trichopoda, as revised from AJ506156. (b) "Rosa_roxburghii.fasta" shows the partial FASTA-formatted target plastome of Rosa roxburghii, revised from NC_032038. (c) "Rosa_roxburghii.gb" shows the output GenBank-formatted file containing partial annotation information for the target plastome of Rosa roxburghii. (d) "warning.log" shows warning and statistical items during the annotation of the target plastome of Rosa roxburghii. The log file indicates the loss of the atpF intron in Rosa roxburghii. There are 114 total genes in the reference and target plastomes.<br />
+Annotation of the plastome of Rosa roxburghii with the plastome of Amborella trichopoda as reference. (a) "Amborella_trichopoda.gb" shows the partial GenBank-formatted reference plastome of Amborella trichopoda, as revised from AJ506156. (b) "Rosa_roxburghii.fasta" shows the partial FASTA-formatted target plastome of Rosa roxburghii, revised from NC_032038. (c) "Rosa_roxburghii.gb" shows the output GenBank-formatted file containing partial annotation information for the target plastome of Rosa roxburghii. (d) "warning.log" shows warning and statistical items during the annotation of the target plastome of Rosa roxburghii. The log file indicates the loss of the atpF intron in Rosa roxburghii. There are 113 total genes in the reference and target plastomes.<br />
 
 ```
 (a) Amborella_trichopoda.gb
