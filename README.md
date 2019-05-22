@@ -4,6 +4,10 @@ Copyright (C) 2019 Xiao-Jian Qu<br />
 **Contact**<br />
 quxiaojian@sdnu.edu.cn<br />
 
+**Citation**<br />
+If you use PGA in your scientific research, please cite:<br />
+Qu X-J, Moore MJ, Li D-Z, Yi T-S. 2019. PGA: a software package for rapid, accurate, and flexible batch annotation of plastomes. Plant Methods 15:50.<br />
+
 **Prerequisites**<br />
 BLAST 2.5.0 or higher<br />
 Perl 5<br />
@@ -158,10 +162,3 @@ All gene names from the reference plastome(s) that were not annotated in the tar
 (2) It is important that users select a reference plastome that contains sufficient numbers of annotated genes for the target taxa. The number of genes in the reference plastome(s) should equal or exceed the number in the target plastome(s). If the number of genes in the target is uncertain, it may be best to use multiple reference plastomes. The Amborella trichopoda (AJ506156) and Zamia furfuracea (JX416857) plastomes included within PGA are examples of plastomes that contain the highest gene numbers among known angiosperms and gymnosperms, and as such it is recommended that they be included as references during PGA runs.<br />
 (3) We do not recommend annotating highly incomplete plastomes using a complete reference plastome, because BLAST may annotate some genes redundantly (i.e., BLAST may return hits for genes that were not sequenced or are otherwise absent in the incomplete plastome, resulting in spurious annotations). To annotate highly incomplete plastomes or plastome segments, we recommend using progressiveMauve (as implemented in Mauve 2.4.0; Darling et al., 2010) to align the incomplete plastome to the reference plastome, followed by the use of the corresponding homologous block of the reference plastome as the reference for annotation in PGA.<br />
 (4) We suggest that users carefully check highly divergent or otherwise unusual target plastomes for incorrect annotations. This is particularly important for plastomes with a high degree of gene loss, pseudogenization or sequence divergence.<br />
-
-**Citation**<br />
-If you use PGA in you scientific research, please cite:<br />
-BLAST+<br />
-Camacho C, et al. 2009. BLAST+: architecture and applications. BMC Bioinformatics 10:421.<br />
-PGA<br />
-https://github.com/quxiaojian/PGA<br />
