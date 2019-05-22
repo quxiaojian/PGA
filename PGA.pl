@@ -1979,6 +1979,7 @@ while (@sequence_filenames) {
 	print $out_annotation "                     /organism=\"$header\""."\n";
 	print $out_annotation "                     /organelle=\"plastid:chloroplast\""."\n";
 	print $out_annotation "                     /mol_type=\"genomic DNA\""."\n";
+	print $out_annotation "                     /note=\"Annotation Method :: PGA-Plastid Genome Annotator\""."\n";
 
 	if (defined $JLB) {
 		print $out_annotation "     repeat_region   "."$JLB..$JSB"."\n";
