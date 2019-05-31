@@ -109,6 +109,7 @@ trnP-GGG	tRNA-Pro
 trnP-UGG	tRNA-Pro
 trnQ-UUG	tRNA-Gln
 trnR-ACG	tRNA-Arg
+trnR-CCG	tRNA-Arg
 trnR-UCU	tRNA-Arg
 trnS-GCU	tRNA-Ser
 trnS-GGA	tRNA-Ser
