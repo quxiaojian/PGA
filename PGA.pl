@@ -16186,8 +16186,8 @@ __DATA__
 =head1 SYNOPSIS
 
     PGA.pl -r -t [-i -p -q -o -f -l]
-    Copyright (C) 2018 Xiao-Jian Qu
-    Please contact <quxiaojian@mail.kib.ac.cn>, if you have any bugs or questions.
+    Copyright (C) 2019 Xiao-Jian Qu
+    Please contact <quxiaojian@sdnu.edu.cn>, if you have any bugs or questions.
 
     [-h -help]         help information.
     [-r -reference]    required: (default: reference) input directory name containing GenBank-formatted file(s) that from the same or close families.
