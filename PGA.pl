@@ -1364,6 +1364,7 @@ while (@sequence_filenames) {
 	$j++;
 	my $input_fasta=shift @sequence_filenames;
 	my $output_fasta=substr($input_fasta,0,index ($input_fasta,"\."));
+	my $filename=substr($output_fasta,rindex($output_fasta,"\/")+1);
 	open(my $input_ag,"<",$input_fasta);
 	open(my $output_ag,">",$output_fasta);
 	my $row_ag=<$input_ag>;
@@ -1428,7 +1429,7 @@ while (@sequence_filenames) {
 
 	my $now4=&gettime;
 	print "\n";
-	print "$now4 || Begin annotating the $j sequence: $header";
+	print "$now4 || Begin annotating the $j sequence: $filename";
 	print "\n";
 	print "$now4 || Begin blasting reference to sequence!";
 	############################################################
@@ -1760,7 +1761,7 @@ while (@sequence_filenames) {
 	## generate_annotation_table
 	############################################################
 	open (my $input_reference,"<","reference.tab");
-	open (my $output_annotation_tab,">","$header.tab");
+	open (my $output_annotation_tab,">","$filename.tab");
 	my ($row_reference,%hash_tab,%hash1_tab,%hash2_tab,%hash3_tab,%hash4_tab,%hash_gene);
 	my $i=0;
 	while (defined ($row_reference=<$input_reference>)){
@@ -1937,7 +1938,7 @@ while (@sequence_filenames) {
 	############################################################
 	## generate_gb_file_from_annotation_table
 	############################################################
-	open (my $in_annotation,"<","$header.tab");
+	open (my $in_annotation,"<","$filename.tab");
 	my $contig=<$in_annotation>;
 	$contig=~ s/\r|\n//g;
 	my %hash;
@@ -1962,21 +1963,21 @@ while (@sequence_filenames) {
 		}
 	}
 	close $in_annotation;
-	unlink("$header.tab");
+	unlink("$filename.tab");
 	#print Dumper \%hash;
 
-	my $temp=$header."_temp";
+	my $temp=$filename."_temp";
 	open (my $out_annotation,">","$output_directory/$temp.gb");
 	open (my $logfile,">>","$output_directory/$log.log");
 	my $time=&getdate;
-	print $logfile "$header\n";
+	print $logfile "$filename\n";
 	foreach my $key (keys %gene_loss) {
 		print $logfile "Warning: $key has not been annotated due to low similarity with reference!\n";
 	}
-	print $out_annotation "LOCUS       $header  $length_cp bp    DNA     $type PLN $time"."\n";
+	print $out_annotation "LOCUS       $filename  $length_cp bp    DNA     $type PLN $time"."\n";
 	print $out_annotation "FEATURES             Location/Qualifiers"."\n";
 	print $out_annotation "     source          "."1..$length_cp"."\n";
-	print $out_annotation "                     /organism=\"$header\""."\n";
+	print $out_annotation "                     /organism=\"$filename\""."\n";
 	print $out_annotation "                     /organelle=\"plastid:chloroplast\""."\n";
 	print $out_annotation "                     /mol_type=\"genomic DNA\""."\n";
 	print $out_annotation "                     /note=\"Annotation Method :: PGA-Plastid Genome Annotator\""."\n";
@@ -16051,7 +16052,7 @@ while (@sequence_filenames) {
 	print $out_annotation "//\n";
 	close $out_annotation;
 	open (my $input_temp,"<","$output_directory/$temp.gb");
-	open (my $output_temp,">","$output_directory/$header.gb");
+	open (my $output_temp,">","$output_directory/$filename.gb");
 	while (<$input_temp>) {
 		$_=~ s/\r|\n//g;
 		$_=~ s/rps12\+1/rps12/g;
@@ -16089,7 +16090,7 @@ while (@sequence_filenames) {
 	print $logfile "\n\n";
 	close $logfile;
 	my $now6=&gettime;
-	print "$now6 || Finish annotating the $j sequence: $header";
+	print "$now6 || Finish annotating the $j sequence: $filename";
 	print "\n";
 }
 unlink("all2.fasta");
