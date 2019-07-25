@@ -1363,7 +1363,7 @@ my $j=0;
 while (@sequence_filenames) {
 	$j++;
 	my $input_fasta=shift @sequence_filenames;
-	my $output_fasta=substr($input_fasta,0,index ($input_fasta,"\."));
+	my $output_fasta=substr($input_fasta,0,rindex($input_fasta,"\."));
 	my $filename=substr($output_fasta,rindex($output_fasta,"\/")+1);
 	open(my $input_ag,"<",$input_fasta);
 	open(my $output_ag,">",$output_fasta);
@@ -7161,7 +7161,7 @@ while (@sequence_filenames) {
 							}
 						}
 					}elsif (((($start1 != $start2) and (!defined $start4)) or ((!defined $start4) and ($end1 != $end3))) and ((defined $length_ref_exon1) and (defined $length_ref_exon2) and (defined $sequence_ref_exon1) and (defined $sequence_ref_exon2))){# non-identical PCG boundary for _gene and -1_coding_aa, -2_coding_aa
-						if ($start2 < $end3){# positive
+						if ($start1 < $end1){# positive
 							my ($str1,$str2);
 							$str1=substr($sequence,($start2-1),($end2-$start2+1)) if ($end2 > $start2);
 							$str1=substr($sequence,($end2-1),($start2-$end2+1)) if ($end2 < $start2);
@@ -8309,7 +8309,7 @@ while (@sequence_filenames) {
 									}
 								}
 							}
-						}elsif($start2 > $end3){# negative
+						}elsif($start1 > $end1){# negative
 							my ($str1,$str2);
 							$str1=substr($sequence,($end2-1),($start2-$end2+1)) if ($end2 < $start2);
 							$str1=substr($sequence,($start2-1),($end2-$start2+1)) if ($end2 > $start2);
