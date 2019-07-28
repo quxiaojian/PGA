@@ -8309,7 +8309,7 @@ while (@sequence_filenames) {
 									}
 								}
 							}
-						}elsif($start1 > $end1){# negative
+						}elsif($start2 > $end3){# negative
 							my ($str1,$str2);
 							$str1=substr($sequence,($end2-1),($start2-$end2+1)) if ($end2 < $start2);
 							$str1=substr($sequence,($start2-1),($end2-$start2+1)) if ($end2 > $start2);
