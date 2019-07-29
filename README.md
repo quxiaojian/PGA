@@ -8,6 +8,9 @@ quxiaojian@sdnu.edu.cn<br />
 If you use PGA in your scientific research, please cite:<br />
 Qu X-J, Moore MJ, Li D-Z, Yi T-S. 2019. PGA: a software package for rapid, accurate, and flexible batch annotation of plastomes. Plant Methods 15:50.<br />
 
+**Notes in Chinese**<br />
+https://www.jianshu.com/p/6ac8a9fad9c9
+
 **Prerequisites**<br />
 BLAST 2.5.0 or higher<br />
 Perl 5<br />
@@ -165,6 +168,3 @@ All gene names from the reference plastome(s) that were not annotated in the tar
 (3) We do not recommend annotating highly incomplete plastomes using a complete reference plastome, because BLAST may annotate some genes redundantly (i.e., BLAST may return hits for genes that were not sequenced or are otherwise absent in the incomplete plastome, resulting in spurious annotations). To annotate highly incomplete plastomes or plastome segments, we recommend using progressiveMauve (as implemented in Mauve 2.4.0; Darling et al., 2010) to align the incomplete plastome to the reference plastome, followed by the use of the corresponding homologous block of the reference plastome as the reference for annotation in PGA.<br />
 (4) We suggest that users carefully check highly divergent or otherwise unusual target plastomes for incorrect annotations. This is particularly important for plastomes with a high degree of gene loss, pseudogenization or sequence divergence.<br />
 
-
-**Notes in Chinese(中文使用说明)**<br />
-https://www.jianshu.com/p/6ac8a9fad9c9
