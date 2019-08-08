@@ -87,6 +87,8 @@ ycf1	hypothetical protein RF1
 ycf2	hypothetical protein RF2
 ycf3	photosystem I assembly protein Ycf3
 ycf4	photosystem I assembly protein Ycf4
+ycf15	hypothetical protein RF15
+ycf68	hypothetical protein RF68
 trnA-UGC	tRNA-Ala
 trnC-GCA	tRNA-Cys
 trnD-GUC	tRNA-Asp
