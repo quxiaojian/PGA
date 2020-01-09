@@ -1441,7 +1441,7 @@ while (@sequence_filenames) {
 	#intron PCG(_gene and -1/-2/-3_coding_aa)(short exon of rpl16,petB and petD)
 
 	if ($osname eq "MSWin32") {
-		system ("makeblastdb.exe -in $output_fasta -hash_index -dbtype nucl");
+		system ("makeblastdb.exe -in $output_fasta -hash_index -dbtype nucl -blastdb_version 4");
 		#-max_hsps 1(nucleotide,RNA,including _gene RNA and -1/-2_coding tRNA)
 		system ("blastn.exe -task blastn -query reference1.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference1");# -evalue 0.001 or 0.01
 		#-max_hsps 1(nucleotide,PCG,including _gene PCG)
@@ -1452,10 +1452,10 @@ while (@sequence_filenames) {
 		#-max_hsps 1(amino acid,intron PCG,including -1/-2/-3_coding_aa PCG)
 		system ("tblastn.exe -task tblastn -query reference4.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference4");# -evalue 0.001 or 0.01 -qcov_hsp_perc 20?
 		#IRb and IRa
-		system ("makeblastdb.exe -in fasta_temp -hash_index -dbtype nucl");
+		system ("makeblastdb.exe -in fasta_temp -hash_index -dbtype nucl -blastdb_version 4");
 		system ("blastn.exe -task blastn -query fasta_temp -db fasta_temp -outfmt 6 -perc_identity 99 -out IR_temp");
 	}elsif ($osname eq "cygwin") {
-		system ("makeblastdb -in $output_fasta -hash_index -dbtype nucl");
+		system ("makeblastdb -in $output_fasta -hash_index -dbtype nucl -blastdb_version 4");
 		#-max_hsps 1(nucleotide,RNA,including _gene RNA and -1/-2_coding tRNA)
 		system ("blastn -task blastn -query reference1.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference1");# -evalue 0.001 or 0.01
 		#-max_hsps 1(nucleotide,PCG,including _gene PCG)
@@ -1466,10 +1466,10 @@ while (@sequence_filenames) {
 		#-max_hsps 1(amino acid,intron PCG,including -1/-2/-3_coding_aa PCG)
 		system ("tblastn -task tblastn -query reference4.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference4");# -evalue 0.001 or 0.01 -qcov_hsp_perc 20?
 		#IRb and IRa
-		system ("makeblastdb -in fasta_temp -hash_index -dbtype nucl");
+		system ("makeblastdb -in fasta_temp -hash_index -dbtype nucl -blastdb_version 4");
 		system ("blastn -task blastn -query fasta_temp -db fasta_temp -outfmt 6 -perc_identity 99 -out IR_temp");
 	}elsif ($osname eq "linux") {
-		system ("makeblastdb -in $output_fasta -hash_index -dbtype nucl");
+		system ("makeblastdb -in $output_fasta -hash_index -dbtype nucl -blastdb_version 4");
 		#-max_hsps 1(nucleotide,RNA,including _gene RNA and -1/-2_coding tRNA)
 		system ("blastn -task blastn -query reference1.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference1");# -evalue 0.001 or 0.01
 		#-max_hsps 1(nucleotide,PCG,including _gene PCG)
@@ -1480,10 +1480,10 @@ while (@sequence_filenames) {
 		#-max_hsps 1(amino acid,intron PCG,including -1/-2/-3_coding_aa PCG)
 		system ("tblastn -task tblastn -query reference4.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference4");# -evalue 0.001 or 0.01 -qcov_hsp_perc 20?
 		#IRb and IRa
-		system ("makeblastdb -in fasta_temp -hash_index -dbtype nucl");
+		system ("makeblastdb -in fasta_temp -hash_index -dbtype nucl -blastdb_version 4");
 		system ("blastn -task blastn -query fasta_temp -db fasta_temp -outfmt 6 -perc_identity 99 -out IR_temp");
 	}elsif ($osname eq "darwin") {
-		system ("makeblastdb -in $output_fasta -hash_index -dbtype nucl");
+		system ("makeblastdb -in $output_fasta -hash_index -dbtype nucl -blastdb_version 4");
 		#-max_hsps 1(nucleotide,RNA,including _gene RNA and -1/-2_coding tRNA)
 		system ("blastn -task blastn -query reference1.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference1");# -evalue 0.001 or 0.01
 		#-max_hsps 1(nucleotide,PCG,including _gene PCG)
@@ -1494,7 +1494,7 @@ while (@sequence_filenames) {
 		#-max_hsps 1(amino acid,intron PCG,including -1/-2/-3_coding_aa PCG)
 		system ("tblastn -task tblastn -query reference4.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference4");# -evalue 0.001 or 0.01 -qcov_hsp_perc 20?
 		#IRb and IRa
-		system ("makeblastdb -in fasta_temp -hash_index -dbtype nucl");
+		system ("makeblastdb -in fasta_temp -hash_index -dbtype nucl -blastdb_version 4");
 		system ("blastn -task blastn -query fasta_temp -db fasta_temp -outfmt 6 -perc_identity 99 -out IR_temp");
 	}
 
@@ -16141,8 +16141,17 @@ sub argument{
 	if(!exists $options{'reference'}){
 		print "***ERROR: No reference directory is assigned!!!\n";
 		exec ("pod2usage $0");
-	}elsif(!exists $options{'target'}){
+	}
+	if(!exists $options{'target'}){
 		print "***ERROR: No target directory is assigned!!!\n";
+		exec ("pod2usage $0");
+	}
+	if (-f $options{'reference'}) {
+		print "***ERROR: Input directory name for reference, not file name!!!\n";
+		exec ("pod2usage $0");
+	}
+	if (-f $options{'target'}) {
+		print "***ERROR: Input directory name for target, not file name!!!\n";
 		exec ("pod2usage $0");
 	}
 	return \%options;
