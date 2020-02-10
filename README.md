@@ -7,6 +7,8 @@ quxiaojian@sdnu.edu.cn<br />
 **Citation**<br />
 If you use PGA in your scientific research, please cite:<br />
 Qu X-J, Moore MJ, Li D-Z, Yi T-S. 2019. PGA: a software package for rapid, accurate, and flexible batch annotation of plastomes. Plant Methods 15:50.<br />
+[ResearchGate](https://www.researchgate.net/publication/333245667_PGA_a_software_package_for_rapid_accurate_and_flexible_batch_annotation_of_plastomes)<br />
+[Plant Methods](https://plantmethods.biomedcentral.com/articles/10.1186/s13007-019-0435-7)<br />
 
 **Notes in Chinese**<br />
 https://www.jianshu.com/p/6ac8a9fad9c9
