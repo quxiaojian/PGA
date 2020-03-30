@@ -1,4 +1,4 @@
-LOCUS       Amborella_trichopoda      162686 bp    DNA     circular UNA 08-AUG-2019
+LOCUS       Amborella_trichopoda      162686 bp    DNA     circular UNA 30-MAR-2020
 DEFINITION  Amborella trichopoda chloroplast genomic DNA, complete sequence.
 ACCESSION   AJ506156
 VERSION     AJ506156.2  GI:34481608
@@ -2016,7 +2016,7 @@ FEATURES             Location/Qualifiers
                      WLLGASRKRPGRNMAFKLSSELVDAAKGNGDAIRKKEETHRMAEANRAFAHFR"
      gene            148970..149437
                      /gene="rps7"
-     CDS             join(149763..150539,151258..152013)
+     CDS             join(149817..150539,151258..152013)
                      /gene="ndhB"
                      /codon_start=1
                      /transl_table=11
@@ -2037,7 +2037,8 @@ FEATURES             Location/Qualifiers
                      FLALSSALCLLSLGGIPPLAGFFGKLHLFWCGWQAGLYFLVSIGLLTSVVSIYYYLKI
                      IKLLMTGRNKEITPHVRNYRRSPLRSNNSIELSMIVCVIASTIPGISMNPIIAIAQDT
                      FF"
-     gene            149763..152013
+                     /modified_by="User"
+     gene            149817..152013
                      /gene="ndhB"
                      /locus_tag="AmtrCp091"
                      /db_xref="GeneID:2546600"
