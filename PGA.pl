@@ -21,7 +21,7 @@ my $type=&default("circular","form");
 my $log=&default("warning","log");
 
 print "\nPGA.pl Plastid Genome Annotator
-Copyright (C) 2019 Xiao-Jian Qu
+Copyright (C) 2020 Xiao-Jian Qu
 Email: quxiaojian\@sdnu.edu.cn\n\n";
 
 my $now1=time;
@@ -41,6 +41,10 @@ if ($osname eq "MSWin32") {
 }
 mkdir ($output_directory) if (!-e $output_directory);
 
+my $maxLenth=14;
+my @a = (0..9,'$','%','a'..'z','A'..'Z','-','+','_');
+my $random = "%".join ('',map ($a[int rand @a],0..($maxLenth-1)))."%";
+
 ############################################################
 ## extract_gene_coding_CDS
 ############################################################
@@ -54,14 +58,19 @@ sub target1{
     return;
 }
 
+my $reference_path;
 my $filename_base;
 my @reference_filename;
 while (@filenames) {
 	my $filename_gb=shift @filenames;
 	$filename_base=$filename_gb;
-	$filename_base=~ s/(.*).gb/$1/g;
+	#$filename_base=~ s/(.*).gb/$1/g;
+	$filename_base=~ s/\s+/__/g;
+	$filename_base=substr($filename_base,0,rindex($filename_base,"\."));
 	push @reference_filename,$filename_base;
 	my $latin_name=substr ($filename_base,rindex($filename_base,"\/")+1);
+	$reference_path=$filename_base;
+	$reference_path=~ s/$latin_name//g;
 	open(my $in_gb,"<",$filename_gb);
 	open(my $out_gb,">","$filename_base\_temp1");
 	while (<$in_gb>){
@@ -1081,6 +1090,14 @@ while (@filenames) {
 	unlink "$filename_base\_temp2";
 }
 
+my $blast_reference1_random = $reference_path."/".$random."_reference1_blast";
+my $blast_reference2_random = $reference_path."/".$random."_reference2_blast";
+my $blast_reference3_random = $reference_path."/".$random."_reference3_blast";
+my $blast_reference4_random = $reference_path."/".$random."_reference4_blast";
+
+my $screenlog = $output_directory."/"."screen.log";
+my $screenperf = $output_directory."/"."screen.perf";
+
 
 ############################################################
 ## combine_gene_coding_CDS
@@ -1089,37 +1106,41 @@ my $dir;
 opendir($dir,$reference_directory);
 my @input_directory=readdir $dir;
 close $dir;
-unlink ("gene.fasta");
-unlink ("coding.fasta");
-unlink ("CDS.fasta");
+#unlink ("gene.fasta");
+#unlink ("coding.fasta");
+#unlink ("CDS.fasta");
 
+my (@gene_fasta,@coding_fasta,@CDS_fasta);
 foreach my $file (@input_directory){
 	if($file=~/_gene.fasta/){
 		open (my $input_gene,"<","$reference_directory/$file");
-		open (my $output_gene,">>","gene.fasta");
+		#open (my $output_gene,">>","gene.fasta");
 		while(<$input_gene>){
-			print $output_gene $_;
+			#print $output_gene $_;
+			push @gene_fasta, $_;
 		}
 		close $input_gene;
-		close $output_gene;
+		#close $output_gene;
 	}
 	if($file=~/_coding.fasta/){
 		open (my $input_coding,"<","$reference_directory/$file");
-		open (my $output_coding,">>","coding.fasta");
+		#open (my $output_coding,">>","coding.fasta");
 		while(<$input_coding>){
-			print $output_coding $_;
+			#print $output_coding $_;
+			push @coding_fasta, $_;
 		}
 		close $input_coding;
-		close $output_coding;
+		#close $output_coding;
 	}
 	if($file=~/_CDS.fasta/){
 		open (my $input_CDS,"<","$reference_directory/$file");
-		open (my $output_CDS,">>","CDS.fasta");
+		#open (my $output_CDS,">>","CDS.fasta");
 		while(<$input_CDS>){
-			print $output_CDS $_;
+			#print $output_CDS $_;
+			push @CDS_fasta, $_;
 		}
 		close $input_CDS;
-		close $output_CDS;
+		#close $output_CDS;
 	}
 }
 foreach my $reference_filename (@reference_filename) {
@@ -1132,39 +1153,57 @@ foreach my $reference_filename (@reference_filename) {
 }
 
 
-open (my $in_gene,"<","gene.fasta");
-open (my $in_coding,"<","coding.fasta");
-open (my $in_CDS,"<","CDS.fasta");
-open (my $out_all1,">","all1.fasta");
-while (<$in_gene>){
-	print $out_all1 $_;
+#open (my $in_gene,"<","gene.fasta");
+#open (my $in_coding,"<","coding.fasta");
+#open (my $in_CDS,"<","CDS.fasta");
+#open (my $out_all1,">","all1.fasta");
+my @all1;
+#while (<$in_gene>){
+while (@gene_fasta){
+	#print $out_all1 $_;
+	$_=shift @gene_fasta;
+	push @all1, $_;
 }
-while (<$in_coding>){
-	print $out_all1 $_;
+#while (<$in_coding>){
+while (@coding_fasta){
+	#print $out_all1 $_;
+	$_=shift @coding_fasta;
+	push @all1, $_;
 }
-while (<$in_CDS>){
-	print $out_all1 $_;
+#while (<$in_CDS>){
+while (@CDS_fasta){
+	#print $out_all1 $_;
+	$_=shift @CDS_fasta;
+	push @all1, $_;
 }
-close $in_gene;
-close $in_coding;
-close $in_CDS;
-close $out_all1;
+#close $in_gene;
+#close $in_coding;
+#close $in_CDS;
+#close $out_all1;
 
 #from A-UGC to trnA-UGC
-open (my $in_all1,"<","all1.fasta");
-open (my $out_all2,">","all2.fasta");
+#open (my $in_all1,"<","all1.fasta");
+#open (my $out_all2,">","all2.fasta");
+my @all2;
 my ($header_in_all1,$sequence_in_all1);
-while (defined ($header_in_all1=<$in_all1>) && defined ($sequence_in_all1=<$in_all1>)){
+#while (defined ($header_in_all1=<$in_all1>) && defined ($sequence_in_all1=<$in_all1>)){
+while (@all1){
+	$header_in_all1=shift @all1;
+	$sequence_in_all1=shift @all1;
 	if ($header_in_all1=~ />(.|..)-/){
 		$header_in_all1=~ s/>/>trn/g;
-		print $out_all2 $header_in_all1.$sequence_in_all1;
+		#print $out_all2 $header_in_all1.$sequence_in_all1;
+		push @all2, $header_in_all1;
+		push @all2, $sequence_in_all1;		
 	}else{
-		print $out_all2 $header_in_all1.$sequence_in_all1;
+		#print $out_all2 $header_in_all1.$sequence_in_all1;
+		push @all2, $header_in_all1;
+		push @all2, $sequence_in_all1;
 	}
 }
-close $in_all1;
-close $out_all2;
-unlink("all1.fasta");
+#close $in_all1;
+#close $out_all2;
+#unlink("all1.fasta");
 
 
 #codon_table
@@ -1184,10 +1223,15 @@ close $in_product;
 
 #from CDS to CDS_aa(no intron PCG)
 #from coding to coding_aa(intron PCG)
-open (my $in_all2,"<","all2.fasta");
-open (my $out_all3,">","all3.fasta");
+#open (my $in_all2,"<","all2.fasta");
+my @all22=@all2;
+#open (my $out_all3,">","all3.fasta");
+my @all3;
 my ($header_in_all2,$sequence_in_all2);
-while (defined ($header_in_all2=<$in_all2>) && defined ($sequence_in_all2=<$in_all2>)){
+#while (defined ($header_in_all2=<$in_all2>) && defined ($sequence_in_all2=<$in_all2>)){
+while (@all2){
+	$header_in_all2=shift @all2;
+	$sequence_in_all2=shift @all2;
 	$header_in_all2=~ s/\r|\n//g;
 	$sequence_in_all2=~ s/\r|\n//g;
 
@@ -1206,7 +1250,9 @@ while (defined ($header_in_all2=<$in_all2>) && defined ($sequence_in_all2=<$in_a
 			}
 		}
 		$header_in_all2=~ s/_CDS/_CDS_aa/g;
-		print $out_all3 "$header_in_all2\n$aa\n";
+		#print $out_all3 "$header_in_all2\n$aa\n";
+		push @all3, $header_in_all2;
+		push @all3, $aa;
 	}elsif ($header_in_all2=~ /^>(?!trn)(.+)-(\d)_coding/){
 		if ($2 == 1) {
 			for (my $i=0;$i<$length;$i+=3){# remain stop codon, either (length ($seq)-1) or (length ($seq)-2) is OK
@@ -1267,27 +1313,42 @@ while (defined ($header_in_all2=<$in_all2>) && defined ($sequence_in_all2=<$in_a
 			}
 		}
 		$header_in_all2=~ s/_coding/_coding_aa/g;
-		print $out_all3 "$header_in_all2\n$aa\n";
+		#print $out_all3 "$header_in_all2\n$aa\n";
+		push @all3, $header_in_all2;
+		push @all3, $aa;
 	}else{
-		print $out_all3 "$header_in_all2\n$sequence_in_all2\n";
+		#print $out_all3 "$header_in_all2\n$sequence_in_all2\n";
+		push @all3, $header_in_all2;
+		push @all3, $sequence_in_all2;
 	}
 }
-close $in_all2;
-close $out_all3;
+#close $in_all2;
+#close $out_all3;
 
 #delete xxx_coding of no intron gene(including PCG and RNA):
 #if exists accD_coding and accD_gene,delete accD_coding(no intron PCG);
 #if exists trnQ-UUG_coding and trnQ-UUG_gene,delete trnQ-UUG_coding(no intron tRNA);
 #if exists rrn16_coding and rrn16_gene,delete rrn16_coding(no intron rRNA);
-open (my $in_all3,"<","all3.fasta");
-open (my $out_reference1,">","reference1.fasta");
-open (my $out_reference2,">","reference2.fasta");
-open (my $out_reference3,">","reference3.fasta");
-open (my $out_reference4,">","reference4.fasta");
+#open (my $in_all3,"<","all3.fasta");
+#open (my $out_reference1,">","reference1.fasta");
+#open (my $out_reference2,">","reference2.fasta");
+#open (my $out_reference3,">","reference3.fasta");
+#open (my $out_reference4,">","reference4.fasta");
+my $reference1_random = $reference_path."/".$random."_reference1";
+my $reference2_random = $reference_path."/".$random."_reference2";
+my $reference3_random = $reference_path."/".$random."_reference3";
+my $reference4_random = $reference_path."/".$random."_reference4";
+open (my $out_reference1,">",$reference1_random);
+open (my $out_reference2,">",$reference2_random);
+open (my $out_reference3,">",$reference3_random);
+open (my $out_reference4,">",$reference4_random);
 
 my ($header_in_all3,$sequence_in_all3,%hash1_in_all3,%hash2_in_all3,%hash3_in_all3,%hash4_in_all3);
 my %gene_number_ref;
-while (defined ($header_in_all3=<$in_all3>) and defined ($sequence_in_all3=<$in_all3>)){
+#while (defined ($header_in_all3=<$in_all3>) and defined ($sequence_in_all3=<$in_all3>)){
+while (@all3){
+	$header_in_all3=shift @all3;
+	$sequence_in_all3=shift @all3;
 	$header_in_all3=~ s/\r|\n//g;
 	$sequence_in_all3=~ s/\r|\n//g;
 
@@ -1325,15 +1386,15 @@ foreach my $h3 (sort keys %hash3_in_all3){
 foreach my $h4 (sort keys %hash4_in_all3){
 	print $out_reference4 "$h4\n$hash4_in_all3{$h4}\n";
 }
-close $in_all3;
+#close $in_all3;
 close $out_reference1;
 close $out_reference2;
 close $out_reference3;
 close $out_reference4;
-unlink("all3.fasta");
-unlink ("gene.fasta");
-unlink ("coding.fasta");
-unlink ("CDS.fasta");
+#unlink("all3.fasta");
+#unlink ("gene.fasta");
+#unlink ("coding.fasta");
+#unlink ("CDS.fasta");
 %hash1_in_all3=();
 %hash2_in_all3=();
 %hash3_in_all3=();
@@ -1360,13 +1421,25 @@ sub target2{
 }
 
 my $j=0;
+
+
+my $target_path;
+my $IR_temp_random;
+my $blast_IR_temp_random;
 while (@sequence_filenames) {
 	$j++;
-	my $input_fasta=shift @sequence_filenames;
-	my $output_fasta=substr($input_fasta,0,rindex($input_fasta,"\."));
-	my $filename=substr($output_fasta,rindex($output_fasta,"\/")+1);
-	open(my $input_ag,"<",$input_fasta);
-	open(my $output_ag,">",$output_fasta);
+	my $filename_fasta=shift @sequence_filenames;
+	my $target_name=substr($filename_fasta,0,rindex($filename_fasta,"\."));
+	$target_name=~ s/\s+/__/g;
+	my $filename=substr($target_name,rindex($target_name,"\/")+1);
+	$target_path=$target_name;
+	$target_path=~ s/$filename//g;
+	my $target_name_random = $target_path."/".$random."_".$filename;
+	$IR_temp_random = $target_path."/".$random."_IR_temp";
+	$blast_IR_temp_random = $target_path."/".$random."_IR_temp_blast";
+
+	open(my $input_ag,"<",$filename_fasta);
+	open(my $output_ag,">",$target_name_random);
 	my $row_ag=<$input_ag>;
 	print $output_ag $row_ag;
 	while ($row_ag=<$input_ag>){
@@ -1383,8 +1456,9 @@ while (@sequence_filenames) {
 	close $output_ag;
 
 	#fasta_sequence_with_length_cp*2
-	open (my $in_fasta_2,"<",$output_fasta);
-	open (my $out_fasta_2,">","fasta_temp");
+	open (my $in_fasta_2,"<",$target_name_random);
+	#open (my $out_fasta_2,">","fasta_temp");
+	open (my $out_fasta_2,">",$IR_temp_random);
 	while (<$in_fasta_2>) {
 		$_=~ s/\r|\n//g;
 		if ($_=~ /^>/) {
@@ -1397,7 +1471,7 @@ while (@sequence_filenames) {
 	close $out_fasta_2;
 
 	#fasta_sequence
-	open (my $in_fasta,"<",$output_fasta);
+	open (my $in_fasta,"<",$target_name_random);
 	my @fasta;
 	while (<$in_fasta>){
 		$_=~ s/\r|\n//g;
@@ -1431,7 +1505,7 @@ while (@sequence_filenames) {
 	print "\n";
 	print "$now4 || Begin annotating the $j sequence: $filename";
 	print "\n";
-	print "$now4 || Begin blasting reference to sequence!";
+	print "$now4 || Begin blasting reference to sequence!\n";
 	############################################################
 	## blast_reference_to_sequence
 	############################################################
@@ -1441,89 +1515,90 @@ while (@sequence_filenames) {
 	#intron PCG(_gene and -1/-2/-3_coding_aa)(short exon of rpl16,petB and petD)
 
 	if ($osname eq "MSWin32") {
-		system ("makeblastdb.exe -in $output_fasta -hash_index -dbtype nucl -blastdb_version 4");
+		system ("makeblastdb.exe -in $target_name_random -hash_index -dbtype nucl -blastdb_version 4 -logfile $screenlog");
 		#-max_hsps 1(nucleotide,RNA,including _gene RNA and -1/-2_coding tRNA)
-		system ("blastn.exe -task blastn -query reference1.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference1");# -evalue 0.001 or 0.01
+		system ("blastn.exe -task blastn -query $reference1_random -db $target_name_random -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out $blast_reference1_random");# -evalue 0.001 or 0.01
 		#-max_hsps 1(nucleotide,PCG,including _gene PCG)
-		system ("blastn.exe -task blastn -query reference2.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference2");# -evalue 0.001 or 0.01 -perc_identity 50?
-		#system ("tblastx.exe -query reference2.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -qcov_hsp_perc 50 -out blast_reference2");# -evalue 0.001 or 0.01
+		system ("blastn.exe -task blastn -query $reference2_random -db $target_name_random -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out $blast_reference2_random");# -evalue 0.001 or 0.01 -perc_identity 50?
+		#system ("tblastx.exe -query $reference2_random -db $target_name_random -outfmt 6 -max_hsps 1 -max_target_seqs 1 -qcov_hsp_perc 50 -out $blast_reference2_random");# -evalue 0.001 or 0.01
 		#-max_hsps 1(amino acid,no intron PCG,including _CDS_aa PCG)
-		system ("tblastn.exe -task tblastn -query reference3.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference3");# -evalue 0.001 or 0.01 -max_intron_length 1000?
+		system ("tblastn.exe -task tblastn -query $reference3_random -db $target_name_random -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out $blast_reference3_random");# -evalue 0.001 or 0.01 -max_intron_length 1000?
 		#-max_hsps 1(amino acid,intron PCG,including -1/-2/-3_coding_aa PCG)
-		system ("tblastn.exe -task tblastn -query reference4.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference4");# -evalue 0.001 or 0.01 -qcov_hsp_perc 20?
+		system ("tblastn.exe -task tblastn -query $reference4_random -db $target_name_random -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out $blast_reference4_random");# -evalue 0.001 or 0.01 -qcov_hsp_perc 20?
 		#IRb and IRa
-		system ("makeblastdb.exe -in fasta_temp -hash_index -dbtype nucl -blastdb_version 4");
-		system ("blastn.exe -task blastn -query fasta_temp -db fasta_temp -outfmt 6 -perc_identity 99 -out IR_temp");
+		system ("makeblastdb.exe -in $IR_temp_random -hash_index -dbtype nucl -blastdb_version 4 -logfile $screenlog");
+		system ("blastn.exe -task blastn -query $IR_temp_random -db $IR_temp_random -outfmt 6 -perc_identity 99 -out $blast_IR_temp_random");
 	}elsif ($osname eq "cygwin") {
-		system ("makeblastdb -in $output_fasta -hash_index -dbtype nucl -blastdb_version 4");
+		system ("makeblastdb -in $target_name_random -hash_index -dbtype nucl -blastdb_version 4 -logfile $screenlog");
 		#-max_hsps 1(nucleotide,RNA,including _gene RNA and -1/-2_coding tRNA)
-		system ("blastn -task blastn -query reference1.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference1");# -evalue 0.001 or 0.01
+		system ("blastn -task blastn -query $reference1_random -db $target_name_random -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out $blast_reference1_random");# -evalue 0.001 or 0.01
 		#-max_hsps 1(nucleotide,PCG,including _gene PCG)
-		system ("blastn -task blastn -query reference2.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference2");# -evalue 0.001 or 0.01 -perc_identity 50?
-		#system ("tblastx -query reference2.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -qcov_hsp_perc 50 -out blast_reference2");# -evalue 0.001 or 0.01
+		system ("blastn -task blastn -query $reference2_random -db $target_name_random -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out $blast_reference2_random");# -evalue 0.001 or 0.01 -perc_identity 50?
+		#system ("tblastx -query $reference2_random -db $target_name_random -outfmt 6 -max_hsps 1 -max_target_seqs 1 -qcov_hsp_perc 50 -out $blast_reference2_random");# -evalue 0.001 or 0.01
 		#-max_hsps 1(amino acid,no intron PCG,including _CDS_aa PCG)
-		system ("tblastn -task tblastn -query reference3.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference3");# -evalue 0.001 or 0.01 -max_intron_length 1000?
+		system ("tblastn -task tblastn -query $reference3_random -db $target_name_random -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out $blast_reference3_random");# -evalue 0.001 or 0.01 -max_intron_length 1000?
 		#-max_hsps 1(amino acid,intron PCG,including -1/-2/-3_coding_aa PCG)
-		system ("tblastn -task tblastn -query reference4.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference4");# -evalue 0.001 or 0.01 -qcov_hsp_perc 20?
+		system ("tblastn -task tblastn -query $reference4_random -db $target_name_random -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out $blast_reference4_random");# -evalue 0.001 or 0.01 -qcov_hsp_perc 20?
 		#IRb and IRa
-		system ("makeblastdb -in fasta_temp -hash_index -dbtype nucl -blastdb_version 4");
-		system ("blastn -task blastn -query fasta_temp -db fasta_temp -outfmt 6 -perc_identity 99 -out IR_temp");
+		system ("makeblastdb -in $IR_temp_random -hash_index -dbtype nucl -blastdb_version 4 -logfile $screenlog");
+		system ("blastn -task blastn -query $IR_temp_random -db $IR_temp_random -outfmt 6 -perc_identity 99 -out $blast_IR_temp_random");
 	}elsif ($osname eq "linux") {
-		system ("makeblastdb -in $output_fasta -hash_index -dbtype nucl -blastdb_version 4");
+		system ("makeblastdb -in $target_name_random -hash_index -dbtype nucl -blastdb_version 4 -logfile $screenlog");
 		#-max_hsps 1(nucleotide,RNA,including _gene RNA and -1/-2_coding tRNA)
-		system ("blastn -task blastn -query reference1.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference1");# -evalue 0.001 or 0.01
+		system ("blastn -task blastn -query $reference1_random -db $target_name_random -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out $blast_reference1_random");# -evalue 0.001 or 0.01
 		#-max_hsps 1(nucleotide,PCG,including _gene PCG)
-		system ("blastn -task blastn -query reference2.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference2");# -evalue 0.001 or 0.01 -perc_identity 50?
-		#system ("tblastx -query reference2.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -qcov_hsp_perc 50 -out blast_reference2");# -evalue 0.001 or 0.01
+		system ("blastn -task blastn -query $reference2_random -db $target_name_random -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out $blast_reference2_random");# -evalue 0.001 or 0.01 -perc_identity 50?
+		#system ("tblastx -query $reference2_random -db $target_name_random -outfmt 6 -max_hsps 1 -max_target_seqs 1 -qcov_hsp_perc 50 -out $blast_reference2_random");# -evalue 0.001 or 0.01
 		#-max_hsps 1(amino acid,no intron PCG,including _CDS_aa PCG)
-		system ("tblastn -task tblastn -query reference3.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference3");# -evalue 0.001 or 0.01 -max_intron_length 1000?
+		system ("tblastn -task tblastn -query $reference3_random -db $target_name_random -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out $blast_reference3_random");# -evalue 0.001 or 0.01 -max_intron_length 1000?
 		#-max_hsps 1(amino acid,intron PCG,including -1/-2/-3_coding_aa PCG)
-		system ("tblastn -task tblastn -query reference4.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference4");# -evalue 0.001 or 0.01 -qcov_hsp_perc 20?
+		system ("tblastn -task tblastn -query $reference4_random -db $target_name_random -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out $blast_reference4_random");# -evalue 0.001 or 0.01 -qcov_hsp_perc 20?
 		#IRb and IRa
-		system ("makeblastdb -in fasta_temp -hash_index -dbtype nucl -blastdb_version 4");
-		system ("blastn -task blastn -query fasta_temp -db fasta_temp -outfmt 6 -perc_identity 99 -out IR_temp");
+		system ("makeblastdb -in $IR_temp_random -hash_index -dbtype nucl -blastdb_version 4 -logfile $screenlog");
+		system ("blastn -task blastn -query $IR_temp_random -db $IR_temp_random -outfmt 6 -perc_identity 99 -out $blast_IR_temp_random");
 	}elsif ($osname eq "darwin") {
-		system ("makeblastdb -in $output_fasta -hash_index -dbtype nucl -blastdb_version 4");
+		system ("makeblastdb -in $target_name_random -hash_index -dbtype nucl -blastdb_version 4 -logfile $screenlog");
 		#-max_hsps 1(nucleotide,RNA,including _gene RNA and -1/-2_coding tRNA)
-		system ("blastn -task blastn -query reference1.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference1");# -evalue 0.001 or 0.01
+		system ("blastn -task blastn -query $reference1_random -db $target_name_random -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out $blast_reference1_random");# -evalue 0.001 or 0.01
 		#-max_hsps 1(nucleotide,PCG,including _gene PCG)
-		system ("blastn -task blastn -query reference2.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference2");# -evalue 0.001 or 0.01 -perc_identity 50?
-		#system ("tblastx -query reference2.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -qcov_hsp_perc 50 -out blast_reference2");# -evalue 0.001 or 0.01
+		system ("blastn -task blastn -query $reference2_random -db $target_name_random -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out $blast_reference2_random");# -evalue 0.001 or 0.01 -perc_identity 50?
+		#system ("tblastx -query $reference2_random -db $target_name_random -outfmt 6 -max_hsps 1 -max_target_seqs 1 -qcov_hsp_perc 50 -out $blast_reference2_random");# -evalue 0.001 or 0.01
 		#-max_hsps 1(amino acid,no intron PCG,including _CDS_aa PCG)
-		system ("tblastn -task tblastn -query reference3.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference3");# -evalue 0.001 or 0.01 -max_intron_length 1000?
+		system ("tblastn -task tblastn -query $reference3_random -db $target_name_random -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out $blast_reference3_random");# -evalue 0.001 or 0.01 -max_intron_length 1000?
 		#-max_hsps 1(amino acid,intron PCG,including -1/-2/-3_coding_aa PCG)
-		system ("tblastn -task tblastn -query reference4.fasta -db $output_fasta -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out blast_reference4");# -evalue 0.001 or 0.01 -qcov_hsp_perc 20?
+		system ("tblastn -task tblastn -query $reference4_random -db $target_name_random -outfmt 6 -max_hsps 1 -max_target_seqs 1 -out $blast_reference4_random");# -evalue 0.001 or 0.01 -qcov_hsp_perc 20?
 		#IRb and IRa
-		system ("makeblastdb -in fasta_temp -hash_index -dbtype nucl -blastdb_version 4");
-		system ("blastn -task blastn -query fasta_temp -db fasta_temp -outfmt 6 -perc_identity 99 -out IR_temp");
+		system ("makeblastdb -in $IR_temp_random -hash_index -dbtype nucl -blastdb_version 4 -logfile $screenlog");
+		system ("blastn -task blastn -query $IR_temp_random -db $IR_temp_random -outfmt 6 -perc_identity 99 -out $blast_IR_temp_random");
 	}
 
 
-	unlink("$output_fasta");
-	unlink("$output_fasta.nhd");
-	unlink("$output_fasta.nhi");
-	unlink("$output_fasta.nhr");
-	unlink("$output_fasta.nin");
-	unlink("$output_fasta.nog");
-	unlink("$output_fasta.nsd");
-	unlink("$output_fasta.nsi");
-	unlink("$output_fasta.nsq");
-	unlink ("reference_temp");
-	unlink ("fasta_temp");
-	unlink ("fasta_temp.nhd");
-	unlink ("fasta_temp.nhi");
-	unlink ("fasta_temp.nhr");
-	unlink ("fasta_temp.nin");
-	unlink ("fasta_temp.nog");
-	unlink ("fasta_temp.nsd");
-	unlink ("fasta_temp.nsi");
-	unlink ("fasta_temp.nsq");
+	unlink("$target_name_random");
+	unlink("$target_name_random.nhd");
+	unlink("$target_name_random.nhi");
+	unlink("$target_name_random.nhr");
+	unlink("$target_name_random.nin");
+	unlink("$target_name_random.nog");
+	unlink("$target_name_random.nsd");
+	unlink("$target_name_random.nsi");
+	unlink("$target_name_random.nsq");
+	#unlink ("reference_temp");
+	unlink ("$IR_temp_random");
+	unlink ("$IR_temp_random.nhd");
+	unlink ("$IR_temp_random.nhi");
+	unlink ("$IR_temp_random.nhr");
+	unlink ("$IR_temp_random.nin");
+	unlink ("$IR_temp_random.nog");
+	unlink ("$IR_temp_random.nsd");
+	unlink ("$IR_temp_random.nsi");
+	unlink ("$IR_temp_random.nsq");
+	unlink("$screenperf");
 	my $now5=&gettime;
 	print "$now5 || Finish blasting reference to sequence!";
 	print "\n";
 
 	#select IR region
-	open (my $input_IR,"<","IR_temp");
+	open (my $input_IR,"<",$blast_IR_temp_random);
 	my %IR;
 	while (<$input_IR>) {
 		$_=~ s/\r|\n//g;
@@ -1533,7 +1608,7 @@ while (@sequence_filenames) {
 		}
 	}
 	close $input_IR;
-	unlink ("IR_temp");
+	unlink ("$blast_IR_temp_random");
 	my (@IR_length,@boundary);
 	foreach my $key (sort {$b <=> $a} keys %IR) {
 		push @IR_length,$key;
@@ -1555,14 +1630,16 @@ while (@sequence_filenames) {
 	#print "$JLB\t$JSB\t$JLA\t$JSA\n";
 
 	#set threshold of similarity value
-	open (my $in_bt_ref1,"<","blast_reference1");
-	open (my $in_bt_ref2,"<","blast_reference2");
-	open (my $in_bt_ref3,"<","blast_reference3");
-	open (my $in_bt_ref4,"<","blast_reference4");
-	open (my $out_bt_ref,">>","reference_temp");
+	open (my $in_bt_ref1,"<",$blast_reference1_random);
+	open (my $in_bt_ref2,"<",$blast_reference2_random);
+	open (my $in_bt_ref3,"<",$blast_reference3_random);
+	open (my $in_bt_ref4,"<",$blast_reference4_random);
+	#open (my $out_bt_ref,">>","reference_temp");
+	my @reference_temp;
 	while(<$in_bt_ref1>){
 		$_=~ s/\r|\n//g;
-		print $out_bt_ref "$_\n";
+		#print $out_bt_ref "$_\n";
+		push @reference_temp, "$_\n";
 	}
 
 	my (%gene_remain1,%gene_remain2,%gene_remove1,%gene_remove2,%gene_loss,%gene_loss1,%gene_loss2);
@@ -1571,10 +1648,12 @@ while (@sequence_filenames) {
 		my ($gene,$taxon,$similarity)=split /\t/,$_;
 		if (($similarity >= $similarity_value) and ($gene=~ /(.*)_CDS_aa_(.*)/)) {
 			$gene_remain1{$1}++;
-			print $out_bt_ref "$_\n";
+			#print $out_bt_ref "$_\n";
+			push @reference_temp, "$_\n";
 		}elsif (($similarity < $similarity_value) and ($gene=~ /(.*)_CDS_aa_(.*)/) and (($1=~ /ycf1/) or ($1=~ /ycf2/))) {
 			$gene_remain1{$1}++;
-			print $out_bt_ref "$_\n";
+			#print $out_bt_ref "$_\n";
+			push @reference_temp, "$_\n";
 		}elsif (($similarity < $similarity_value) and ($gene=~ /(.*)_CDS_aa_(.*)/) and (($1!~ /ycf1/) and ($1!~ /ycf2/))) {
 			$gene_remove1{$1}++;
 		}
@@ -1611,9 +1690,11 @@ while (@sequence_filenames) {
 			$name=$1;
 		}
 		if ($similarity >= $similarity_value) {
-			print $out_bt_ref "$_\n";
+			#print $out_bt_ref "$_\n";
+			push @reference_temp, "$_\n";
 		}elsif (($similarity < $similarity_value) and (exists $gene_remain2{$name})) {
-			print $out_bt_ref "$_\n";
+			#print $out_bt_ref "$_\n";
+			push @reference_temp, "$_\n";
 		}
 	}
 
@@ -1632,20 +1713,24 @@ while (@sequence_filenames) {
 			$name=$1;
 		}
 		if (!exists $gene_loss{$name}) {
-			print $out_bt_ref "$_\n";
+			#print $out_bt_ref "$_\n";
+			push @reference_temp, "$_\n";
 		}
 	}
 	close $in_bt_ref1;
 	close $in_bt_ref2;
 	close $in_bt_ref3;
 	close $in_bt_ref4;
-	close $out_bt_ref;
+	#close $out_bt_ref;
 
 
 	#short_exon_of_protein-coding-gene_or_tRNA_or_rRNA
-	open (my $in_temp,"<","reference_temp");
+	#open (my $in_temp,"<","reference_temp");
+	my @reference_temp2=@reference_temp;
 	my %hash_temp;
-	while (<$in_temp>) {
+	#while (<$in_temp>) {
+	while (@reference_temp) {
+		$_=shift @reference_temp;
 		$_=~ s/\r|\n//g;
 		my ($qseqid,$sseqid,$pident,$length,$mismatch,$gapopen,$qstart,$qend,$sstart,$send,$evalue,$bitscore)=split (/\s+/,$_);
 		if ($qseqid=~ /((.+)-1_coding)_(?!aa)(.+)/){# trnK-UUU
@@ -1668,7 +1753,7 @@ while (@sequence_filenames) {
 			$hash_temp{$1}{$3}=$pident;
 		}
 	}
-	close $in_temp;
+	#close $in_temp;
 	#print Dumper \%hash_temp;
 
 	my @ref_gene_species;
@@ -1683,9 +1768,15 @@ while (@sequence_filenames) {
 	}
 	%hash_temp=();
 
-	open (my $input_ref,"<","all2.fasta");
+	#open (my $input_ref,"<","all2.fasta");
+	my @all222;
+	@all222=@all22;
 	my ($h_ref,$s_ref,%hash_exon,%hash_exon_length,%hash_exon_sequence);
-	while (defined ($h_ref=<$input_ref>) and defined ($s_ref=<$input_ref>)){
+	#while (defined ($h_ref=<$input_ref>) and defined ($s_ref=<$input_ref>)){
+	while (@all222){
+		$h_ref=shift @all222;
+		$s_ref=shift @all222;
+
 		$h_ref=~ s/\r|\n//g;
 		$s_ref=~ s/\r|\n//g;
 
@@ -1731,40 +1822,48 @@ while (@sequence_filenames) {
 			}
 		}
 	}
-	close $input_ref;
+	#close $input_ref;
 	#print Dumper \%hash_exon;
 	#print Dumper \%hash_exon_length;
 	#print Dumper \%hash_exon_sequence;
 
-	open (my $in_ref,"<","reference_temp");
-	open (my $out_ref,">","reference.tab");
+	#open (my $in_ref,"<","reference_temp");
+	#open (my $out_ref,">","reference.tab");
+	my @reference_tab;
 	my @array_reference;
-	while (<$in_ref>){
+	#while (<$in_ref>){
+	while (@reference_temp2){
+		$_=shift @reference_temp2;
 		$_=~ s/\r|\n//g;
 		my ($qseqid,$sseqid,$pident,$length,$mismatch,$gapopen,$qstart,$qend,$sstart,$send,$evalue,$bitscore)=split (/\s+/,$_);
 		push @array_reference,[$qseqid,$sseqid,$pident,$length,$mismatch,$gapopen,$qstart,$qend,$sstart,$send,$evalue,$bitscore];
 	}
 
 	foreach my $item (sort {$a->[0] cmp $b->[0] or $a->[1] cmp $b->[1] or $b->[2] <=> $a->[2] or $b->[3] <=> $a->[3]} @array_reference){
-		print $out_ref "$item->[0]\t$item->[1]\t$item->[2]\t$item->[3]\t$item->[4]\t$item->[5]\t$item->[6]\t$item->[7]\t$item->[8]\t$item->[9]\t$item->[10]\t$item->[11]\n";
+		#print $out_ref "$item->[0]\t$item->[1]\t$item->[2]\t$item->[3]\t$item->[4]\t$item->[5]\t$item->[6]\t$item->[7]\t$item->[8]\t$item->[9]\t$item->[10]\t$item->[11]\n";
+		push @reference_tab, "$item->[0]\t$item->[1]\t$item->[2]\t$item->[3]\t$item->[4]\t$item->[5]\t$item->[6]\t$item->[7]\t$item->[8]\t$item->[9]\t$item->[10]\t$item->[11]\n";
 	}
-	close $in_ref;
-	close $out_ref;
-	unlink ("blast_reference1");
-	unlink ("blast_reference2");
-	unlink ("blast_reference3");
-	unlink ("blast_reference4");
-	unlink ("reference_temp");
+	#close $in_ref;
+	#close $out_ref;
+	unlink ("$blast_reference1_random");
+	unlink ("$blast_reference2_random");
+	unlink ("$blast_reference3_random");
+	unlink ("$blast_reference4_random");
+	#unlink ("reference_temp");
 
 
 	############################################################
 	## generate_annotation_table
 	############################################################
-	open (my $input_reference,"<","reference.tab");
-	open (my $output_annotation_tab,">","$filename.tab");
+	#open (my $input_reference,"<","reference.tab");
+	#open (my $output_annotation_tab,">","$filename.tab");
+	my $filename_tab_random = $random."_".$filename.".tab";
+	open (my $output_annotation_tab,">",$filename_tab_random);
 	my ($row_reference,%hash_tab,%hash1_tab,%hash2_tab,%hash3_tab,%hash4_tab,%hash_gene);
 	my $i=0;
-	while (defined ($row_reference=<$input_reference>)){
+	#while (defined ($row_reference=<$input_reference>)){
+	while (@reference_tab){
+		$row_reference=shift @reference_tab;
 		my @array=split /\t/,$row_reference;
 		my $contig=$array[1];
 		%hash1_tab=();
@@ -1792,7 +1891,7 @@ while (@sequence_filenames) {
 			$hash_tab{$contig}{$2}{$1}{$array[8]."\t".$array[9]}++ if ((keys %hash4_tab)==1);
 		}
 	}
-	close $input_reference;
+	#close $input_reference;
 	#print Dumper \%hash_tab;
 
 	my @gene_coding_CDS;
@@ -1926,7 +2025,7 @@ while (@sequence_filenames) {
 		}
 	}
 	close $output_annotation_tab;
-	unlink("reference.tab");
+	#unlink("reference.tab");
 	%hash_tab=();
 	%hash1_tab=();
 	%hash2_tab=();
@@ -1938,7 +2037,8 @@ while (@sequence_filenames) {
 	############################################################
 	## generate_gb_file_from_annotation_table
 	############################################################
-	open (my $in_annotation,"<","$filename.tab");
+	#open (my $in_annotation,"<","$filename.tab");
+	open (my $in_annotation,"<",$filename_tab_random);
 	my $contig=<$in_annotation>;
 	$contig=~ s/\r|\n//g;
 	my %hash;
@@ -1963,7 +2063,8 @@ while (@sequence_filenames) {
 		}
 	}
 	close $in_annotation;
-	unlink("$filename.tab");
+	#unlink("$filename.tab");
+	unlink("$filename_tab_random");
 	#print Dumper \%hash;
 
 	my $temp=$filename."_temp";
@@ -16093,11 +16194,11 @@ while (@sequence_filenames) {
 	print "$now6 || Finish annotating the $j sequence: $filename";
 	print "\n";
 }
-unlink("all2.fasta");
-unlink("reference1.fasta");
-unlink("reference2.fasta");
-unlink("reference3.fasta");
-unlink("reference4.fasta");
+#unlink("all2.fasta");
+unlink("$reference1_random");
+unlink("$reference2_random");
+unlink("$reference3_random");
+unlink("$reference4_random");
 %hash_codon=();
 %hash_product=();
 my $now7=&gettime;
@@ -16174,7 +16275,7 @@ __DATA__
 
 =head1 COPYRIGHT
 
-    copyright (C) 2018 Xiao-Jian Qu
+    copyright (C) 2020 Xiao-Jian Qu
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16196,19 +16297,24 @@ __DATA__
 =head1 SYNOPSIS
 
     PGA.pl -r -t [-i -p -q -o -f -l]
-    Copyright (C) 2019 Xiao-Jian Qu
+    Copyright (C) 2020 Xiao-Jian Qu
     Please contact <quxiaojian@sdnu.edu.cn>, if you have any bugs or questions.
 
     [-h -help]         help information.
-    [-r -reference]    required: (default: reference) input directory name containing GenBank-formatted file(s) that from the same or close families.
-    [-t -target]       required: (default: target) input directory name containing FASTA-formatted file(s) that will be annotated.
+    [-r -reference]    required: (default: reference) input directory name containing GenBank-
+                       formatted file(s) that from the same or close families.
+    [-t -target]       required: (default: target) input directory name containing FASTA-
+                       formatted file(s) that will be annotated.
     [-i -ir]           optional: (default: 1000) minimum allowed inverted-repeat (IR) length.
-    [-p -pidentity]    optional: (default: 40) any PCGs with a TBLASTN percent identity less than this value will be listed in the log file and
-                       will not be annotated.
-    [-q -qcoverage]    optional: (default: 0.5,2) any PCGs with a query coverage per annotated PCG less or greater than each of these two values (<1,>1)
-                       will be listed in the log file.
+    [-p -pidentity]    optional: (default: 40) any PCGs with a TBLASTN percent identity less
+                       than this value will be listed in the log file and will not be annotated.
+    [-q -qcoverage]    optional: (default: 0.5,2) any PCGs with a query coverage per annotated
+                       PCG less or greater than each of these two values (<1,>1) will be listed
+                       in the log file.
     [-o -out]          optional: (default: gb) output directory name.
-    [-f -form]         optional: (default: circular) circular or linear form for FASTA-formatted file.
-    [-l -log]          optional: (default: warning) log file name containing warning information for annotated GenBank-formatted file(s).
+    [-f -form]         optional: (default: circular) circular or linear form for FASTA-formatted
+                       file.
+    [-l -log]          optional: (default: warning) log file name containing warning information
+                       for annotated GenBank-formatted file(s).
 
 =cut
