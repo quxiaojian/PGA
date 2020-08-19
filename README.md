@@ -24,7 +24,7 @@ We thank Rong Zhang, Ying-Ying Yang and Jian-Jun Jin from Kunming Institute of B
 
 Following six steps will be conducted to annotate plastomes: (1) Preparation of GenBank-formatted reference plastomes; (2) Preparation of FASTA-formatted target plastomes; (3) Reference database generation; (4) BLAST search; (5) Determining feature boundaries; (6) Generating GenBank and log files.<br />
 
-![flowchart](https://github.com/quxiaojian/PGA/blob/master/flowchart.png)
+![flowchart](/blob/master/flowchart.png)
 
 **Preparations**<br />
 
@@ -82,7 +82,7 @@ equal to
 perl PGA.pl -r test/angiosperms/reference -t test/angiosperms/target -i 1000 -p 40 -q 0.5,2 -o gb -f circular -l warning
 ```
 
-![image](https://github.com/quxiaojian/PGA/blob/master/PGA.gif)
+![gif](/blob/master/PGA.gif)
 
 **Input and Output**<br />
 Annotation of the plastome of Rosa roxburghii with the plastome of Amborella trichopoda as reference. (a) "Amborella_trichopoda.gb" shows the partial GenBank-formatted reference plastome of Amborella trichopoda, as revised from AJ506156. (b) "Rosa_roxburghii.fasta" shows the partial FASTA-formatted target plastome of Rosa roxburghii, revised from NC_032038. (c) "Rosa_roxburghii.gb" shows the output GenBank-formatted file containing partial annotation information for the target plastome of Rosa roxburghii. (d) "warning.log" shows warning and statistical items during the annotation of the target plastome of Rosa roxburghii. The log file indicates the loss of the atpF intron in Rosa roxburghii. There are 113 total genes in the reference and target plastomes.<br />
