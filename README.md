@@ -14,7 +14,7 @@ Qu X-J, Moore MJ, Li D-Z, Yi T-S. 2019. PGA: a software package for rapid, accur
 https://www.jianshu.com/p/6ac8a9fad9c9
 
 **Prerequisites**<br />
-BLAST 2.5.0 or higher<br />
+BLAST 2.8.1 or higher (latest)<br />
 Perl 5<br />
 Windows, Linux or Mac<br />
 
